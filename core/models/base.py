@@ -17,13 +17,15 @@ class BaseModel(
 ):
     
     """
-    Base model inherited by all business models.
-    Provides:
+    Abstract base model for all business entities.
+
+    Features:
     - UUID primary key
-    - Audit fields
-    - Soft delete
-    - Active status
-    - Slug generation
+    - Created/Updated timestamps
+    - Created by / Updated by tracking
+    - Soft delete support
+    - Active/Inactive status
+    - Automatic slug generation
     """
     class Meta:
         abstract = True

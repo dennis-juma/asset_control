@@ -40,17 +40,28 @@ ALLOWED_HOSTS = config(
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+DJANGO_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+]
+
+LOCAL_APPS = [
     "core",
     "organizations",
-    "accounts"
+    "accounts",
+    "sites",
+    "departments",
+    "job_titles",
+    "employees",
+    "assets",
+
 ]
+
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
