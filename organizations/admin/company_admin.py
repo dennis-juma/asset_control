@@ -31,4 +31,9 @@ class CompanyAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
+    autocomplete_fields = (
+    "created_by",
+    "updated_by",
+)
+
     ordering = ("name",)
