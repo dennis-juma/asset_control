@@ -7,6 +7,7 @@ from .company import Company
 
 
 class Country(BaseModel):
+    slug_source = "name"
     """
     Countries where a company operates.
     """

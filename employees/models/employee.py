@@ -1,23 +1,45 @@
-from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from core.models import BaseModel
-from departments.models import Department
-from job_titles.models import JobTitle
-from organizations.models import Company
-from sites.models import Site
+from core.services import CodeGenerator
+from core.utils.slug import generate_unique_slug
 
-from .choices import EmploymentStatus, EmploymentType
+from organizations.models import (
+    Company,
+    Department,
+    JobTitle,
+    Site,
+)
+
+
+class EmploymentStatus(models.TextChoices):
+    ACTIVE = "ACTIVE", "Active"
+    INACTIVE = "INACTIVE", "Inactive"
+    TERMINATED = "TERMINATED", "Terminated"
+    RESIGNED = "RESIGNED", "Resigned"
+    SUSPENDED = "SUSPENDED", "Suspended"
+
+
+class Gender(models.TextChoices):
+    MALE = "M", "Male"
+    FEMALE = "F", "Female",
+
 
 
 class Employee(BaseModel):
 
-    employee_id = models.CharField(
-        max_length=20,
+    slug_source = "first_name"
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.PROTECT,
+        related_name="employees",
+    )
+
+    employee_number = models.CharField(
+        max_length=15,
         unique=True,
-        db_index=True,
-        help_text="Employee number issued by HR.",
+        editable=False,
+        blank=True,
     )
 
     first_name = models.CharField(max_length=100)
@@ -29,11 +51,8 @@ class Employee(BaseModel):
 
     last_name = models.CharField(max_length=100)
 
-    work_email = models.EmailField(
+    email = models.EmailField(
         unique=True,
-    )
-
-    personal_email = models.EmailField(
         blank=True,
     )
 
@@ -42,34 +61,23 @@ class Employee(BaseModel):
         blank=True,
     )
 
-    profile_photo = models.ImageField(
-        upload_to="employees/photos/",
-        null=True,
+    gender = models.CharField(
+        max_length=1,
+        choices=Gender.choices,
         blank=True,
     )
 
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="employee_profile",
-    )
 
-    company = models.ForeignKey(
-        Company,
-        on_delete=models.PROTECT,
-        related_name="employees",
+    hire_date = models.DateField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=EmploymentStatus.choices,
+        default=EmploymentStatus.ACTIVE,
     )
 
     department = models.ForeignKey(
         Department,
-        on_delete=models.PROTECT,
-        related_name="employees",
-    )
-
-    site = models.ForeignKey(
-        Site,
         on_delete=models.PROTECT,
         related_name="employees",
     )
@@ -80,87 +88,48 @@ class Employee(BaseModel):
         related_name="employees",
     )
 
+    site = models.ForeignKey(
+        Site,
+        on_delete=models.PROTECT,
+        related_name="employees",
+    )
+
     manager = models.ForeignKey(
         "self",
+        null=True,
+        blank=True,
         on_delete=models.SET_NULL,
+        related_name="subordinates",
+    )
+
+    profile_photo = models.ImageField(
+        upload_to="employees/photos/",
+        blank=True,
         null=True,
-        blank=True,
-        related_name="direct_reports",
     )
 
-    employment_type = models.CharField(
-        max_length=20,
-        choices=EmploymentType.choices,
-        default=EmploymentType.FULL_TIME,
-    )
-
-    employment_status = models.CharField(
-        max_length=20,
-        choices=EmploymentStatus.choices,
-        default=EmploymentStatus.ACTIVE,
-    )
-
-    hire_date = models.DateField()
-
-    termination_date = models.DateField(
-        null=True,
-        blank=True,
-    )
-
-    notes = models.TextField(
-        blank=True,
-    )
+    notes = models.TextField(blank=True)
 
     class Meta:
-        ordering = ["first_name", "last_name"]
-        verbose_name = "Employee"
-        verbose_name_plural = "Employees"
+        ordering = ["employee_number"]
 
     def __str__(self):
-        return f"{self.employee_id} - {self.full_name}"
+        return f"{self.employee_number} - {self.first_name} {self.last_name}"
 
-    @property
-    def full_name(self):
-        return " ".join(
-            filter(
-                None,
-                [
-                    self.first_name,
-                    self.middle_name,
-                    self.last_name,
-                ],
-            )
-        )
-
-    def clean(self):
-        errors = {}
-
-        if self.department.company_id != self.company_id:
-            errors["department"] = (
-                "Department must belong to the selected company."
-            )
-
-        if self.job_title.company_id != self.company_id:
-            errors["job_title"] = (
-                "Job title must belong to the selected company."
-            )
-
-        if self.manager and self.manager == self:
-            errors["manager"] = (
-                "Employee cannot be their own manager."
-            )
-
-        if (
-            self.termination_date
-            and self.termination_date < self.hire_date
-        ):
-            errors["termination_date"] = (
-                "Termination date cannot be before hire date."
-            )
-
-        if errors:
-            raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
-        self.full_clean()
+        if not self.employee_number:
+            self.employee_number = CodeGenerator.generate(
+                model=Employee,
+                field="employee_number",
+                prefix="EMP",
+                digits=6,
+            )
+        if not self.slug:
+            self.slug = generate_unique_slug( 
+                self,
+            f"{self.first_name} {self.last_name}")
+
+           
+
         super().save(*args, **kwargs)

@@ -4,6 +4,8 @@ from .brand import Brand
 from .vendor import Vendor
 from .choices import AssetType, VendorType
 from .asset import Asset
+from .asset_assignment import AssetAssignment
+from .asset_history import AssetHistory
 
 __all__ = [
     "AssetCategory",
@@ -12,4 +14,13 @@ __all__ = [
     "Vendor",
     "AssetType",
     "VendorType",
+    "AssetAssignment",
+    "Asset",
+    "AssetHistory",
+
+    "Vendor",
+    "AssetType",
+    "VendorType",
+    "AssetAssignment",
+    "Asset",
 ]

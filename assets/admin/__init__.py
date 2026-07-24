@@ -1,12 +1,17 @@
-from .asset_category_admin import AssetCategoryAdmin
-from .asset_model import *
-from .brand_admin import BrandAdmin
-from .vendor import *
 from .asset_admin import *
+from .asset_assignment_admin import *
+from .asset_category_admin import *
+from .asset_model import *
+from .brand_admin import *
+from .vendor import *
+from .asset_history_admin import *
 
 __all__ = [
    "AssetCategoryAdmin",
     "AssetModelAdmin",
     "BrandAdmin",
     "VendorAdmin",
+    "view_asset_admin",
+    "AssetAssignmentAdmin",
+    
 ]

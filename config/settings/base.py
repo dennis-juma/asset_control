@@ -53,11 +53,9 @@ LOCAL_APPS = [
     "core",
     "organizations",
     "accounts",
-    "sites",
-    "departments",
-    "job_titles",
     "employees",
     "assets",
+    "maintenance",
 
 ]
 

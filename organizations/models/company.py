@@ -7,6 +7,7 @@ from core.services import CodeGenerator
 
 
 class Company(BaseModel):
+    slug_source = "name"
     """
     Represents a legal company within the platform.
     Example:

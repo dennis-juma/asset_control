@@ -5,51 +5,88 @@ from employees.models import Employee
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-
     list_display = (
-        "employee_id",
-        "full_name",
-        "company",
+        "employee_number",
+        "first_name",
+        "last_name",
+        "email",
         "department",
         "job_title",
         "site",
-        "employment_status",
+        "status",
+        "is_active",
+    )
+
+    list_filter = (
+        "status",
+        "department",
+        "job_title",
+        "site",
         "is_active",
     )
 
     search_fields = (
-        "employee_id",
+        "employee_number",
         "first_name",
         "last_name",
-        "work_email",
+        "email",
     )
 
-    list_filter = (
-        "company",
-        "department",
-        "site",
-        "employment_status",
-        "employment_type",
-        "is_active",
-    )
+    ordering = ("employee_number",)
 
     autocomplete_fields = (
-        "user",
         "company",
         "department",
-        "site",
         "job_title",
+        "site",
         "manager",
     )
 
     readonly_fields = (
-        "slug",
+        "employee_number",
         "created_at",
         "updated_at",
     )
 
-    ordering = (
-        "company",
-        "department",
-        "first_name",
+    fieldsets = (
+        ("Employee Information", {
+            "fields": (
+                "employee_number",
+                "company",
+                "first_name",
+                "middle_name",
+                "last_name",
+                "gender",
+                "date_of_birth",
+                "hire_date",
+                "status",
+            )
+        }),
+        ("Organization", {
+            "fields": (
+                "department",
+                "job_title",
+                "site",
+                "manager",
+            )
+        }),
+        ("Contact", {
+            "fields": (
+                "email",
+                "phone",
+            )
+        }),
+        ("Other", {
+            "fields": (
+                "profile_photo",
+                "notes",
+            )
+        }),
+        ("Audit", {
+            "classes": ("collapse",),
+            "fields": (
+                "created_at",
+                "updated_at",
+            )
+        }),
     )
