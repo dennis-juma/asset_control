@@ -3,6 +3,7 @@ from django.contrib import admin
 from assets.choices.choices import AssignmentStatus
 from assets.models import Asset
 from .inlines import AssetAssignmentInline
+from .asset_attachment_inline import AssetAttachmentInline
 
 
 @admin.register(Asset)
@@ -17,7 +18,6 @@ class AssetAdmin(admin.ModelAdmin):
         "status",
         "condition",
         "purchase_date",
-        "is_under_warranty",
         "current_holder",
         "is_active",
     )
@@ -104,16 +104,7 @@ class AssetAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (
-            "Warranty",
-            {
-                "fields": (
-                    "warranty_start",
-                    "warranty_end",
-                    "is_under_warranty",
-                )
-            },
-        ),
+        
         (
             "Status",
             {
@@ -139,6 +130,7 @@ class AssetAdmin(admin.ModelAdmin):
     )
     inlines = [
     AssetAssignmentInline,
+    AssetAttachmentInline,
 ]
     
     @admin.display(description="Current Holder")
@@ -157,7 +149,3 @@ class AssetAdmin(admin.ModelAdmin):
         
 
         return "-"
-
-    @admin.display(boolean=True, description="Under Warranty")
-    def warranty_status(self, obj):
-        return obj.is_under_warranty

@@ -1,0 +1,30 @@
+import os
+
+from django.core.exceptions import ValidationError
+from django.conf import settings
+
+
+def validate_attachment_file(file):
+    """
+    Validate uploaded attachment.
+
+    Rules:
+    - Maximum size: 10 MB
+    - Allowed extensions:
+        * PDF
+        * JPG
+        * JPEG
+        * PNG
+    """
+
+    extension = os.path.splitext(file.name)[1].lower()
+
+    if extension not in settings.ALLOWED_ASSET_ATTACHMENT_EXTENSIONS:
+        raise ValidationError(
+            "Unsupported file type. Allowed types are: PDF, JPG, JPEG and PNG."
+        )
+
+    if file.size > settings.MAX_ASSET_ATTACHMENT_SIZE:
+        raise ValidationError(
+            "File size cannot exceed 10 MB."
+        )

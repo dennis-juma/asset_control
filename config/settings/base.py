@@ -18,6 +18,8 @@ from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 load_dotenv()
 
@@ -56,10 +58,23 @@ LOCAL_APPS = [
     "employees",
     "assets",
     "maintenance",
+    "vendors",
+    "reports",
+    "notifications",
+    "dashboard",
 
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
+
+MAX_ASSET_ATTACHMENT_SIZE = 10 * 1024 * 1024  # 10 MB
+
+ALLOWED_ASSET_ATTACHMENT_EXTENSIONS = [
+    ".pdf",
+    ".jpg",
+    ".jpeg",
+    ".png",
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

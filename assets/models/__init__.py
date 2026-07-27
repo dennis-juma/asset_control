@@ -6,6 +6,7 @@ from .choices import AssetType, VendorType
 from .asset import Asset
 from .asset_assignment import AssetAssignment
 from .asset_history import AssetHistory
+from .asset_attachment import AssetAttachment
 
 __all__ = [
     "AssetCategory",
@@ -17,10 +18,5 @@ __all__ = [
     "AssetAssignment",
     "Asset",
     "AssetHistory",
-
-    "Vendor",
-    "AssetType",
-    "VendorType",
-    "AssetAssignment",
-    "Asset",
+    "AssetAttachment"
 ]
