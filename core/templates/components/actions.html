@@ -1,0 +1,35 @@
+<div class="dropdown">
+
+    <button
+        class="btn btn-sm btn-light"
+        data-bs-toggle="dropdown"
+    >
+
+        <i class="bi bi-three-dots-vertical"></i>
+
+    </button>
+
+    <ul class="dropdown-menu dropdown-menu-end">
+
+        {% for action in grid.actions %}
+
+        <li>
+
+            <a
+                class="{{ action.css_class }}"
+                href="{{ action.url }}"
+            >
+
+                <i class="bi {{ action.icon }}"></i>
+
+                {{ action.title }}
+
+            </a>
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>

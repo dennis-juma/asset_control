@@ -1,0 +1,27 @@
+<label class="form-label">
+
+    {{ field.label }}
+
+</label>
+
+<select
+    name="{{ field.name }}"
+    class="form-select"
+>
+
+    <option value="">All</option>
+
+    {% for option in field.options %}
+
+    <option
+        value="{{ option.value }}"
+        {% if option.value == field.value %}selected{% endif %}
+    >
+
+        {{ option.label }}
+
+    </option>
+
+    {% endfor %}
+
+</select>

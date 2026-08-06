@@ -1,0 +1,88 @@
+{% load humanize %}
+
+<div class="card shadow-sm border-0 h-100">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bi bi-clock-history me-2"></i>
+            Recent Activity
+        </h5>
+
+        <span class="badge bg-primary rounded-pill">
+            {{ activities|length }}
+        </span>
+    </div>
+
+    <div class="card-body p-0">
+
+        {% if activities %}
+
+            <div class="list-group list-group-flush">
+
+                {% for activity in activities %}
+
+                    <div class="list-group-item border-0 py-3">
+
+                        <div class="d-flex">
+
+                            <div class="me-3">
+
+                                <div class="rounded-circle bg-{{ activity.color }} text-white d-flex align-items-center justify-content-center"
+                                     style="width:42px; height:42px;">
+
+                                    <i class="{{ activity.icon }}"></i>
+
+                                </div>
+
+                            </div>
+
+                            <div class="flex-grow-1">
+
+                                <div class="d-flex justify-content-between">
+
+                                    <h6 class="mb-1">
+                                        {{ activity.title }}
+                                    </h6>
+
+                                    <small class="text-muted">
+                                        {{ activity.timestamp|naturaltime }}
+                                    </small>
+
+                                </div>
+
+                                <p class="mb-0 text-muted">
+                                    {{ activity.description }}
+                                </p>
+
+                                {% if activity.url %}
+                                    <a href="{{ activity.url }}"
+                                       class="small text-decoration-none">
+                                        View Details
+                                    </a>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="text-center py-5">
+
+                <i class="bi bi-clock-history fs-1 text-muted"></i>
+
+                <p class="text-muted mt-3 mb-0">
+                    No recent activity available.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+</div>

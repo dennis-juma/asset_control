@@ -1,0 +1,36 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include "components/page/page.html" with page=page %}
+
+{% endblock %}
+
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    {% include "assets/components/page_header.html" %}
+
+    <!-- Statistics -->
+    {% include "assets/components/statistics.html" %}
+
+    <!-- Search & Filters -->
+    {% include "components/filters/filters.html" with filters=filters %}
+
+    <!-- Bulk Actions -->
+    {% include "assets/components/bulk_actions.html" %}
+
+    <!-- Asset Table -->
+    {% include "assets/components/asset_table.html" %}
+
+    <!-- Pagination -->
+    {% include "assets/components/pagination.html" %}
+
+</div>
+
+{% endblock %}

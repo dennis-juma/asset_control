@@ -1,0 +1,17 @@
+<div class="col-md">
+
+{% if field.type == "search" %}
+
+    {% include "components/filters/search.html" %}
+
+{% elif field.type == "select" %}
+
+    {% include "components/filters/select.html" %}
+
+{% elif field.type == "date" %}
+
+    {% include "components/filters/date.html" %}
+
+{% endif %}
+
+</div>

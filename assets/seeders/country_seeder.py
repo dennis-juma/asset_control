@@ -23,7 +23,7 @@ class CountrySeeder:
     ]
 
     @classmethod
-    def run(cls, stdout, company):
+    def run(cls, stdout):
 
         countries = []
 
@@ -32,7 +32,6 @@ class CountrySeeder:
         for data in cls.DEFAULT_COUNTRIES:
 
             country, created = Country.objects.get_or_create(
-                company=company,
                 iso2=data["iso2"],
                 defaults=data,
             )

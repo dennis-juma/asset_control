@@ -1,0 +1,21 @@
+<div class="mb-4">
+
+    {% include "components/page/breadcrumb.html" %}
+
+    <h2 class="mb-1">
+
+        {{ page.title }}
+
+    </h2>
+
+    {% if page.subtitle %}
+
+        <p class="text-muted">
+
+            {{ page.subtitle }}
+
+        </p>
+
+    {% endif %}
+
+</div>

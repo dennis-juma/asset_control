@@ -1,0 +1,117 @@
+{% if page.content.page %}
+
+<div class="card-footer bg-white border-top">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+        <!-- Record Count -->
+        <div class="text-muted small">
+
+            Showing
+
+            <strong>
+                {{ page.content.page.start_index }}
+            </strong>
+
+            to
+
+            <strong>
+                {{ page.content.page.end_index }}
+            </strong>
+
+            of
+
+            <strong>
+                {{ page.content.page.paginator.count }}
+            </strong>
+
+            entries
+
+        </div>
+
+        <!-- Page Navigation -->
+        <nav>
+
+            <ul class="pagination pagination-sm mb-0">
+
+                {% if page.content.page.has_previous %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ page.content.page.previous_page_number }}&q={{ page.content.search_query }}">
+
+                            Previous
+
+                        </a>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="page-item disabled">
+
+                        <span class="page-link">
+
+                            Previous
+
+                        </span>
+
+                    </li>
+
+                {% endif %}
+
+                {% for number in page.content.page.paginator.page_range %}
+
+                    <li class="page-item {% if number == page.content.page.number %}active{% endif %}">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ number }}&q={{ page.content.search_query }}">
+
+                            {{ number }}
+
+                        </a>
+
+                    </li>
+
+                {% endfor %}
+
+                {% if page.content.page.has_next %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ page.content.page.next_page_number }}&q={{ page.content.search_query }}">
+
+                            Next
+
+                        </a>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="page-item disabled">
+
+                        <span class="page-link">
+
+                            Next
+
+                        </span>
+
+                    </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endif %}

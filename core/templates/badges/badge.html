@@ -1,0 +1,17 @@
+<span class="
+badge
+bg-{{ badge.color.value }}
+{% if badge.pill %}
+rounded-pill
+{% endif %}
+">
+
+{% if badge.icon %}
+
+<i class="bi {{ badge.icon }}"></i>
+
+{% endif %}
+
+{{ badge.text }}
+
+</span>

@@ -16,4 +16,7 @@ __all__ = [
     "Country",
     "LocationType",
     "OrganizationStatus",
+    "Site",
+    "Department",
+    "JobTitle",
 ]

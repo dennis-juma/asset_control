@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ========================================= -->
+    <!-- Page Header -->
+    <!-- ========================================= -->
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Dashboard</h2>
+
+        <p class="text-muted mb-0">
+            Welcome back to Sun King Asset Management.
+        </p>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Statistics -->
+    <!-- ========================================= -->
+
+    {% if statistics %}
+
+        <div class="row g-4">
+
+            {% for card in statistics %}
+                {% include "components/cards/stat_card.html" with card=card %}
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        {% include "components/empty_states/empty_state.html" with title="No dashboard statistics available." %}
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- Distribution Charts -->
+    <!-- ========================================= -->
+
+    {% if charts %}
+
+        <div class="row g-4 mt-2">
+
+            {% for chart in charts %}
+                {% include "components/charts/chart.html" with chart=chart %}
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- Trend Charts -->
+    <!-- ========================================= -->
+
+    {% if trends %}
+
+        <div class="row g-4 mt-2">
+
+            {% for chart in trends %}
+                {% include "components/charts/chart.html" with chart=chart %}
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- Activity + Alerts -->
+    <!-- ========================================= -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-6 mb-4">
+
+            {% include "components/activity_timeline.html" %}
+
+        </div>
+
+        <div class="col-lg-6 mb-4">
+
+            {% include "components/alert_center.html" %}
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Quick Actions + System Health -->
+    <!-- ========================================= -->
+
+    <div class="row">
+
+        <div class="col-lg-6 mb-4">
+
+            {% include "components/quick_actions.html" %}
+
+        </div>
+
+        <div class="col-lg-6 mb-4">
+
+            {% include "components/system_health.html" %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{{ chart_data|json_script:"dashboard-chart-data" }}
+
+{% endblock %}

@@ -1,0 +1,172 @@
+{% load grid_tags %}
+
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden data-grid">
+
+    {% if page.content.title %}
+    <div class="card-header bg-white border-bottom py-3 px-4">
+        <h5 class="fw-semibold mb-0">
+            {{ page.content.title }}
+        </h5>
+    </div>
+    {% endif %}
+{% if page.content.searchable %}
+
+<div class="card-body border-bottom">
+
+    <form
+        method="get"
+        action="{{ page.content.search_url }}">
+
+        <div class="input-group">
+
+            <span class="input-group-text">
+                <i class="bi bi-search"></i>
+            </span>
+
+            <input
+                type="text"
+                name="q"
+                class="form-control"
+                placeholder="{{ page.content.search_placeholder }}"
+                value="{{ page.content.search_query }}">
+
+            <button
+                class="btn btn-primary"
+                type="submit">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endif %}
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    {% if page.content.selectable %}
+                        <th style="width:40px;">
+                            <input type="checkbox">
+                        </th>
+                    {% endif %}
+
+                    {% for column in page.content.columns %}
+                        <th>
+                            {{ column.label }}
+                        </th>
+                    {% endfor %}
+
+                    {% if page.content.actions %}
+                        <th style="width:120px;">
+                            Actions
+                        </th>
+                    {% endif %}
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for row in page.content.rows %}
+
+                    <tr>
+
+                        {% if page.content.selectable %}
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    value="{{ row.id }}">
+                            </td>
+                        {% endif %}
+
+                        {% for column in page.content.columns %}
+
+                            <td>
+
+                                {% with cell=row.cells|get_item:column.field %}
+                                    {% if column.field == "is_active" %}
+                                        <span class="status-indicator {% if cell.value %}status-indicator--active{% else %}status-indicator--inactive{% endif %}"></span>
+                                        <span class="status-label">{% if cell.value %}Active{% else %}Inactive{% endif %}</span>
+                                    {% else %}
+                                        {{ cell.display }}
+                                    {% endif %}
+                                {% endwith %}
+
+                            </td>
+
+                        {% endfor %}
+
+                        {% if page.content.actions %}
+
+                            <td class="text-nowrap">
+
+                                <div class="grid-actions">
+                                {% for action in page.content.actions %}
+                                    {% if action.method == "POST" %}
+                                        <form method="post" action="{% url action.url_name row.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="{{ action.css_class }}"
+                                                    title="{{ action.title }}"
+                                                    {% if action.confirm_message %}onclick="return confirm('{{ action.confirm_message }}');"{% endif %}>
+                                                <i class="bi {{ action.icon }}"></i>
+                                                <span class="visually-hidden">{{ action.title }}</span>
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                    <a
+                                        href="{% url action.url_name row.id %}"
+                                        class="{{ action.css_class }}"
+                                        title="{{ action.title }}">
+
+                                        <i class="bi {{ action.icon }}"></i>
+                                        <span class="visually-hidden">{{ action.title }}</span>
+
+                                    </a>
+                                    {% endif %}
+
+                                {% endfor %}
+                                </div>
+
+                            </td>
+
+                        {% endif %}
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="100%">
+
+                            <div class="text-center py-5 text-muted">
+
+                                No records found.
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+        {% include "components/datagrid/footer.html" %}
+
+    </div>
+
+</div>

@@ -1,4 +1,4 @@
-from organizations.models import Company
+from organizations.models import Company, Country
 
 
 class CompanySeeder:
@@ -7,10 +7,11 @@ class CompanySeeder:
     """
 
     @staticmethod
-    def run(stdout):
+    def run(stdout, country: Country):
         company, created = Company.objects.get_or_create(
             name="Sun King Tanzania Ltd",
             defaults={
+                "country": country,
                 "legal_name": "Sun King Tanzania Limited",
                 "registration_number": "REG-001",
                 "tax_number": "TIN-001",

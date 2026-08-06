@@ -1,0 +1,63 @@
+{% if page %}
+
+<div class="page">
+
+    <!-- Breadcrumb -->
+    {% if page.breadcrumb %}
+        {% include "components/breadcrumb.html" %}
+    {% endif %}
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+                {{ page.title }}
+            </h2>
+
+            {% if page.subtitle %}
+                <p class="text-muted mb-0">
+                    {{ page.subtitle }}
+                </p>
+            {% endif %}
+
+        </div>
+
+        {% if page.toolbar %}
+            {% include "components/toolbar.html" %}
+        {% endif %}
+
+    </div>
+
+    <!-- Django Messages -->
+    {% include "components/alerts/alert.html" %}
+
+    <!-- Main Content -->
+    {% if page.content %}
+
+        {% if page.content.template %}
+            {% include page.content.template %}
+        {% else %}
+            <div class="alert alert-warning">
+                No template defined for this component.
+            </div>
+        {% endif %}
+
+    {% else %}
+
+        {% include "components/empty.html" %}
+
+    {% endif %}
+
+</div>
+
+{% else %}
+
+<div class="alert alert-danger">
+
+    PageDTO was not provided.
+
+</div>
+
+{% endif %}

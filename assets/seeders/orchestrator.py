@@ -19,14 +19,11 @@ class SeederOrchestrator:
         self.options = options
 
     def run(self):
-        company = CompanySeeder.run(self.stdout)
-
         currencies = CurrencySeeder.run(self.stdout)
 
-        countries = CountrySeeder.run(
-            self.stdout,
-            company,
-        )
+        countries = CountrySeeder.run(self.stdout)
+
+        company = CompanySeeder.run(self.stdout, countries[0])
 
         regions = RegionSeeder.run(
             self.stdout,

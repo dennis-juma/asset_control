@@ -1,0 +1,19 @@
+{% if item.metadata %}
+
+<ul class="list-unstyled mt-2">
+
+{% for meta in item.metadata %}
+
+<li>
+
+<strong>{{ meta.label }}</strong>
+
+{{ meta.value }}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+{% endif %}

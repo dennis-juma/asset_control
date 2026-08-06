@@ -1,0 +1,33 @@
+{% for notification in notifications %}
+
+<div
+    class="alert alert-{{ notification.level.value }}
+    {% if notification.dismissible %}
+        alert-dismissible fade show
+    {% endif %}
+">
+
+    {% if notification.title %}
+
+    <strong>
+
+        {{ notification.title }}
+
+    </strong>
+
+    {% endif %}
+
+    {{ notification.message }}
+
+    {% if notification.dismissible %}
+
+    <button
+        class="btn-close"
+        data-bs-dismiss="alert"
+    ></button>
+
+    {% endif %}
+
+</div>
+
+{% endfor %}

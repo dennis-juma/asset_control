@@ -1,0 +1,19 @@
+<form
+    method="{{ form.method }}"
+    action="{{ form.action }}"
+    enctype="{{ form.enctype }}"
+>
+
+    {% include "components/forms/csrf.html" %}
+
+    {% include "components/forms/errors.html" %}
+
+    {% for section in form.sections %}
+
+        {% include "components/forms/section.html" %}
+
+    {% endfor %}
+
+    {% include "components/forms/actions.html" %}
+
+</form>

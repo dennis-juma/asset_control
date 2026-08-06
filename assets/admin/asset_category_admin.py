@@ -6,46 +6,33 @@ from assets.models import AssetCategory
 @admin.register(AssetCategory)
 class AssetCategoryAdmin(admin.ModelAdmin):
 
-    
     list_display = (
-        "name",
         "code",
+        "name",
+        "parent",
         "company",
-        "asset_type",
-        "depreciable",
-        "requires_assignment",
         "is_active",
     )
 
     list_filter = (
         "company",
-        "asset_type",
-        "depreciable",
-        "requires_assignment",
+        "parent",
         "is_active",
     )
 
     search_fields = (
-        "name",
         "code",
+        "name",
     )
 
-    autocomplete_fields = (
-        "company",
+    ordering = (
+        "sort_order",
+        "name",
     )
 
     readonly_fields = (
+        "code",
         "slug",
         "created_at",
         "updated_at",
     )
-
-    ordering = (
-        "name",
-    )
-    readonly_fields = (
-    "code",
-    "slug",
-    "created_at",
-    "updated_at",
-)

@@ -33,6 +33,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS",
     default="127.0.0.1,localhost",
@@ -49,6 +50,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize"
 ]
 
 LOCAL_APPS = [
@@ -90,6 +92,7 @@ ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
+        
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
@@ -98,9 +101,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "dashboard.context_processors.navigation",
             ],
         },
     },
+]
+TEMPLATES[0]["OPTIONS"]["context_processors"] += [
+    "core.context_processors.notifications",
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -138,6 +145,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "dashboard-cache",
+    }
+}
+APP_VERSION = "1.0.0"
 
 
 # Internationalization

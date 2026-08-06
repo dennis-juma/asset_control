@@ -22,7 +22,48 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("assets/", include("assets.urls")),
+    path("", include("dashboard.urls")),
+    path(
+        "organizations/",
+        include(
+            "organizations.urls",
+            namespace="organizations",
+        ),
+    ),
+    path(
+    "employees/",
+    include(
+        "employees.urls",
+        namespace="employees",
+    ),
+),
+    path(
+    "ui/",
+    include(
+        "core.playground.urls",
+        namespace="ui",
+    ),
+),
+path(
+
+    "docs/",
+
+    include(
+
+        "core.docs.urls",
+
+        namespace="docs",
+
+    ),
+
+),
+path(
+    "assets/",
+    include(
+        "assets.urls",
+        namespace="assets",),
+    
+),
 ]
 
 if settings.DEBUG:

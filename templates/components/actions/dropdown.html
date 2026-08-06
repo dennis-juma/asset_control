@@ -1,0 +1,47 @@
+<div class="dropdown">
+
+    <button
+        class="btn btn-sm btn-light"
+        data-bs-toggle="dropdown"
+    >
+        <i class="bi bi-three-dots-vertical"></i>
+    </button>
+
+    <ul class="dropdown-menu dropdown-menu-end">
+
+        {% for action in actions %}
+
+            {% if action.visible %}
+
+            <li>
+
+                <a
+                    href="{{ action.url }}"
+                    target="{{ action.target }}"
+                    class="
+                        {{ action.css_class }}
+                        {% if action.danger %}
+                            text-danger
+                        {% endif %}
+                    "
+
+                    {% if action.confirmation %}
+                        onclick="return confirm('{{ action.confirmation }}')"
+                    {% endif %}
+                >
+
+                    <i class="bi {{ action.icon }}"></i>
+
+                    {{ action.label }}
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+        {% endfor %}
+
+    </ul>
+
+</div>

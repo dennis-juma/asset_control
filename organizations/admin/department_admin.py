@@ -10,8 +10,14 @@ class DepartmentAdmin(admin.ModelAdmin):
         "code",
         "name",
         "company",
-        "parent",
+        "site",
         "cost_center",
+        "is_active",
+    )
+
+    list_filter = (
+        "company",
+        "site",
         "is_active",
     )
 
@@ -19,25 +25,4 @@ class DepartmentAdmin(admin.ModelAdmin):
         "code",
         "name",
         "cost_center",
-    )
-
-    list_filter = (
-        "company",
-        "is_active",
-    )
-
-    autocomplete_fields = (
-        "company",
-        "parent",
-    )
-
-    readonly_fields = (
-        "slug",
-        "created_at",
-        "updated_at",
-    )
-
-    ordering = (
-        "company",
-        "name",
     )

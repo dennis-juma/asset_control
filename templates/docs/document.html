@@ -1,0 +1,101 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h1>
+
+        {{ document.title }}
+
+    </h1>
+
+    <p class="text-muted">
+
+        {{ document.description }}
+
+    </p>
+
+    <hr>
+
+    {% for section in document.sections %}
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                <strong>
+
+                    {{ section.title }}
+
+                </strong>
+
+            </div>
+
+            <div class="card-body">
+
+                {% if section.component == "markdown" %}
+
+                    <pre>{{ section.content }}</pre>
+
+                {% elif section.component == "code" %}
+
+                    <pre><code>{{ section.content }}</code></pre>
+
+                {% elif section.component == "checklist" %}
+
+                    <ul>
+
+                        {% for item in section.content %}
+
+                            <li>{{ item }}</li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% elif section.component == "table" %}
+
+                    <table class="table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+
+                                <th>Description</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        {% for row in section.content %}
+
+                            <tr>
+
+                                <td>{{ row.0 }}</td>
+
+                                <td>{{ row.1 }}</td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+<div
+    class="modal fade"
+    id="{{ modal.id }}"
+    tabindex="-1"
+    {% if modal.static_backdrop %}
+        data-bs-backdrop="static"
+    {% endif %}
+>
+
+    <div class="
+        modal-dialog
+        {% if modal.size %}
+            modal-{{ modal.size }}
+        {% endif %}
+        {% if modal.centered %}
+            modal-dialog-centered
+        {% endif %}
+        {% if modal.scrollable %}
+            modal-dialog-scrollable
+        {% endif %}
+    ">
+
+        <div class="modal-content">
+
+            {% include "components/modal/header.html" %}
+
+            {% include "components/modal/body.html" %}
+
+            {% include "components/modal/footer.html" %}
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,67 @@
+<div class="card border-0 shadow-sm h-100">
+
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between">
+
+            <div>
+
+                <small class="text-muted">
+
+                    {{ card.title }}
+
+                </small>
+
+                <h3 class="fw-bold mt-2">
+
+                    {{ card.value }}
+
+                </h3>
+
+            </div>
+
+            {% if card.icon %}
+
+            <div>
+
+                <i class="bi {{ card.icon }} fs-2 text-{{ card.colour }}"></i>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        {% if card.trend is not None %}
+
+        <hr>
+
+        <small>
+
+            {% if card.trend >= 0 %}
+
+                <span class="text-success">
+
+                    ▲ {{ card.trend }}%
+
+                </span>
+
+            {% else %}
+
+                <span class="text-danger">
+
+                    ▼ {{ card.trend }}%
+
+                </span>
+
+            {% endif %}
+
+            {{ card.trend_label }}
+
+        </small>
+
+        {% endif %}
+
+    </div>
+
+</div>

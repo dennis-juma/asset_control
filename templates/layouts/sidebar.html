@@ -1,0 +1,59 @@
+<aside class="sidebar">
+
+    <div class="logo">
+
+        SUN KING
+
+    </div>
+
+<ul class="menu">
+
+{% for item in navigation %}
+
+<li class="menu-item">
+
+    <a href="{{ item.url|default:'#' }}"
+       class="menu-link {% if item.active %}active{% endif %}">
+
+        {% if item.icon %}
+            <i class="bi {{ item.icon }}"></i>
+        {% endif %}
+
+        <span>{{ item.title }}</span>
+
+        {% if item.children %}
+            <i class="bi bi-chevron-down submenu-arrow ms-auto"></i>
+        {% endif %}
+
+    </a>
+
+    {% if item.children %}
+
+    <ul class="submenu {% if item.expanded %}expanded{% endif %}">
+
+        {% for child in item.children %}
+
+        <li>
+
+            <a href="{{ child.url }}"
+               class="{% if child.active %}active{% endif %}">
+
+                {{ child.title }}
+
+            </a>
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+    {% endif %}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+</aside>

@@ -1,0 +1,75 @@
+<div class="row g-4 mb-4">
+
+    <div class="col-md-6 col-xl-3">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">Total Assets</small>
+
+                <h3 class="fw-bold mb-0">
+                    {{ asset_list.statistics.total }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">In Stock</small>
+
+                <h3 class="fw-bold text-success mb-0">
+                    {{ asset_list.statistics.in_stock }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">Assigned</small>
+
+                <h3 class="fw-bold text-primary mb-0">
+                    {{ asset_list.statistics.assigned }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">Maintenance</small>
+
+                <h3 class="fw-bold text-warning mb-0">
+                    {{ asset_list.statistics.maintenance }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

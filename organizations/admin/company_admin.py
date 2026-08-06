@@ -9,9 +9,12 @@ class CompanyAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "name",
+        "country",
         "email",
+        "country",
         "phone",
         "is_active",
+        "country",
     )
 
     search_fields = (

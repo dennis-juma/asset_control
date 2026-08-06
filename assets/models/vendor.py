@@ -126,11 +126,6 @@ class Vendor(BaseModel):
                 "name": "Vendor name cannot be empty."
             })
 
-        if self.country_id and self.country.company_id != self.company_id:
-            raise ValidationError({
-                "country": "Country must belong to the selected company."
-            })
-
         if Vendor.objects.filter(
             company=self.company,
             name__iexact=self.name,

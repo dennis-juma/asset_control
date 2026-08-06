@@ -1,0 +1,37 @@
+<div class="toast-container position-fixed top-0 end-0 p-3">
+
+{% for notification in notifications %}
+
+<div
+    id="{{ notification.id }}"
+    class="toast"
+    role="alert"
+    data-bs-delay="{{ notification.timeout }}"
+>
+
+    <div class="toast-header">
+
+        <strong class="me-auto">
+
+            {{ notification.title }}
+
+        </strong>
+
+        <button
+            class="btn-close"
+            data-bs-dismiss="toast"
+        ></button>
+
+    </div>
+
+    <div class="toast-body">
+
+        {{ notification.message }}
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>

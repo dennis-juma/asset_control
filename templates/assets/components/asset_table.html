@@ -1,0 +1,242 @@
+<div class="card shadow-sm border-0">
+
+    <div class="card-body p-0">
+
+        {% if asset_list.assets %}
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th width="40">
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="select-all"
+                            >
+                        </th>
+
+                        <th>Asset Tag</th>
+
+                        <th>Category</th>
+
+                        <th>Brand</th>
+
+                        <th>Model</th>
+
+                        <th>Status</th>
+
+                        <th>Condition</th>
+
+                        <th>Warranty</th>
+
+                        <th class="text-end">Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for asset in asset_list.assets %}
+
+                    <tr>
+
+                        <td>
+
+                            <input
+                                type="checkbox"
+                                class="form-check-input asset-checkbox"
+                                value="{{ asset.id }}"
+                            >
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="#"
+                                class="fw-semibold text-decoration-none"
+                            >
+                                {{ asset.asset_tag }}
+                            </a>
+
+                            {% if asset.serial_number %}
+                                <div class="small text-muted">
+                                    {{ asset.serial_number }}
+                                </div>
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ asset.category|default:"-" }}</td>
+
+                        <td>{{ asset.brand|default:"-" }}</td>
+
+                        <td>{{ asset.model|default:"-" }}</td>
+
+                        <td>
+
+                            {% if asset.status == "In Stock" %}
+
+                                <span class="badge bg-success">
+                                    {{ asset.status }}
+                                </span>
+
+                            {% elif asset.status == "Assigned" %}
+
+                                <span class="badge bg-primary">
+                                    {{ asset.status }}
+                                </span>
+
+                            {% elif asset.status == "Maintenance" %}
+
+                                <span class="badge bg-warning text-dark">
+                                    {{ asset.status }}
+                                </span>
+
+                            {% elif asset.status == "Retired" %}
+
+                                <span class="badge bg-secondary">
+                                    {{ asset.status }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-light text-dark">
+                                    {{ asset.status }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ asset.condition }}</td>
+
+                        <td>
+
+                            {% if asset.under_warranty %}
+
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+                                    Expired
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-end">
+
+                            <div class="dropdown">
+
+                                <button
+                                    class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                >
+                                    Actions
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+
+                                    <li>
+
+                                        <a
+                                            class="dropdown-item"
+                                            href="{% url 'assets:detail' asset.id %}"
+                                        >
+                                            <i class="bi bi-eye me-2"></i>
+
+                                            View
+                                        </a>
+
+                                    </li>
+
+                                    <li>
+
+                                        <a
+                                            class="dropdown-item"
+                                            href="#"
+                                        >
+                                            <i class="bi bi-pencil me-2"></i>
+
+                                            Edit
+                                        </a>
+
+                                    </li>
+
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <li>
+
+                                        <a
+                                            class="dropdown-item"
+                                            href="#"
+                                        >
+                                            <i class="bi bi-person-check me-2"></i>
+
+                                            Assign
+                                        </a>
+
+                                    </li>
+
+                                    <li>
+
+                                        <a
+                                            class="dropdown-item"
+                                            href="#"
+                                        >
+                                            <i class="bi bi-tools me-2"></i>
+
+                                            Maintenance
+                                        </a>
+
+                                    </li>
+
+                                    <li>
+
+                                        <a
+                                            class="dropdown-item"
+                                            href="#"
+                                        >
+                                            <i class="bi bi-clock-history me-2"></i>
+
+                                            History
+                                        </a>
+
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+            {% include "components/empty_states/empty_state.html" with title="No assets found." %}
+
+        {% endif %}
+
+    </div>
+
+</div>

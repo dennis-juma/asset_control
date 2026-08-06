@@ -5,88 +5,36 @@ from employees.models import Employee
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
+
     list_display = (
-        "employee_number",
+        "employee_id",
         "first_name",
         "last_name",
-        "email",
+        "company",
         "department",
         "job_title",
-        "site",
-        "status",
         "is_active",
     )
 
+    readonly_fields = ()
+
+    ordering = (
+        "employee_id",
+    )
+
     list_filter = (
-        "status",
+        "company",
+        "site",
         "department",
         "job_title",
-        "site",
+        "gender",
         "is_active",
     )
 
     search_fields = (
-        "employee_number",
+        "employee_id",
         "first_name",
+        "middle_name",
         "last_name",
         "email",
-    )
-
-    ordering = ("employee_number",)
-
-    autocomplete_fields = (
-        "company",
-        "department",
-        "job_title",
-        "site",
-        "manager",
-    )
-
-    readonly_fields = (
-        "employee_number",
-        "created_at",
-        "updated_at",
-    )
-
-    fieldsets = (
-        ("Employee Information", {
-            "fields": (
-                "employee_number",
-                "company",
-                "first_name",
-                "middle_name",
-                "last_name",
-                "gender",
-                "date_of_birth",
-                "hire_date",
-                "status",
-            )
-        }),
-        ("Organization", {
-            "fields": (
-                "department",
-                "job_title",
-                "site",
-                "manager",
-            )
-        }),
-        ("Contact", {
-            "fields": (
-                "email",
-                "phone",
-            )
-        }),
-        ("Other", {
-            "fields": (
-                "profile_photo",
-                "notes",
-            )
-        }),
-        ("Audit", {
-            "classes": ("collapse",),
-            "fields": (
-                "created_at",
-                "updated_at",
-            )
-        }),
     )

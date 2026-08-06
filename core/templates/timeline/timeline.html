@@ -1,0 +1,17 @@
+{% if timeline.groups %}
+
+<div class="timeline">
+
+    {% for group in timeline.groups %}
+
+        {% include "components/timeline/group.html" %}
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+    {% include "components/timeline/empty.html" %}
+
+{% endif %}

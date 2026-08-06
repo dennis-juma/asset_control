@@ -1,3 +1,17 @@
-from django.shortcuts import render
+from .asset_list import AssetListView
+from .asset_category import (
+    AssetCategoryCreateView,
+    AssetCategoryDeleteView,
+    AssetCategoryDetailView,
+    AssetCategoryListView,
+    AssetCategoryUpdateView,
+)
 
-# Create your views here.
+__all__ = [
+    "AssetListView",
+    "AssetCategoryListView",
+    "AssetCategoryCreateView",
+    "AssetCategoryDetailView",
+    "AssetCategoryUpdateView",
+    "AssetCategoryDeleteView",
+]

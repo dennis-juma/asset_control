@@ -1,0 +1,47 @@
+<div class="modal-footer">
+
+{% for button in modal.buttons %}
+
+    {% if button.url %}
+
+        <a
+            href="{{ button.url }}"
+            class="btn btn-{{ button.style }}"
+        >
+
+            {% if button.icon %}
+
+                <i class="bi {{ button.icon }}"></i>
+
+            {% endif %}
+
+            {{ button.label }}
+
+        </a>
+
+    {% else %}
+
+        <button
+            type="{{ button.type }}"
+            class="btn btn-{{ button.style }}"
+
+            {% if button.dismiss %}
+                data-bs-dismiss="modal"
+            {% endif %}
+        >
+
+            {% if button.icon %}
+
+                <i class="bi {{ button.icon }}"></i>
+
+            {% endif %}
+
+            {{ button.label }}
+
+        </button>
+
+    {% endif %}
+
+{% endfor %}
+
+</div>

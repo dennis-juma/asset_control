@@ -1,0 +1,67 @@
+.data-grid .table > :not(caption) > * > * {
+    padding: 1.25rem 1.5rem;
+}
+
+.data-grid thead th {
+    color: #1f2937;
+    font-size: .875rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+}
+
+.data-grid tbody tr {
+    border-color: #edf0f4;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-right: .55rem;
+    vertical-align: -.2rem;
+    border-radius: 50%;
+}
+
+.status-indicator--active {
+    background: linear-gradient(135deg, #8df3a8, #23bd73);
+}
+
+.status-indicator--inactive {
+    background: #cbd5e1;
+}
+
+.status-label {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.grid-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: .85rem;
+}
+
+.grid-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #6b7280;
+    text-decoration: none;
+    transition: color .2s ease, transform .2s ease;
+}
+
+.grid-action:hover {
+    background: transparent;
+    transform: translateY(-1px);
+}
+
+.grid-action--view:hover { color: #4b5563; }
+.grid-action--edit { color: #f97316; }
+.grid-action--edit:hover { color: #ea580c; }
+.grid-action--delete { color: #9ca3af; }
+.grid-action--delete:hover { color: #dc2626; }

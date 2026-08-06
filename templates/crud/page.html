@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+{% if page %}
+
+<div class="container-fluid">
+
+    {% if page.breadcrumb %}
+        {% include "components/breadcrumb.html" %}
+    {% endif %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                {{ page.title }}
+            </h2>
+
+            {% if page.subtitle %}
+                <p class="text-muted mb-0">
+                    {{ page.subtitle }}
+                </p>
+            {% endif %}
+        </div>
+
+        {% if page.toolbar %}
+            {% include "components/toolbar.html" %}
+        {% endif %}
+
+    </div>
+
+    {% include "components/alerts/alert.html" %}
+
+    {% if page.content %}
+
+        {% include page.content.template %}
+
+    {% else %}
+
+        {% include "components/empty.html" %}
+
+    {% endif %}
+
+</div>
+
+{% else %}
+
+<div class="alert alert-danger">
+    PageDTO was not provided.
+</div>
+
+{% endif %}
+
+{% endblock %}

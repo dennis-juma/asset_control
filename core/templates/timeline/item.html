@@ -1,0 +1,41 @@
+<div class="d-flex mb-4">
+
+    <div class="me-3">
+
+        <span class="badge bg-{{ item.level.value }} rounded-circle p-3">
+
+            <i class="bi {{ item.icon }}"></i>
+
+        </span>
+
+    </div>
+
+    <div class="flex-grow-1">
+
+        <strong>
+
+            {{ item.title }}
+
+        </strong>
+
+        <div class="text-muted">
+
+            {{ item.description }}
+
+        </div>
+
+        {% if item.actor %}
+
+            <small>
+
+                By {{ item.actor }}
+
+            </small>
+
+        {% endif %}
+
+        {% include "components/timeline/metadata.html" %}
+
+    </div>
+
+</div>

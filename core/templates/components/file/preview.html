@@ -1,0 +1,20 @@
+{% if file.file_type.value == "image" %}
+
+<img
+    src="{{ file.url }}"
+    class="img-thumbnail"
+    style="max-height:200px;"
+>
+
+{% else %}
+
+<a
+    href="{{ file.url }}"
+    target="_blank"
+>
+
+    {{ file.original_name }}
+
+</a>
+
+{% endif %}

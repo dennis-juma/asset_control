@@ -1,0 +1,25 @@
+<div class="card shadow-sm">
+
+    {% include "components/datagrid/header.html" %}
+
+    <div class="table-responsive">
+
+        <table class="
+            table
+            {% if grid.striped %}table-striped{% endif %}
+            {% if grid.hover %}table-hover{% endif %}
+            {% if grid.bordered %}table-bordered{% endif %}
+            {% if grid.compact %}table-sm{% endif %}
+            align-middle
+            mb-0
+        ">
+
+            {% include "components/datagrid/body.html" %}
+
+        </table>
+
+    </div>
+
+    {% include "components/datagrid/pagination.html" %}
+
+</div>

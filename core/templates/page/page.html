@@ -1,0 +1,25 @@
+<div class="container-fluid">
+
+    {% include "components/page/header.html" %}
+
+    {% if page.statistics %}
+
+        {% include "components/cards/card_grid.html" with cards=page.statistics %}
+
+    {% endif %}
+
+    {% if page.filters %}
+
+        {% include "components/filters/filters.html" with filters=page.filters %}
+
+    {% endif %}
+
+    {% if page.toolbar %}
+
+        {% include "components/toolbar/toolbar.html" with toolbar=page.toolbar %}
+
+    {% endif %}
+
+    {% include "components/page/content.html" %}
+
+</div>

@@ -3,7 +3,9 @@ from django.db import models
 from common.choices import SiteType
 from core.models import BaseModel
 from core.services import CodeGenerator
-from .region import Region
+from organizations.models.company import Company
+from organizations.models.country import Country
+
 
 
 class Site(BaseModel):
@@ -12,11 +14,16 @@ class Site(BaseModel):
     Physical office, warehouse, call center or AHQ.
     """
 
-    region = models.ForeignKey(
-        Region,
-        on_delete=models.PROTECT,
-        related_name="sites",
-    )
+    company = models.ForeignKey(
+    Company,
+    on_delete=models.PROTECT,
+    related_name="sites",
+)
+    country = models.ForeignKey(
+    Country,
+    on_delete=models.PROTECT,
+    related_name="sites",
+)
 
     name = models.CharField(
         max_length=150,
@@ -29,8 +36,16 @@ class Site(BaseModel):
     )
 
     site_type = models.CharField(
-        max_length=3,
+        max_length=30,
         choices=SiteType.choices,
+    )
+    email = models.EmailField(
+    blank=True,
+)
+
+    phone = models.CharField(
+        max_length=30,
+        blank=True,
     )
 
     address = models.TextField(blank=True)
@@ -59,24 +74,27 @@ class Site(BaseModel):
         blank=True,
     )
 
-    class Meta:
-        ordering = ["name"]
-
-        constraints = [
-            models.UniqueConstraint(
-                fields=["region", "name"],
-                name="unique_region_site",
-            )
-        ]
-
     def __str__(self):
-        return f"{self.name} ({self.get_site_type_display()})"
-
+            return f"{self.name}"
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = CodeGenerator.generate(
                 Site,
-                "SITE",
-                digits=4,
+                prefix="SIT",
+                digits=3,
             )
+
         super().save(*args, **kwargs)
+
+class Meta:
+    ordering = ["name"]
+
+    constraints = [
+        models.UniqueConstraint(
+            fields=["company", "country", "name"],
+            name="unique_company_country_site",
+        )
+    ]
+
+    verbose_name = "Site"
+    verbose_name_plural = "Sites"

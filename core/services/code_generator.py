@@ -10,7 +10,7 @@ class CodeGenerator:
     def generate(model, prefix, field="code", digits=3):
 
         last = (
-            model.objects.filter(**{f"{field}__startswith": prefix})
+            model.all_objects.filter(**{f"{field}__startswith": prefix})
             .aggregate(Max(field))
             .get(f"{field}__max")
         )

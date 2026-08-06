@@ -1,0 +1,55 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h1 class="mb-4">
+
+        Developer Documentation
+
+    </h1>
+
+    {% for category, documents in categories.items %}
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                <strong>
+
+                    {{ category }}
+
+                </strong>
+
+            </div>
+
+            <div class="card-body">
+
+                <ul class="list-group list-group-flush">
+
+                    {% for document in documents %}
+
+                        <li class="list-group-item">
+
+                            <a href="{% url 'docs:document' document.slug %}">
+
+                                {{ document.title }}
+
+                            </a>
+
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

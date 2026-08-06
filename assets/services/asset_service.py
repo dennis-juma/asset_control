@@ -167,3 +167,6 @@ class AssetService:
         """
         asset.full_clean()
         asset.save()
+
+    
+    

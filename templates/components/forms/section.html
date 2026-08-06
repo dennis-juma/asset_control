@@ -1,0 +1,37 @@
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <h5 class="mb-0">
+
+            {{ section.title }}
+
+        </h5>
+
+        {% if section.description %}
+
+            <small class="text-muted">
+
+                {{ section.description }}
+
+            </small>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            {% for field in section.fields %}
+
+                {% include "components/forms/field.html" %}
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>

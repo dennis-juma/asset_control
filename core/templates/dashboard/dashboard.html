@@ -1,0 +1,15 @@
+<h2>{{ dashboard.title }}</h2>
+
+<div class="row">
+
+{% for widget in dashboard.widgets %}
+
+<div class="col-md-{{ widget.width }}">
+
+    {% include widget.template with widget=widget %}
+
+</div>
+
+{% endfor %}
+
+</div>

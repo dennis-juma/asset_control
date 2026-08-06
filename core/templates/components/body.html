@@ -1,0 +1,110 @@
+{% load ui_tags %}
+
+<thead>
+
+<tr>
+
+    {% if grid.selectable %}
+
+    <th style="width:40px">
+
+        <input
+            class="form-check-input"
+            type="checkbox"
+        >
+
+    </th>
+
+    {% endif %}
+
+    {% for column in grid.columns %}
+
+        <th>
+
+            {{ column.label }}
+
+        </th>
+
+    {% endfor %}
+
+    {% if grid.actions %}
+
+    <th style="width:80px">
+        Actions
+    </th>
+
+    {% endif %}
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% if grid.rows %}
+
+    {% for row in grid.rows %}
+
+    <tr>
+
+        {% if grid.selectable %}
+
+        <td>
+
+            <input
+                class="form-check-input"
+                type="checkbox"
+                value="{{ row.id }}"
+            >
+
+        </td>
+
+        {% endif %}
+
+        {% for column in grid.columns %}
+
+            {% with cell=row.cells|get_item:column.field %}
+
+            <td class="{{ cell.css_class }}">
+
+                {% if cell.url %}
+
+                    <a href="{{ cell.url }}">
+
+                        {{ cell.display|default:cell.value }}
+
+                    </a>
+
+                {% else %}
+
+                    {{ cell.display|default:cell.value }}
+
+                {% endif %}
+
+            </td>
+
+            {% endwith %}
+
+        {% endfor %}
+
+        {% if grid.actions %}
+
+        <td>
+
+            {% include "components/datagrid/actions.html" %}
+
+        </td>
+
+        {% endif %}
+
+    </tr>
+
+    {% endfor %}
+
+{% else %}
+
+    {% include "components/datagrid/empty.html" %}
+
+{% endif %}
+
+</tbody>

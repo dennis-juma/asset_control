@@ -1,7 +1,7 @@
 # organizations/models/company.py
 
 from django.db import models
-
+from .country import Country
 from core.models import BaseModel
 from core.services import CodeGenerator
 
@@ -20,6 +20,11 @@ class Company(BaseModel):
         unique=True,
         db_index=True,
     )
+    country = models.ForeignKey(
+    Country,
+    on_delete=models.PROTECT,
+    related_name="companies",
+)
 
     code = models.CharField(
         max_length=10,
@@ -65,7 +70,7 @@ class Company(BaseModel):
         verbose_name_plural = "Companies"
 
     def __str__(self):
-        return f"{self.code} - {self.name}"
+        return f"{self.name}"
 
     def save(self, *args, **kwargs):
         if not self.code:
