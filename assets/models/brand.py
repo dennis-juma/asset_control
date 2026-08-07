@@ -1,51 +1,37 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from core.models import BaseModel
-from core.utils.code import generate_code
+from core.services import CodeGenerator
 from organizations.models import Company
 
 
 class Brand(BaseModel):
     """
-    Asset manufacturer.
+    Manufacturer or brand of an asset.
 
     Examples:
-        - Dell
-        - HP
-        - Lenovo
-        - Cisco
+    - Dell
+    - HP
+    - Lenovo
+    - Apple
     """
 
     slug_source = "name"
 
     company = models.ForeignKey(
         Company,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="brands",
-    )
-
-    name = models.CharField(
-        max_length=100,
     )
 
     code = models.CharField(
         max_length=10,
-        blank=True,
+        unique=True,
         editable=False,
     )
 
-    website = models.URLField(
-        blank=True,
-    )
-
-    support_email = models.EmailField(
-        blank=True,
-    )
-
-    support_phone = models.CharField(
-        max_length=30,
-        blank=True,
+    name = models.CharField(
+        max_length=100,
     )
 
     description = models.TextField(
@@ -54,8 +40,21 @@ class Brand(BaseModel):
 
     class Meta:
         ordering = ["name"]
-        verbose_name = "Brand"
-        verbose_name_plural = "Brands"
+
+        indexes = [
+            models.Index(
+                fields=["company"],
+            ),
+            models.Index(
+                fields=["code"],
+            ),
+            models.Index(
+                fields=["name"],
+            ),
+            models.Index(
+                fields=["is_active"],
+            ),
+        ]
 
         constraints = [
             models.UniqueConstraint(
@@ -68,29 +67,21 @@ class Brand(BaseModel):
             ),
         ]
 
-    def clean(self):
-        super().clean()
-
-        self.name = self.name.strip()
-
-        if not self.name:
-            raise ValidationError({
-                "name": "Brand name cannot be empty."
-            })
-
-        if Brand.objects.filter(
-            company=self.company,
-            name__iexact=self.name,
-        ).exclude(pk=self.pk).exists():
-            raise ValidationError({
-                "name": "A brand with this name already exists for this company."
-            })
+        verbose_name = "Brand"
+        verbose_name_plural = "Brands"
 
     def save(self, *args, **kwargs):
+
         if not self.code:
-            self.code = generate_code(self.name)
+
+            self.code = CodeGenerator.generate(
+                model=Brand,
+                field="code",
+                prefix="BRD",
+            )
 
         super().save(*args, **kwargs)
 
     def __str__(self):
+
         return self.name

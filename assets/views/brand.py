@@ -1,0 +1,167 @@
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView
+
+
+
+from assets.dtos import (
+    BrandCreateDTO,
+    BrandUpdateDTO,
+)
+
+from assets.forms import (
+    BrandCreateForm,
+    BrandUpdateForm,
+)
+from assets.page_services.brand_page_service import BrandPageService
+
+from assets.repositories import BrandRepository
+from assets.services import BrandService
+
+
+class BrandListView(TemplateView):
+
+    template_name = "crud/list.html"
+
+    def get(self, request, *args, **kwargs):
+    
+        page = BrandPageService().list_page(
+            query=request.GET.get("q", ""),
+            page=request.GET.get("page", 1),
+        )
+
+        return self.render_to_response({
+            "page": page,
+        })
+
+
+class BrandCreateView(TemplateView):
+
+    template_name = "crud/form.html"
+
+    def get(self, request):
+
+        page = BrandPageService().create_page()
+
+        return self.render_to_response(
+            {
+    "page": page,
+})
+
+    def post(self, request):
+
+        form = BrandCreateForm(request.POST)
+
+        if not form.is_valid():
+            return self.render_to_response(
+                {
+                    "form": form,
+                    "title": "Create Brand",
+                }
+            )
+
+        dto = BrandCreateDTO(
+            company=form.cleaned_data["company"],
+            name=form.cleaned_data["name"],
+            description=form.cleaned_data["description"],
+        )
+
+        BrandService().create(dto)
+
+        messages.success(
+            request,
+            "Brand created successfully.",
+        )
+
+        return redirect("assets:brand-list")
+
+
+class BrandDetailView(TemplateView):
+
+    template_name = "crud/form.html"
+
+    def get(self, request, pk):
+
+        brand = BrandRepository().get(pk=pk)
+
+        page = BrandPageService().detail_page(brand)
+
+        return self.render_to_response(
+            {
+                "page": page,
+            }
+        )
+
+
+class BrandUpdateView(TemplateView):
+
+    template_name = "crud/form.html"
+
+    def get(self, request, pk):
+
+        brand = BrandRepository().get(pk=pk)
+
+        page = BrandPageService().update_page(brand)
+
+        return self.render_to_response(
+            {
+                "page": page,
+            }
+        )
+
+    def post(self, request, pk):
+
+        brand = BrandRepository().get(pk=pk)
+
+        form = BrandUpdateForm(
+            request.POST,
+            instance=brand,
+        )
+
+        if not form.is_valid():
+            return self.render_to_response(
+                {
+                    "form": form,
+                    "object": brand,
+                }
+            )
+
+        dto = BrandUpdateDTO(
+            company=form.cleaned_data["company"],
+            
+            name=form.cleaned_data["name"],
+            description=form.cleaned_data["description"],
+            
+            is_active=form.cleaned_data["is_active"],
+        )
+
+        BrandService().update(
+            brand,
+            dto,
+        )
+
+        messages.success(
+            request,
+            "Brand updated successfully.",
+        )
+
+        return redirect("assets:brand-list")
+
+
+class BrandDeleteView(TemplateView):
+
+    template_name = "crud/delete.html"
+
+    def post(self, request, pk):
+
+        brand = BrandRepository().get(pk=pk)
+
+        BrandRepository().delete(brand)
+
+        messages.success(
+            request,
+            "Brand deleted successfully.",
+        )
+
+        return redirect("assets:brand-list")

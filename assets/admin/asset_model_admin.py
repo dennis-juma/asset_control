@@ -5,13 +5,15 @@ from assets.models import AssetModel
 
 @admin.register(AssetModel)
 class AssetModelAdmin(admin.ModelAdmin):
+
     list_display = (
-        "name",
         "code",
         "brand",
+        "name",
         "category",
         "company",
         "is_active",
+        "created_at",
     )
 
     list_filter = (
@@ -22,65 +24,47 @@ class AssetModelAdmin(admin.ModelAdmin):
     )
 
     search_fields = (
-        "name",
         "code",
+        "name",
         "manufacturer_part_number",
         "brand__name",
         "category__name",
     )
 
-    ordering = (
-        "brand__name",
-        "name",
-    )
-
     readonly_fields = (
-        "slug",
         "code",
         "created_at",
         "updated_at",
-        "created_by",
-        "updated_by",
     )
 
-    autocomplete_fields = (
-        "company",
-        "category",
+    ordering = (
         "brand",
-    )
-
-    list_select_related = (
-        "company",
-        "category",
-        "brand",
+        "name",
     )
 
     fieldsets = (
         (
-            "Basic Information",
+            "Asset Model Information",
             {
                 "fields": (
                     "company",
                     "category",
                     "brand",
+                    "code",
                     "name",
                     "manufacturer_part_number",
+                    "technical_specifications",
                     "description",
-                    "is_active",
-                )
+                ),
             },
         ),
         (
-            "System Information",
+            "System",
             {
-                "classes": ("collapse",),
                 "fields": (
-                    "code",
-                    "slug",
+                    "is_active",
                     "created_at",
                     "updated_at",
-                    "created_by",
-                    "updated_by",
                 ),
             },
         ),

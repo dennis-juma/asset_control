@@ -27,7 +27,7 @@ class AssetHistoryAdmin(admin.ModelAdmin):
     )
 
     autocomplete_fields = (
-        "asset",
+        #"asset",
         "performed_by",
         "employee",
     )

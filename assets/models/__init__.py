@@ -1,7 +1,7 @@
 from .asset_category import AssetCategory
-from .asset_model import AssetModel
 from .brand import Brand
 from .vendor import Vendor
+from .asset_model import AssetModel
 from .choices import AssetType, VendorType
 from .asset import Asset
 from .asset_assignment import AssetAssignment

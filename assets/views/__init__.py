@@ -6,6 +6,20 @@ from .asset_category import (
     AssetCategoryListView,
     AssetCategoryUpdateView,
 )
+from .brand import (
+    BrandCreateView,
+    BrandDeleteView,
+    BrandDetailView,
+    BrandListView,
+    BrandUpdateView,
+)
+from .asset_model import (
+    AssetModelCreateView,
+    AssetModelDeleteView,
+    AssetModelDetailView,
+    AssetModelListView,
+    AssetModelUpdateView,
+)
 
 __all__ = [
     "AssetListView",
@@ -14,4 +28,10 @@ __all__ = [
     "AssetCategoryDetailView",
     "AssetCategoryUpdateView",
     "AssetCategoryDeleteView",
+    "BrandListView",
+    "BrandCreateView",
+    "BrandDetailView",
+    "BrandUpdateView",
+    "BrandDeleteView",
+
 ]

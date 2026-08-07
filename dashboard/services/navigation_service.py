@@ -29,10 +29,7 @@ class NavigationService:
                         title="All Assets",
                         url="#",
                     ),
-                    NavigationItem(
-                            title="All Assets",
-                            url="#",
-                    ),
+                    
                     NavigationItem(
                         title="Categories",
                         icon="bi-diagram-3",
@@ -40,11 +37,13 @@ class NavigationService:
                     ),
                     NavigationItem(
                         title="Brands",
-                        url="#",
-                    ),
+                        url=reverse("assets:brand-list"),
+                        icon="bi-tags",
+                        ),
                     NavigationItem(
                         title="Models",
-                        url="#",
+                        icon="bi bi-pc-display",
+                        url=reverse("assets:asset-model-list"),
                     ),
                     NavigationItem(
                         title="Vendors",

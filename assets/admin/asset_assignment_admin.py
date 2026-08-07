@@ -12,7 +12,7 @@ from assets.views.transfer import AssetTransferView
 @admin.register(AssetAssignment)
 class AssetAssignmentAdmin(admin.ModelAdmin):
     list_display = (
-        "asset",
+        #"asset",
         "employee",
         "status_badge",
         "assigned_date",
@@ -22,7 +22,7 @@ class AssetAssignmentAdmin(admin.ModelAdmin):
     )
 
     list_display_links = (
-        "asset",
+        #"asset",
         "employee",
     )
 
@@ -42,14 +42,14 @@ class AssetAssignmentAdmin(admin.ModelAdmin):
     )
 
     list_select_related = (
-        "asset",
+        #"asset",
         "employee",
         "assigned_by",
         "returned_by",
     )
 
     autocomplete_fields = (
-        "asset",
+        #"asset",
         "employee",
         "assigned_by",
         "returned_by",
@@ -82,7 +82,7 @@ class AssetAssignmentAdmin(admin.ModelAdmin):
             "Assignment Information",
             {
                 "fields": (
-                    "asset",
+                    #"asset",
                     "employee",
                     "assigned_by",
                     "assigned_date",

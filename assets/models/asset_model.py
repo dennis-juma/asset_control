@@ -1,31 +1,30 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from core.models import BaseModel
-from core.utils.code import generate_code
-
+from core.services import CodeGenerator
 from organizations.models import Company
 
-from .asset_category import AssetCategory
-from .brand import Brand
+from assets.models import (
+    AssetCategory,
+    Brand,
+)
 
 
 class AssetModel(BaseModel):
     """
-    Manufacturer's asset model.
+    Represents a product/model definition.
 
     Examples:
-        Dell Latitude 5440
-        HP ProBook 440 G11
-        Lenovo ThinkPad E16 Gen 2
-        Zebra DS2208
+    - Dell Latitude 5420
+    - HP LaserJet Pro M404dn
+    - APC BX650LI
     """
 
     slug_source = "name"
 
     company = models.ForeignKey(
         Company,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="asset_models",
     )
 
@@ -41,21 +40,23 @@ class AssetModel(BaseModel):
         related_name="asset_models",
     )
 
-    name = models.CharField(
-        max_length=150,
-        help_text="Manufacturer model name.",
-    )
-
     code = models.CharField(
         max_length=10,
-        blank=True,
+        unique=True,
         editable=False,
+    )
+
+    name = models.CharField(
+        max_length=150,
     )
 
     manufacturer_part_number = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name="Manufacturer Part Number (MPN)",
+    )
+
+    technical_specifications = models.TextField(
+        blank=True,
     )
 
     description = models.TextField(
@@ -63,70 +64,54 @@ class AssetModel(BaseModel):
     )
 
     class Meta:
-        ordering = ["brand__name", "name"]
 
-        verbose_name = "Asset Model"
-        verbose_name_plural = "Asset Models"
-
-        constraints = [
-            models.UniqueConstraint(
-                fields=["company", "brand", "name"],
-                name="unique_asset_model_per_brand",
-            ),
-            models.UniqueConstraint(
-                fields=["company", "code"],
-                name="unique_asset_model_code_per_company",
-            ),
+        ordering = [
+            "brand__name",
+            "name",
         ]
 
         indexes = [
             models.Index(fields=["company"]),
-            models.Index(fields=["brand"]),
             models.Index(fields=["category"]),
-            models.Index(fields=["name"]),
+            models.Index(fields=["brand"]),
             models.Index(fields=["code"]),
+            models.Index(fields=["name"]),
+            models.Index(fields=["is_active"]),
         ]
 
-    def clean(self):
-        super().clean()
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "company",
+                    "brand",
+                    "name",
+                ],
+                name="unique_asset_model_per_brand",
+            ),
+            models.UniqueConstraint(
+                fields=[
+                    "company",
+                    "code",
+                ],
+                name="unique_asset_model_code_per_company",
+            ),
+        ]
 
-        self.name = self.name.strip()
-
-        if not self.name:
-            raise ValidationError({
-                "name": "Model name cannot be empty."
-            })
-
-        if (
-            self.category_id
-            and self.category.company_id != self.company_id
-        ):
-            raise ValidationError({
-                "category": "Category belongs to another company."
-            })
-
-        if (
-            self.brand_id
-            and self.brand.company_id != self.company_id
-        ):
-            raise ValidationError({
-                "brand": "Brand belongs to another company."
-            })
-
-        if AssetModel.objects.filter(
-            company=self.company,
-            brand=self.brand,
-            name__iexact=self.name,
-        ).exclude(pk=self.pk).exists():
-            raise ValidationError({
-                "name": "This model already exists for the selected brand."
-            })
+        verbose_name = "Asset Model"
+        verbose_name_plural = "Asset Models"
 
     def save(self, *args, **kwargs):
+
         if not self.code:
-            self.code = generate_code(self.name)
+
+            self.code = CodeGenerator.generate(
+                model=AssetModel,
+                field="code",
+                prefix="MOD",
+            )
 
         super().save(*args, **kwargs)
 
     def __str__(self):
+
         return f"{self.brand.name} {self.name}"

@@ -20,5 +20,5 @@ class AssetAttachmentInline(admin.TabularInline):
     )
 
     autocomplete_fields = (
-        "asset",
+        #"asset",
     )

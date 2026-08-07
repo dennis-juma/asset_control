@@ -7,11 +7,11 @@ from assets.models import Brand
 class BrandAdmin(admin.ModelAdmin):
 
     list_display = (
-        "name",
         "code",
+        "name",
         "company",
-        "website",
         "is_active",
+        "created_at",
     )
 
     list_filter = (
@@ -20,21 +20,41 @@ class BrandAdmin(admin.ModelAdmin):
     )
 
     search_fields = (
-        "name",
         "code",
-    )
-
-    autocomplete_fields = (
-        "company",
+        "name",
+        "description",
     )
 
     readonly_fields = (
         "code",
-        "slug",
         "created_at",
         "updated_at",
     )
 
     ordering = (
         "name",
+    )
+
+    fieldsets = (
+        (
+            "Brand Information",
+            {
+                "fields": (
+                    "company",
+                    "code",
+                    "name",
+                    "description",
+                ),
+            },
+        ),
+        (
+            "System",
+            {
+                "fields": (
+                    "is_active",
+                    "created_at",
+                    "updated_at",
+                ),
+            },
+        ),
     )

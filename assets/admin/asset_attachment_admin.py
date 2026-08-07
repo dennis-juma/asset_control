@@ -25,7 +25,7 @@ class AssetAttachmentAdmin(admin.ModelAdmin):
     )
 
     autocomplete_fields = (
-        "asset",
+        #"asset",
     )
 
     readonly_fields = (

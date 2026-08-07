@@ -65,7 +65,7 @@ class MaintenanceAdmin(admin.ModelAdmin):
         
         autocomplete_fields = (
         "company",
-        "asset",
+        #"asset",
         "maintenance_type",
         "vendor",
         "currency",

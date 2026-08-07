@@ -1,7 +1,7 @@
-from .asset_admin import *
+
 from .asset_assignment_admin import *
 from .asset_category_admin import *
-from .asset_model import *
+from .asset_model_admin import *
 from .brand_admin import *
 from .vendor import *
 from .asset_history_admin import *

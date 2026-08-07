@@ -5,6 +5,15 @@ from .asset_category import (
     AssetCategoryCreateDTO,
     AssetCategoryUpdateDTO,
 )
+from .brand import (
+    BrandCreateDTO,
+    BrandUpdateDTO,
+)
+
+from .asset_model import (
+    AssetModelCreateDTO,
+    AssetModelUpdateDTO,
+)
 
 
 __all__ = [
@@ -13,5 +22,9 @@ __all__ = [
     "AssetListDTO",
     "AssetCategoryCreateDTO",
     "AssetCategoryUpdateDTO",
+    "BrandCreateDTO",
+    "BrandUpdateDTO",
+    "AssetModelCreateDTO",
+    "AssetModelUpdateDTO",
 
 ]
