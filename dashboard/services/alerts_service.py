@@ -32,9 +32,7 @@ class AlertService:
         if alert:
             alerts.append(alert)
 
-        alert = self._warranty_alert()
-        if alert:
-            alerts.append(alert)
+    
 
         return alerts
 
@@ -96,23 +94,4 @@ class AlertService:
             count=count,
         )
 
-    def _warranty_alert(self) -> AlertDTO | None:
-        today = timezone.now().date()
-        expiry = today + timedelta(days=30)
-
-        count = (
-            Asset.objects.filter(
-                warranty_end__range=(today, expiry),
-            ).count()
-        )
-
-        if not count:
-            return None
-
-        return AlertDTO(
-            title="Warranty Expiring",
-            description="Assets with warranties expiring within 30 days.",
-            icon="bi bi-shield-exclamation",
-            color="info",
-            count=count,
-        )
+    

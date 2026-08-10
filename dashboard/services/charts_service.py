@@ -65,7 +65,7 @@ class ChartsService:
 
         category_counts = (
             Asset.objects
-            .values("category__name")
+            .values("asset_model__category__name")
             .annotate(total=Count("pk"))
             .order_by("-total")
         )
@@ -74,7 +74,7 @@ class ChartsService:
         values = []
 
         for item in category_counts:
-            labels.append(item["category__name"])
+            labels.append(item["asset_model__category__name"])
             values.append(item["total"])
 
         return ChartData(

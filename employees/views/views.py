@@ -1,7 +1,5 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -16,6 +14,14 @@ from employees.dtos import (
 from employees.models import Employee
 from employees.page_services import EmployeePageService
 from employees.services import EmployeeService
+from organizations.models import (
+    Company,
+    Department,
+    JobTitle,
+    Site,
+)
+
+User = get_user_model()
 
 
 class EmployeeListView(View):
@@ -57,19 +63,42 @@ class EmployeeCreateView(View):
 
     def post(self, request):
 
+        manager_id = request.POST.get("manager") or None
+        user_id = request.POST.get("user") or None
+
         dto = EmployeeCreateDTO(
 
-            company=request.POST.get("company"),
+            company=get_object_or_404(
+                Company,
+                pk=request.POST.get("company"),
+            ),
 
-            site=request.POST.get("site"),
+            site=get_object_or_404(
+                Site,
+                pk=request.POST.get("site"),
+            ),
 
-            department=request.POST.get("department"),
+            department=get_object_or_404(
+                Department,
+                pk=request.POST.get("department"),
+            ),
 
-            job_title=request.POST.get("job_title"),
+            job_title=get_object_or_404(
+                JobTitle,
+                pk=request.POST.get("job_title"),
+            ),
 
-            manager=request.POST.get("manager") or None,
+            manager=(
+                get_object_or_404(Employee, pk=manager_id)
+                if manager_id
+                else None
+            ),
 
-            user=request.POST.get("user") or None,
+            user=(
+                get_object_or_404(User, pk=user_id)
+                if user_id
+                else None
+            ),
 
             employee_id=request.POST.get("employee_id", ""),
 
@@ -127,7 +156,7 @@ class EmployeeDetailView(View):
 
         return render(
             request,
-            "crud/detail.html",
+            "crud/form.html",
             {
                 "page": page,
             },
@@ -173,19 +202,42 @@ class EmployeeUpdateView(View):
             pk=pk,
         )
 
+        manager_id = request.POST.get("manager") or None
+        user_id = request.POST.get("user") or None
+
         dto = EmployeeUpdateDTO(
 
-            company=request.POST.get("company"),
+            company=get_object_or_404(
+                Company,
+                pk=request.POST.get("company"),
+            ),
 
-            site=request.POST.get("site"),
+            site=get_object_or_404(
+                Site,
+                pk=request.POST.get("site"),
+            ),
 
-            department=request.POST.get("department"),
+            department=get_object_or_404(
+                Department,
+                pk=request.POST.get("department"),
+            ),
 
-            job_title=request.POST.get("job_title"),
+            job_title=get_object_or_404(
+                JobTitle,
+                pk=request.POST.get("job_title"),
+            ),
 
-            manager=request.POST.get("manager") or None,
+            manager=(
+                get_object_or_404(Employee, pk=manager_id)
+                if manager_id
+                else None
+            ),
 
-            user=request.POST.get("user") or None,
+            user=(
+                get_object_or_404(User, pk=user_id)
+                if user_id
+                else None
+            ),
 
             employee_id=request.POST.get("employee_id", ""),
 

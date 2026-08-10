@@ -1,7 +1,6 @@
 from django.urls import path
 
-from assets.views.asset_list import AssetListView
-from assets.views.transfer import AssetTransferView
+
 from assets.views import (
     AssetCategoryCreateView,
     AssetCategoryDeleteView,
@@ -20,15 +19,29 @@ from assets.views import (
     AssetModelListView,
     AssetModelUpdateView,
 )
+from assets.views import (
+    AssetListView,
+    AssetCreateView,
+    AssetDetailView,
+    AssetUpdateView,
+    AssetDeleteView,
+)
 
+from assets.views import (
+    AssetAssignmentListView,
+    AssetAssignmentCreateView,
+    AssetAssignmentDetailView,
+    AssetAssignmentUpdateView,
+    AssetReturnView,
+)
+from assets.views.asset_transfer import (
+    AssetTransferListView,
+    AssetTransferCreateView,
+    AssetTransferDetailView,
+    AssetTransferUpdateView,
+)
 app_name = "assets"
 urlpatterns = [
-    path(
-        "transfer/<int:pk>/",
-        AssetTransferView.as_view(),
-        name="asset-transfer",
-    ),
-    path("", AssetListView.as_view(), name="list"),
     path(
         "categories/",
         AssetCategoryListView.as_view(),
@@ -122,6 +135,105 @@ urlpatterns = [
         AssetModelDeleteView.as_view(),
         name="asset-model-delete",
     ),
+
+# =====================================================
+# Asset
+# =====================================================
+
+    path(
+        "assets/",
+        AssetListView.as_view(),
+        name="asset-list",
+    ),
+
+    path(
+        "assets/create/",
+        AssetCreateView.as_view(),
+        name="asset-create",
+    ),
+
+    path(
+        "assets/<uuid:pk>/",
+        AssetDetailView.as_view(),
+        name="asset-detail",
+    ),
+
+    path(
+        "assets/<uuid:pk>/update/",
+        AssetUpdateView.as_view(),
+        name="asset-update",
+    ),
+
+    path(
+        "assets/<uuid:pk>/delete/",
+        AssetDeleteView.as_view(),
+        name="asset-delete",
+    ),
+
+
+    # =====================================================
+# Asset Assignment
+# =====================================================
+
+path(
+    "assignments/",
+    AssetAssignmentListView.as_view(),
+    name="asset-assignment-list",
+),
+
+path(
+    "assignments/create/",
+    AssetAssignmentCreateView.as_view(),
+    name="asset-assignment-create",
+),
+
+path(
+    "assignments/<uuid:pk>/",
+    AssetAssignmentDetailView.as_view(),
+    name="asset-assignment-detail",
+),
+
+path(
+    "assignments/<uuid:pk>/update/",
+    AssetAssignmentUpdateView.as_view(),
+    name="asset-assignment-update",
+),
+
+path(
+    "assignments/<uuid:pk>/return/",
+    AssetReturnView.as_view(),
+    name="asset-return",
+),
+
+
+# =====================================================
+# Asset Transfer
+# =====================================================
+
+path(
+    "transfers/",
+    AssetTransferListView.as_view(),
+    name="asset-transfer-list",
+),
+
+path(
+    "transfers/create/",
+    AssetTransferCreateView.as_view(),
+    name="asset-transfer-create",
+),
+
+path(
+    "transfers/<uuid:pk>/",
+    AssetTransferDetailView.as_view(),
+    name="asset-transfer-detail",
+),
+
+path(
+    "transfers/<uuid:pk>/update/",
+    AssetTransferUpdateView.as_view(),
+    name="asset-transfer-update",
+),
+
 ]
 
 # Create your models here.

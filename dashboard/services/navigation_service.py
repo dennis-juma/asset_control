@@ -40,11 +40,31 @@ class NavigationService:
                         url=reverse("assets:brand-list"),
                         icon="bi-tags",
                         ),
+
                     NavigationItem(
                         title="Models",
                         icon="bi bi-pc-display",
                         url=reverse("assets:asset-model-list"),
                     ),
+                    NavigationItem(
+                        title="Asset",
+                        url=reverse("assets:asset-list"),
+                        icon="bi-pc-display"
+                    ),
+                    
+                    
+                    NavigationItem(
+                        title= "Assignments",
+                        icon= "bi-person-check",
+                        url= reverse(
+                            "assets:asset-assignment-list",
+                    )),
+                    NavigationItem(
+                        title="Transfers",
+                        icon="bi-arrow-left-right",
+                        url=reverse("assets:asset-transfer-list"),
+                    ),
+
                     NavigationItem(
                         title="Vendors",
                         url="#",

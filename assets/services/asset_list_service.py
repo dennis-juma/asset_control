@@ -87,7 +87,6 @@ class AssetListService:
             condition=asset.get_condition_display(),
             purchase_date=asset.purchase_date,
             purchase_price=asset.purchase_price,
-            warranty_end=asset.warranty_end,
             under_warranty=asset.is_under_warranty,
         )
     

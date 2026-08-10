@@ -18,4 +18,12 @@
 
     {% endif %}
 
+{% if page.description %}
+    {% for line in page.description %}
+        <p class="text-muted mb-1">
+            {{ line }}
+        </p>
+    {% endfor %}
+{% endif %}
+
 </div>

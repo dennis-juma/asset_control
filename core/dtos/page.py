@@ -17,9 +17,13 @@ class BreadcrumbDTO:
     ):
         """Create a breadcrumb while supporting the former ``title`` API."""
         del active
+
         resolved_label = label if label is not None else title
+
         if resolved_label is None:
-            raise TypeError("BreadcrumbDTO requires either 'label' or 'title'.")
+            raise TypeError(
+                "BreadcrumbDTO requires either 'label' or 'title'."
+            )
 
         object.__setattr__(self, "label", resolved_label)
         object.__setattr__(self, "url", url)
@@ -31,18 +35,42 @@ class PageDTO:
     Generic application page.
     """
 
+    # =====================================================
+    # Header
+    # =====================================================
+
     title: str
 
     subtitle: str | None = None
 
-    breadcrumb: list[BreadcrumbDTO] = field(default_factory=list)
+    description: list[str] = field(
+        default_factory=list
+    )
+
+    # =====================================================
+    # Navigation
+    # =====================================================
+
+    breadcrumb: list[BreadcrumbDTO] = field(
+        default_factory=list
+    )
 
     toolbar: Any = None
 
-    statistics: list[Any] = field(default_factory=list)
+    # =====================================================
+    # Optional Components
+    # =====================================================
+
+    statistics: list[Any] = field(
+        default_factory=list
+    )
 
     filters: Any = None
 
-    content: Any = None
-
     sidebar: Any = None
+
+    # =====================================================
+    # Main Content
+    # =====================================================
+
+    content: Any = None

@@ -6,6 +6,9 @@ from .brand_admin import *
 from .vendor import *
 from .asset_history_admin import *
 from .asset_attachment_admin import AssetAttachmentAdmin
+from .asset_admin import *
+from .asset_assignment_admin import *
+from .asset_transfer import *
 
 __all__ = [
    "AssetCategoryAdmin",
@@ -16,5 +19,8 @@ __all__ = [
     "AssetAssignmentAdmin",
     "AssetHistoryAdmin",
     "AssetAttachmentAdmin",
+    "AssetAdmin",
+    "AssetTransferAdmin"
+  
     
 ]

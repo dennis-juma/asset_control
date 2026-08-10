@@ -14,6 +14,15 @@ from .asset_model import (
     AssetModelCreateDTO,
     AssetModelUpdateDTO,
 )
+from .asset import (
+    AssetCreateDTO,
+    AssetUpdateDTO,
+)
+from .asset_assignment import (
+    AssetAssignmentCreateDTO,
+    AssetAssignmentUpdateDTO,
+    AssetReturnDTO,
+)
 
 
 __all__ = [
@@ -26,5 +35,14 @@ __all__ = [
     "BrandUpdateDTO",
     "AssetModelCreateDTO",
     "AssetModelUpdateDTO",
+
+    "AssetCreateDTO",
+    "AssetUpdateDTO"
+
+    "AssetAssignmentCreateDTO",
+    "AssetAssignmentUpdateDTO",
+    "AssetReturnDTO",
+
+    
 
 ]

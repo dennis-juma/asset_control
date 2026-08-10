@@ -29,5 +29,5 @@ class AssetRowDTO:
     purchase_date: Optional[date]
     purchase_price: Optional[Decimal]
 
-    warranty_end: Optional[date]
+
     under_warranty: bool

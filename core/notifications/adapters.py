@@ -11,13 +11,23 @@ class DjangoMessagesAdapter:
 
         notifications = []
 
+        level_map = {
+            "success": NotificationLevel.SUCCESS,
+            "info": NotificationLevel.INFO,
+            "warning": NotificationLevel.WARNING,
+            "error": NotificationLevel.ERROR,
+        }
+
         for message in get_messages(request):
 
             notifications.append(
                 NotificationDTO.create(
                     title=message.tags.title(),
                     message=str(message),
-                    level=NotificationLevel(message.tags),
+                    level=level_map.get(
+                        message.tags,
+                        NotificationLevel.INFO,
+                    ),
                 )
             )
 

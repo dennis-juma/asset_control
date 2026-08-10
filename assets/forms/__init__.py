@@ -11,6 +11,19 @@ from .asset_model import (
     AssetModelUpdateForm,
 )
 
+from .asset import (
+    AssetCreateForm,
+    AssetUpdateForm,
+)
+from .asset_assignment import (
+    AssetAssignmentCreateForm,
+    AssetAssignmentUpdateForm,
+    AssetReturnForm,
+)
+from .transfer import (
+    AssetTransferCreateForm,
+)
+
 __all__ = [
     "AssetCategoryCreateForm",
     "AssetCategoryUpdateForm",
@@ -18,4 +31,10 @@ __all__ = [
     "BrandUpdateForm",
     "AssetModelCreateForm",
     "AssetModelUpdateForm",
+    "AssetCreateForm",
+    "AssetUpdateForm",
+    "AssetAssignmentCreateForm",
+    "AssetAssignmentUpdateForm",
+    "AssetReturnForm",
+    "AssetTransferCreateForm"
 ]

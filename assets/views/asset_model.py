@@ -82,7 +82,7 @@ class AssetModelCreateView(TemplateView):
 
 class AssetModelDetailView(TemplateView):
 
-    template_name = "crud/detail.html"
+    template_name = "crud/form.html"
 
     def get(self, request, pk):
 

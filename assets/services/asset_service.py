@@ -1,172 +1,83 @@
-from __future__ import annotations
-
-from typing import Any, Optional
-
-from django.contrib.auth.models import AbstractBaseUser
-from django.core.exceptions import ValidationError
-from django.db import transaction
-
-from assets.choices.history_choices import AssetHistoryEvent
+from assets.choices import (
+    AssetCondition,
+    AssetStatus,
+)
+from assets.dtos import (
+    AssetCreateDTO,
+    AssetUpdateDTO,
+)
 from assets.models import Asset
-from assets.services.asset_history_service import AssetHistoryService
-from employees.models import Employee
-from organizations.models import Site
+from assets.repositories import AssetRepository
+from assets.validators import AssetValidator
 
 
 class AssetService:
-    """
-    Business logic for Asset operations.
 
-    All asset creation, updates and lifecycle operations
-    should pass through this service.
-    """
+    def __init__(self):
+        self.repository = AssetRepository()
+        self.validator = AssetValidator()
 
-    @staticmethod
-    @transaction.atomic
-    def create_asset(
-        *,
-        asset_data: dict[str, Any],
-        performed_by: Optional[AbstractBaseUser] = None,
+    # =====================================================
+    # Create
+    # =====================================================
+
+    def create(
+        self,
+        dto: AssetCreateDTO,
     ) -> Asset:
-        """
-        Create a new asset.
-        """
 
-        asset = Asset(**asset_data)
+        self.validator.validate_create(dto)
 
-        AssetService._save_asset(asset)
-
-        AssetService._log_history(
-            asset=asset,
-            event_type=AssetHistoryEvent.CREATED,
-            performed_by=performed_by,
-            new_status=asset.status,
-            notes="Asset created.",
+        asset = Asset(
+            company=dto.company,
+            asset_model=dto.asset_model,
+            serial_number=dto.serial_number,
+            purchase_date=dto.purchase_date,
+            received_date=dto.received_date,
+            purchase_cost=dto.purchase_cost,
+            invoice_number=dto.invoice_number,
+            condition=dto.condition or AssetCondition.NEW,
+            status=AssetStatus.AVAILABLE,
+            remarks=dto.remarks,
         )
 
-        return asset
-    
+        return self.repository.create(asset)
 
+    # =====================================================
+    # Update
+    # =====================================================
 
-
-    @staticmethod
-    @transaction.atomic
-    def update_asset(
-        *,
+    def update(
+        self,
         asset: Asset,
-        asset_data: dict[str, Any],
-        performed_by: Optional[AbstractBaseUser] = None,
+        dto: AssetUpdateDTO,
     ) -> Asset:
-        """
-        Update asset information.
-        """
 
-        previous_status = asset.status
-
-        for field, value in asset_data.items():
-
-            if not hasattr(asset, field):
-                raise AttributeError(
-                    f"Asset has no field named '{field}'."
-                )
-
-            setattr(asset, field, value)
-
-        AssetService._save_asset(asset)
-        if previous_status != asset.status:
-
-            AssetService._log_history(
-                asset=asset,
-                event_type=AssetHistoryEvent.STATUS_CHANGED,
-                performed_by=performed_by,
-                old_status=previous_status,
-                new_status=asset.status,
-                notes="Asset status updated.",
-            )
-
-        return asset
-
-    @staticmethod
-    @transaction.atomic
-    def change_status(
-        *,
-        asset: Asset,
-        new_status: str,
-        performed_by: Optional[AbstractBaseUser] = None,
-        employee: Optional[Employee] = None,
-        site: Optional[Site] = None,
-        reference: str = "",
-        notes: str = "",
-        metadata: Optional[dict[str, Any]] = None,
-    ) -> Asset:
-        """
-        Change an asset's lifecycle status.
-        """
-
-        AssetService._validate_status_transition(
-        asset=asset,
-        new_status=new_status,
-    )
-
-        old_status = asset.status
-
-        asset.status = new_status
-        AssetService._save_asset(asset)
-        AssetService._log_history(
-            asset=asset,
-            event_type=AssetHistoryEvent.STATUS_CHANGED,
-            performed_by=performed_by,
-            employee=employee,
-            site=site,
-            old_status=old_status,
-            new_status=new_status,
-            reference=reference,
-            notes=notes or "Asset status changed.",
-            metadata=metadata,
+        self.validator.validate_update(
+            asset,
+            dto,
         )
 
-        return asset
-    
+        asset.company = dto.company
+        asset.asset_model = dto.asset_model
+        asset.serial_number = dto.serial_number
+        asset.purchase_date = dto.purchase_date
+        asset.received_date = dto.received_date
+        asset.purchase_cost = dto.purchase_cost
+        asset.invoice_number = dto.invoice_number
+        asset.condition = dto.condition
+        asset.remarks = dto.remarks
+        asset.is_active = dto.is_active
 
-    @staticmethod
-    def _log_history(
-        *,
+        return self.repository.update(asset)
+
+    # =====================================================
+    # Delete
+    # =====================================================
+
+    def delete(
+        self,
         asset: Asset,
-        event_type: str,
-        performed_by: Optional[AbstractBaseUser] = None,
-        employee: Optional[Employee] = None,
-        site: Optional[Site] = None,
-        old_status: Optional[str] = None,
-        new_status: Optional[str] = None,
-        reference: str = "",
-        notes: str = "",
-        metadata: Optional[dict[str, Any]] = None,
-    ) -> None:
-        """
-        Record an asset history event.
-        """
+    ):
 
-        AssetHistoryService.log_event(
-            asset=asset,
-            event_type=event_type,
-            performed_by=performed_by,
-            employee=employee,
-            site=site,
-            old_status=old_status,
-            new_status=new_status,
-            reference=reference,
-            notes=notes,
-            metadata=metadata,
-        )
-
-
-    @staticmethod
-    def _save_asset(asset: Asset) -> None:
-        """
-        Validate and save an asset.
-        """
-        asset.full_clean()
-        asset.save()
-
-    
-    
+        self.repository.delete(asset)

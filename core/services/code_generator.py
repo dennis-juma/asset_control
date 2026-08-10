@@ -1,23 +1,44 @@
-from django.db.models import Max
+import re
 
 
 class CodeGenerator:
     """
-    Generates sequential codes.
+    Generic sequential code generator.
+
+    Examples:
+        CMP001
+        BRD001
+        CAT001
+        MOD001
+        AST000001
     """
 
     @staticmethod
-    def generate(model, prefix, field="code", digits=3):
+    def generate(
+        model,
+        prefix: str,
+        field_name: str = "code",
+        digits: int = 3,
+    ) -> str:
 
         last = (
-            model.all_objects.filter(**{f"{field}__startswith": prefix})
-            .aggregate(Max(field))
-            .get(f"{field}__max")
+            model.objects.filter(
+                **{f"{field_name}__startswith": prefix}
+            )
+            .order_by(f"-{field_name}")
+            .first()
         )
 
-        if not last:
-            return f"{prefix}{1:0{digits}}"
+        if last:
+            last_code = getattr(last, field_name)
 
-        number = int(last.replace(prefix, "")) + 1
+            match = re.search(r"(\d+)$", last_code)
 
-        return f"{prefix}{number:0{digits}}"
+            if match:
+                number = int(match.group(1)) + 1
+            else:
+                number = 1
+        else:
+            number = 1
+
+        return f"{prefix}{number:0{digits}d}"

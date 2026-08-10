@@ -1,96 +1,107 @@
 from django.core.paginator import Paginator
-from django.db.models import Q, QuerySet
 
 from assets.models import Asset
-from assets.choices.choices import AssetStatus
 
 
 class AssetRepository:
-    """
-    Repository responsible for Asset database operations.
-    """
 
-    def get_queryset(self) -> QuerySet:
-        return (
-            Asset.objects.select_related(
-                "company",
-                "category",
-                "brand",
-                "model",
-                "vendor",
-                "currency",
-            )
-            .all()
-        )
-
-    def search(self, queryset: QuerySet, search: str) -> QuerySet:
-        if not search:
-            return queryset
-
-        return queryset.filter(
-            Q(asset_tag__icontains=search)
-            | Q(serial_number__icontains=search)
-            | Q(barcode__icontains=search)
-            | Q(model__name__icontains=search)
-            | Q(brand__name__icontains=search)
-        )
-
-    def filter(
+    def list(
         self,
-        queryset: QuerySet,
-        *,
-        company=None,
-        category=None,
-        status=None,
-    ) -> QuerySet:
+        query="",
+        page=1,
+        per_page=20,
+    ):
+        queryset = (
+            Asset.objects
+            .select_related(
+                "company",
+                "asset_model",
+                "asset_model__brand",
+                "asset_model__category",
+            )
+            .order_by("asset_tag")
+        )
 
-        if company:
-            queryset = queryset.filter(company_id=company)
+        if query:
+            queryset = queryset.filter(
+                asset_tag__icontains=query,
+            ) | queryset.filter(
+                serial_number__icontains=query,
+            ) | queryset.filter(
+                asset_model__name__icontains=query,
+            ) | queryset.filter(
+                asset_model__brand__name__icontains=query,
+            )
 
-        if category:
-            queryset = queryset.filter(category_id=category)
+        return Paginator(
+            queryset,
+            per_page,
+        ).get_page(page)
 
-        if status:
-            queryset = queryset.filter(status=status)
+    def get(
+        self,
+        pk,
+    ):
+        return (
+            Asset.objects
+            .select_related(
+                "company",
+                "asset_model",
+                "asset_model__brand",
+                "asset_model__category",
+            )
+            .get(pk=pk)
+        )
 
-        return queryset
+    def create(
+        self,
+        asset: Asset,
+    ):
+        asset.save()
+        return asset
 
-    def order(self, queryset: QuerySet, ordering: str) -> QuerySet:
+    def update(
+        self,
+        asset: Asset,
+    ):
+        asset.save()
+        return asset
 
-        allowed = {
-            "asset_tag",
-            "-asset_tag",
-            "purchase_date",
-            "-purchase_date",
-            "created_at",
-            "-created_at",
-            "status",
-            "-status",
-        }
+    def delete(
+        self,
+        asset: Asset,
+    ):
+        asset.delete()
 
-        if ordering not in allowed:
-            ordering = "-created_at"
+    def exists_serial_number(
+        self,
+        serial_number: str,
+        exclude_pk=None,
+    ) -> bool:
 
-        return queryset.order_by(ordering)
+        queryset = Asset.objects.filter(
+            serial_number=serial_number,
+        )
 
-    def paginate(self, queryset: QuerySet, page: int, page_size: int = 25):
-        paginator = Paginator(queryset, page_size)
-        return paginator.get_page(page)
+        if exclude_pk:
+            queryset = queryset.exclude(
+                pk=exclude_pk,
+            )
 
-    def statistics(self):
+        return queryset.exists()
 
-        return {
-            "total": Asset.objects.count(),
-            "assigned": Asset.objects.filter(
-                status=AssetStatus.ASSIGNED
-            ).count(),
-            "in_stock": Asset.objects.filter(
-                status=AssetStatus.IN_STOCK
-            ).count(),
-            "maintenance": Asset.objects.filter(
-                status=AssetStatus.MAINTENANCE
-            ).count(),
-            "retired": Asset.objects.filter(
-                status=AssetStatus.RETIRED
-            ).count(),
-        }
+    def get_by_asset_tag(
+        self,
+        asset_tag: str,
+    ):
+        return Asset.objects.get(
+            asset_tag=asset_tag,
+        )
+
+    def get_by_serial_number(
+        self,
+        serial_number: str,
+    ):
+        return Asset.objects.get(
+            serial_number=serial_number,
+        )

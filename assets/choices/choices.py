@@ -28,3 +28,8 @@ class AssetCondition(models.TextChoices):
 class AssignmentStatus(models.TextChoices):
     ACTIVE = "ACTIVE", "Active"
     RETURNED = "RETURNED", "Returned"
+    TRANSFERRED = "TRANSFERRED", "Transferred"
+
+class AssignmentType(models.TextChoices):
+    EMPLOYEE = "EMPLOYEE", "Employee"
+    SITE = "SITE", "Site"

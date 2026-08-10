@@ -1,207 +1,110 @@
 from django.db import models
-from organizations.models import Company, Currency
-from assets.models import AssetCategory, Brand, AssetModel, Vendor
+from organizations.models import Company
+from assets.choices import (
+    AssetCondition,
+    AssetStatus,
+)
+from .asset_model import AssetModel
 from core.models import BaseModel
-from django.utils import timezone
-from assets.choices.choices import AssetStatus, AssetCondition
-from django.core.exceptions import ValidationError
-from assets.choices.history_choices import AssetHistoryEvent
+from core.services import CodeGenerator
+
 
 class Asset(BaseModel):
-    
     """
-    Represents a physical company asset.
+    Represents one physical serialized asset.
     """
-    slug_source = "asset_tag"
+
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="assets",
+        null=True,
+        blank=True,
+    )
+
+    asset_model = models.ForeignKey(
+        AssetModel,
+        on_delete=models.PROTECT,
+        related_name="assets",
+        null=True,
+        blank=True,
+    )
+
     asset_tag = models.CharField(
-    max_length=30,
-    unique=True,
-    help_text="Unique asset tag.",
-)
+        max_length=30,
+        unique=True,
+        editable=False,
+    )
 
     serial_number = models.CharField(
-    max_length=150,
-    blank=True,
-    help_text="Manufacturer serial number.",
-)
+        max_length=150,
+        unique=True,
+    )
 
-    barcode = models.CharField(
-    max_length=150,
-    help_text="Barcode value.",
-    null=True,
-    blank=True,
-)
-    company = models.ForeignKey(
-    Company,
-    on_delete=models.PROTECT,
-    related_name="assets",
-    null=True,
-    blank=True,
-)
-    category = models.ForeignKey(
-    AssetCategory,
-    on_delete=models.PROTECT,
-    related_name="assets",
-    null=True,
-    blank=True,
-)
-    brand = models.ForeignKey(
-    Brand,
-    on_delete=models.PROTECT,
-    related_name="assets",
-    null=True,
-    blank=True,
-)
-    model = models.ForeignKey(
-    AssetModel,
-    on_delete=models.PROTECT,
-    related_name="assets",
-    null=True,
-    blank=True,
-)
-    vendor = models.ForeignKey(
-    Vendor,
-    on_delete=models.PROTECT,
-    related_name="assets",
-    blank=True,
-    null=True,
-)
-    currency = models.ForeignKey(
-    Currency,
-    on_delete=models.PROTECT,
-    related_name="assets",
-    blank=True,
-    null=True,
-)
     purchase_date = models.DateField(
+        null=True,
+        blank=True,
+    )
+
+    received_date = models.DateField(
     null=True,
     blank=True,
+    help_text="Date the asset was physically received.",
 )
 
-    purchase_price = models.DecimalField(
-    max_digits=12,
-    decimal_places=2,
-    null=True,
-    blank=True,
-)
-    
-    
-
-
+    purchase_cost = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
 
     invoice_number = models.CharField(
-    max_length=100,
-    blank=True,
-)
-
-    po_number = models.CharField(
-    max_length=100,
-    blank=True,
-)
-    
-    # ==========================
-# Warranty Information
-# ==========================
-
-    warranty_start = models.DateField(
-    null=True,
-    blank=True,
-)
-
-    warranty_end = models.DateField(
-    null=True,
-    blank=True,
-)
-    # ==========================
-# Status Information
-# ==========================
-
+        max_length=100,
+        blank=True,
+    )
     status = models.CharField(
-    max_length=20,
-    choices=AssetStatus.choices,
-    default=AssetStatus.IN_STOCK,
-)
+        max_length=30,
+        choices=AssetStatus.choices,
+        default=AssetStatus.AVAILABLE,
+    )
 
     condition = models.CharField(
-    max_length=20,
-    choices=AssetCondition.choices,
-    default=AssetCondition.NEW,
-)
-    @property
-    def is_under_warranty(self):
-        if not self.warranty_end:
-            return False
-        return self.warranty_end >= timezone.now().date()
+        max_length=30,
+        choices=AssetCondition.choices,
+        default=AssetCondition.NEW,
+    )
 
-    def clean(self):
-        super().clean()
+    remarks = models.TextField(
+        blank=True,
+    )
 
-        errors = {}
+    class Meta:
+        ordering = [
+            "asset_tag",
+        ]
 
-        if (
-            self.warranty_start
-            and self.warranty_end
-            and self.warranty_end < self.warranty_start
-        ):
-            errors["warranty_end"] = (
-                "Warranty end date cannot be before warranty start date."
-            )
+        indexes = [
+            models.Index(fields=["asset_tag"]),
+            models.Index(fields=["serial_number"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["condition"]),
+        ]
 
-        if (
-            self.purchase_price is not None
-            and self.purchase_price < 0
-        ):
-            errors["purchase_price"] = (
-                "Purchase price cannot be negative."
-            )
-
-        if errors:
-            raise ValidationError(errors)
+        verbose_name = "Asset"
+        verbose_name_plural = "Assets"
 
     def save(self, *args, **kwargs):
-        self.full_clean()
+
+        if not self.asset_tag:
+            self.asset_tag = CodeGenerator.generate(
+                model=Asset,
+                prefix="AST",
+                field_name="asset_tag",
+                digits=6,
+            )
+
         super().save(*args, **kwargs)
 
     def __str__(self):
-        parts = [self.asset_tag]
-
-        if self.model:
-            parts.append(str(self.model))
-
-        return " - ".join(parts)
-
-    class Meta:
-        verbose_name = "Asset"
-        verbose_name_plural = "Assets"
-        ordering = ["-created_at"]
-
-
-    def log_history(
-        self,
-        *,
-        event_type,
-        performed_by=None,
-        employee=None,
-        site=None,
-        old_status=None,
-        new_status=None,
-        reference="",
-        notes="",
-        metadata=None,
-    ):
-        """
-        Record an asset history event.
-        """
-
-        AssetHistoryService.log_event(
-            asset=self,
-            event_type=event_type,
-            performed_by=performed_by,
-            employee=employee,
-            site=site,
-            old_status=old_status,
-            new_status=new_status,
-            reference=reference,
-            notes=notes,
-            metadata=metadata,
-        )
+        return f"{self.asset_tag} - {self.serial_number}"

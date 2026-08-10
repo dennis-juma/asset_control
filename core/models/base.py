@@ -29,3 +29,28 @@ class BaseModel(
     """
     class Meta:
         abstract = True
+
+
+
+
+class TransactionModel(
+    UUIDModel,
+    TimeStampedModel,
+    UserTrackingModel,
+    SoftDeleteModel,
+    IsActiveModel,
+):
+    """
+    Base model for transactional entities.
+
+    Features:
+    - UUID primary key
+    - Created/Updated timestamps
+    - User tracking
+    - Soft delete
+    - Active/Inactive
+    - No slug
+    """
+
+    class Meta:
+        abstract = True

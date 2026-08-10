@@ -35,25 +35,7 @@ class DashboardService:
         self.quick_action_service = QuickActionService()
         self.system_health_service = SystemHealthService()
         
-    def get_dashboard(self) -> dict:
-        """
-        Return the complete dashboard context.
-        """
-        cached = cache.get(DASHBOARD_CACHE_KEY)
-        if cached is not None:
-            return cached
-        
-        cache.set(
-        DASHBOARD_CACHE_KEY,
-        dashboard,
-        DASHBOARD_CACHE_TIMEOUT,
-        )
-
-        return {
-            "statistics": self.statistics_service.get_cards(),
-        }
     
-
     def get_dashboard(self) -> dict:
         charts = self.charts_service.get_charts()
         trends = self.trend_service.get_trends()
