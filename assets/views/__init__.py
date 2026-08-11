@@ -22,6 +22,7 @@ from .asset_model import (
     AssetModelUpdateView,
 )
 from .asset_assignment import *
+from .asset_history import AssetHistoryListView
 
 __all__ = [
     "AssetListView",
@@ -40,6 +41,7 @@ __all__ = [
     "AssetModelDetailView",
     "AssetModelListView",
     "AssetModelUpdateView",
+    "AssetHistoryListView"
     
     
 

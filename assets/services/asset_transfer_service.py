@@ -1,6 +1,7 @@
 from django.db import transaction
 from django.core.exceptions import ValidationError
-
+from assets.choices.history_choices import AssetHistoryEvent
+from assets.services.asset_history_service import AssetHistoryService
 from assets.choices import (
     AssignmentStatus,
     AssignmentType,
@@ -95,12 +96,6 @@ class AssetTransferService:
         to_employee = dto.to_employee
         to_site = dto.to_site
 
-        if (
-            dto.to_employee is not None
-            and dto.to_site is None
-        ):
-            to_site = dto.to_employee.site
-
         if dto.to_employee is not None:
             assignment_type = (
                 AssignmentType.EMPLOYEE
@@ -166,6 +161,59 @@ class AssetTransferService:
             reason=dto.reason or "",
             remarks=dto.remarks or "",
         )
+        AssetHistoryService.log_event(
+    asset=dto.asset,
+    event_type=AssetHistoryEvent.TRANSFERRED,
+    employee=to_employee,
+    site=to_site,
+    old_status=AssetStatus.ASSIGNED,
+    new_status=AssetStatus.ASSIGNED,
+    reference=str(transfer.pk),
+    notes=dto.reason or "Asset transferred.",
+    metadata={
+        "from_employee_id": (
+            str(from_employee.pk)
+            if from_employee
+            else None
+        ),
+        "from_employee_name": (
+            from_employee.full_name
+            if from_employee
+            else None
+        ),
+        "from_site_id": (
+            str(from_site.pk)
+            if from_site
+            else None
+        ),
+        "from_site_name": (
+            from_site.name
+            if from_site
+            else None
+        ),
+        "to_employee_id": (
+            str(to_employee.pk)
+            if to_employee
+            else None
+        ),
+        "to_employee_name": (
+            to_employee.full_name
+            if to_employee
+            else None
+        ),
+        "to_site_id": (
+            str(to_site.pk)
+            if to_site
+            else None
+        ),
+        "to_site_name": (
+            to_site.name
+            if to_site
+            else None
+        ),
+        "reason": dto.reason or "",
+    },
+)
 
         # -------------------------------------------------
         # 9. Keep asset assigned

@@ -40,6 +40,7 @@ from assets.views.asset_transfer import (
     AssetTransferDetailView,
     AssetTransferUpdateView,
 )
+from assets.views.asset_history import AssetHistoryListView
 app_name = "assets"
 urlpatterns = [
     path(
@@ -232,6 +233,11 @@ path(
     "transfers/<uuid:pk>/update/",
     AssetTransferUpdateView.as_view(),
     name="asset-transfer-update",
+),
+path(
+    "assets/<uuid:pk>/history/",
+    AssetHistoryListView.as_view(),
+    name="asset-history",
 ),
 
 ]

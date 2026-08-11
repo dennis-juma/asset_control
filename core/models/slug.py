@@ -24,10 +24,22 @@ class SlugModel(models.Model):
         Generate a unique slug on first save only.
         Existing slugs are preserved during updates.
         """
+
         if not self.slug and self.slug_source:
-            value = getattr(self, self.slug_source, "").strip()
+
+            value = getattr(
+                self,
+                self.slug_source,
+                "",
+            )
+
+            if value is not None:
+                value = str(value).strip()
 
             if value:
-                self.slug = generate_unique_slug(self, value)
+                self.slug = generate_unique_slug(
+                    self,
+                    value,
+                )
 
         super().save(*args, **kwargs)

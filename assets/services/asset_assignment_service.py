@@ -1,4 +1,6 @@
 from django.db import transaction
+from assets.choices.history_choices import AssetHistoryEvent
+from assets.services.asset_history_service import AssetHistoryService
 
 from assets.choices import (
     AssetStatus,
@@ -52,8 +54,22 @@ class AssetAssignmentService:
         assignment = self.repository.create(assignment)
 
         asset = dto.asset
+        old_status = asset.status
         asset.status = AssetStatus.ASSIGNED
         asset.save(update_fields=["status"])
+
+
+        AssetHistoryService.log_event(
+        asset=asset,
+        event_type=AssetHistoryEvent.ASSIGNED,
+        employee=assignment.employee,
+        site=assignment.site,
+        old_status=old_status,
+        new_status=AssetStatus.ASSIGNED,
+        reference=str(assignment.pk),
+        notes=assignment.remarks or "Asset assigned.",
+    )
+        
 
         return assignment
 
@@ -101,7 +117,24 @@ class AssetAssignmentService:
         self.repository.update(assignment)
 
         asset = assignment.asset
+
+        old_status = asset.status
+
         asset.status = AssetStatus.AVAILABLE
-        asset.save(update_fields=["status"])
+        asset.save(
+            update_fields=["status"]
+        )
+
+        AssetHistoryService.log_event(
+            asset=asset,
+            event_type=AssetHistoryEvent.RETURNED,
+            employee=assignment.employee,
+            site=assignment.site,
+            old_status=old_status,
+            new_status=AssetStatus.AVAILABLE,
+            reference=str(assignment.pk),
+            notes=dto.remarks or "Asset returned.",
+        )
 
         return assignment
+        

@@ -4,8 +4,8 @@ from assets.dtos import (
     AssetCreateDTO,
     AssetUpdateDTO,
 )
+
 from assets.repositories import AssetRepository
-from django.utils import timezone
 
 
 class AssetValidator:
@@ -21,8 +21,9 @@ class AssetValidator:
         self,
         dto: AssetCreateDTO,
     ):
-
-        self._validate_serial_number(dto.serial_number)
+        self._validate_serial_number(
+            dto.serial_number,
+        )
         self._validate_asset_model(dto)
         self._validate_company(dto)
         self._validate_purchase_dates(dto)
@@ -33,7 +34,6 @@ class AssetValidator:
         asset,
         dto: AssetUpdateDTO,
     ):
-
         self._validate_serial_number(
             dto.serial_number,
             exclude_pk=asset.pk,
@@ -53,7 +53,6 @@ class AssetValidator:
         serial_number,
         exclude_pk=None,
     ):
-
         if self.repository.exists_serial_number(
             serial_number,
             exclude_pk,
@@ -63,13 +62,12 @@ class AssetValidator:
                     "serial_number":
                     "An asset with this Serial Number already exists."
                 }
-    )
+            )
 
     def _validate_asset_model(
         self,
         dto,
     ):
-
         if not dto.asset_model.is_active:
             raise ValidationError(
                 {
@@ -82,7 +80,6 @@ class AssetValidator:
         self,
         dto,
     ):
-
         if dto.asset_model.company != dto.company:
             raise ValidationError(
                 {
@@ -95,7 +92,6 @@ class AssetValidator:
         self,
         dto,
     ):
-
         if (
             dto.purchase_date
             and dto.received_date
@@ -112,7 +108,6 @@ class AssetValidator:
         self,
         dto,
     ):
-
         if (
             dto.purchase_cost is not None
             and dto.purchase_cost < 0
@@ -123,101 +118,3 @@ class AssetValidator:
                     "Purchase Cost cannot be negative."
                 }
             )
-
-
-
-
-
-# =====================================================
-    # Company Valida
- # =====================================================
-    def _validate_company(
-    self,
-    dto,
-):
-
-        if dto.asset.company != dto.company:
-            raise ValidationError({
-                "company": "The selected Asset belongs to another company."
-            })
-
-        if dto.employee and dto.employee.company != dto.company:
-            raise ValidationError({
-                "employee": "The selected Employee belongs to another company."
-            })
-
-        if dto.site and dto.site.company != dto.company:
-            raise ValidationError({
-                "site": "The selected Site belongs to another company."
-            })
-
-
-
-
-    def _validate_asset_active(
-        self,
-        dto,
-    ):
-
-        if not dto.asset.is_active:
-            raise ValidationError({
-                "asset": "The selected Asset is inactive."
-            })
-
-
-
-    def _validate_employee_active(
-        self,
-        dto,
-    ):
-
-        if dto.employee and not dto.employee.is_active:
-            raise ValidationError({
-                "employee": "The selected Employee is inactive."
-            })
-
-
-
-    def _validate_site_active(
-        self,
-        dto,
-    ):
-
-        if dto.site and not dto.site.is_active:
-            raise ValidationError({
-                "site": "The selected Site is inactive."
-            })
-
-
-
-    def _validate_assigned_date(
-        self,
-        dto,
-    ):
-
-        if dto.assigned_date > timezone.localdate():
-            raise ValidationError({
-                "assigned_date": "Assigned Date cannot be in the future."
-            })
-
-
-
-    def _validate_asset_model(
-        self,
-        dto,
-    ):
-
-        if not dto.asset.asset_model.is_active:
-            raise ValidationError({
-                "asset": "The Asset Model is inactive."
-            })
-
-
-    def _validate_employee_site(
-    self,
-    dto,
-    ):
-        if dto.employee and dto.employee.site is None:
-            raise ValidationError({
-                "employee": "The selected Employee is not assigned to a Site."
-            })

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
-from assets.models import Asset,AssetAssignment
+from assets.models import Asset, AssetAssignment
 from organizations.models import Company, Site
 from employees.models import Employee
 from assets.choices import AssignmentType
@@ -14,19 +14,17 @@ class AssetAssignmentCreateDTO:
 
     asset: Asset
 
-    previous_assignment: AssetAssignment | None = None
+    assignment_type: AssignmentType
 
-    to_employee: Employee | None = None
+    employee: Employee | None = None
 
-    to_site: Site | None = None
+    site: Site | None = None
 
-    transfer_date: date | None = None
+    assigned_date: date | None = None
 
-    reason: str | None = None
+    expected_return_date: date | None = None
 
-    remarks: str | None = None
-
-
+    remarks: str = ""
 
 
 @dataclass

@@ -18,6 +18,7 @@ class AssetHistory(BaseModel):
     Records every significant event such as creation, assignment,
     return, maintenance, and status changes.
     """
+    slug_source = "id"
 
     company = models.ForeignKey(
         Company,

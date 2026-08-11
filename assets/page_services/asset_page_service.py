@@ -295,7 +295,18 @@ class AssetPageService:
         + f"?asset={asset.pk}"
     ),
     style="warning",
-)
+),
+ToolbarButton(
+    label="History",
+    icon="bi-clock-history",
+    url=reverse(
+        "assets:asset-history",
+        kwargs={
+            "pk": asset.pk,
+        },
+    ),
+    style="secondary",
+),
                 ],
             ),
             

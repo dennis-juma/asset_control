@@ -14,6 +14,8 @@ class Asset(BaseModel):
     Represents one physical serialized asset.
     """
 
+    slug_source = "asset_tag"
+
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
