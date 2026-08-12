@@ -1,9 +1,10 @@
 from django.views.generic import TemplateView
 
+from core.permissions.mixins import PermissionRequiredMixin
 from dashboard.services.dashboard_service import DashboardService
 
 
-class DashboardView(TemplateView):
+class DashboardView(PermissionRequiredMixin, TemplateView):
     """
     Display the main dashboard.
 

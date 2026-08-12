@@ -17,3 +17,7 @@ class AssetHistoryEvent(models.TextChoices):
 
     WARRANTY_ADDED = "WARRANTY_ADDED", "Warranty Added"
     WARRANTY_UPDATED = "WARRANTY_UPDATED", "Warranty Updated"
+
+    ATTACHMENT_ADDED = "ATTACHMENT_ADDED", "Attachment Added"
+    ATTACHMENT_UPDATED = "ATTACHMENT_UPDATED", "Attachment Updated"
+    ATTACHMENT_DELETED = "ATTACHMENT_DELETED", "Attachment Deleted"

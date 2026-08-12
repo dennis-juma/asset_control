@@ -8,6 +8,9 @@ from .asset_assignment_repository import AssetAssignmentRepository
 from .asset_transfer_repository import (
     AssetTransferRepository,
 )
+from .asset_attachment_repository import (
+    AssetAttachmentRepository,
+)
 from .asset_history_repository import AssetHistoryRepository
 
 __all__ = [
@@ -18,5 +21,6 @@ __all__ = [
     "AssetRepository",
     "AssetAssignmentRepository",
     "AssetTransferRepository",
-    "AssetHistoryRepository"
+    "AssetHistoryRepository",
+    "AssetAttachmentRepository"
 ]

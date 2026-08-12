@@ -9,6 +9,10 @@ from .brand import (
     BrandCreateDTO,
     BrandUpdateDTO,
 )
+from .asset_attachment import (
+    AssetAttachmentCreateDTO,
+    AssetAttachmentUpdateDTO,
+)
 
 from .asset_model import (
     AssetModelCreateDTO,
@@ -42,6 +46,12 @@ __all__ = [
     "AssetAssignmentCreateDTO",
     "AssetAssignmentUpdateDTO",
     "AssetReturnDTO",
+
+    "AssetAttachmentCreateDTO",
+   "AssetAttachmentUpdateDTO",
+
+   "AssetDetailContentDTO"
+    
 
     
 

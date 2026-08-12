@@ -3,7 +3,6 @@ from django.db import models
 
 class AssetStatus(models.TextChoices):
     AVAILABLE = "AVAILABLE", "Available"
-    IN_STOCK = "IN_STOCK", "In Stock"
     ASSIGNED = "ASSIGNED", "Assigned"
     RESERVED = "RESERVED", "Reserved"
     IN_TRANSIT = "IN_TRANSIT", "In Transit"

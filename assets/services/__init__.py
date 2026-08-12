@@ -5,6 +5,7 @@ from .brand_service import BrandService
 from .asset_model_service import AssetModelService
 from .asset_assignment_service import AssetAssignmentService
 from .asset_transfer_service import AssetTransferService
+from .asset_attachment_service import AssetAttachmentService
 __all__ = [
     "AssetHistoryService",
     "AssetService",
@@ -12,5 +13,6 @@ __all__ = [
     "BrandService",
     "AssetModelService",
     "AssetAssignmentService",
-    "AssetTransferService"
+    "AssetTransferService",
+    "AssetAttachmentService"
 ]

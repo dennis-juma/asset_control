@@ -2,3 +2,9 @@
 
 {% extends "crud/page.html" %}
 
+{% block form_extra %}
+    {% if attachments %}
+        {% include "components/asset/attachments.html" %}
+    {% endif %}
+{% endblock %}
+

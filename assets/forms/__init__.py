@@ -23,6 +23,11 @@ from .asset_assignment import (
 from .transfer import (
     AssetTransferCreateForm,
 )
+from .asset_attachment import (
+    AssetAttachmentCreateForm,
+    AssetAttachmentUpdateForm,
+)
+from .asset_history import AssetHistoryDetailForm
 
 __all__ = [
     "AssetCategoryCreateForm",
@@ -37,4 +42,9 @@ __all__ = [
     "AssetAssignmentUpdateForm",
     "AssetReturnForm",
     "AssetTransferCreateForm"
+
+    "AssetAttachmentCreateForm",
+   " AssetAttachmentUpdateForm",
+
+   "AssetHistoryDetailForm"
 ]

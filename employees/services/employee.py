@@ -39,7 +39,6 @@ class EmployeeService:
             phone=dto.phone,
             email=dto.email,
             photo=dto.photo,
-            user=dto.user,
             remarks=dto.remarks,
         )
 
@@ -73,7 +72,6 @@ class EmployeeService:
         employee.phone = dto.phone
         employee.email = dto.email
         employee.photo = dto.photo
-        employee.user = dto.user
         employee.remarks = dto.remarks
         employee.is_active = dto.is_active
 
@@ -120,4 +118,27 @@ class EmployeeService:
         ):
             raise ValidationError(
                 "An employee cannot be their own manager."
+            )
+
+    def _validate_user(
+    self,
+    user,
+):
+        """
+        A user can only be linked to one Employee record.
+        """
+
+        if user is None:
+            return
+
+        if Employee.objects.filter(
+            user=user,
+        ).exists():
+
+            raise ValidationError(
+                {
+                    "user": [
+                        "This user is already linked to an employee."
+                    ]
+                }
             )

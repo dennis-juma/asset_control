@@ -20,7 +20,7 @@ __all__ = [
     "AssetAssignment",
     "Asset",
     "AssetHistory",
-    "AssetAttachment"
+    "AssetAttachment",
     "AssetStatus",
     "AssetAttachment",
     "AssetTransfer"

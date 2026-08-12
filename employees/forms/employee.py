@@ -2,6 +2,11 @@ from django import forms
 
 from employees.models import Employee
 
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
+
 
 class EmployeeCreateForm(forms.ModelForm):
     class Meta:
@@ -27,6 +32,7 @@ class EmployeeCreateForm(forms.ModelForm):
             "remarks",
         ]
 
+
         widgets = {
             "joining_date": forms.DateInput(
                 attrs={"type": "date"},
@@ -38,6 +44,15 @@ class EmployeeCreateForm(forms.ModelForm):
                 attrs={"rows": 3},
             ),
         }
+        def __init__(self, *args, **kwargs):
+
+            super().__init__(*args, **kwargs)
+
+            self.fields["user"].queryset = (
+                User.objects
+                .filter(employee__isnull=True)
+                .order_by("username")
+            )
 
 
 class EmployeeUpdateForm(forms.ModelForm):

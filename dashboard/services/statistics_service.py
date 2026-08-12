@@ -41,7 +41,7 @@ class StatisticsService:
             ),
             available=Count(
                 "id",
-                filter=Q(status=AssetStatus.IN_STOCK),
+                filter=Q(status=AssetStatus.AVAILABLE),
             ),
             maintenance=Count(
                 "id",

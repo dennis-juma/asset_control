@@ -76,7 +76,7 @@ class Brand(BaseModel):
 
             self.code = CodeGenerator.generate(
                 model=Brand,
-                field="code",
+                 field_name="code",
                 prefix="BRD",
             )
 

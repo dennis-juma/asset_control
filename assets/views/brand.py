@@ -3,6 +3,9 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
+from core.permissions.constants import Permissions
+from core.permissions.mixins import PermissionRequiredMixin
+
 
 
 from assets.dtos import (
@@ -20,7 +23,11 @@ from assets.repositories import BrandRepository
 from assets.services import BrandService
 
 
-class BrandListView(TemplateView):
+class BrandListView(
+    PermissionRequiredMixin,
+    TemplateView):
+
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/list.html"
 
@@ -36,7 +43,10 @@ class BrandListView(TemplateView):
         })
 
 
-class BrandCreateView(TemplateView):
+class BrandCreateView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_CREATE
 
     template_name = "crud/form.html"
 
@@ -77,7 +87,11 @@ class BrandCreateView(TemplateView):
         return redirect("assets:brand-list")
 
 
-class BrandDetailView(TemplateView):
+class BrandDetailView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_VIEW
+    
 
     template_name = "crud/form.html"
 
@@ -94,7 +108,11 @@ class BrandDetailView(TemplateView):
         )
 
 
-class BrandUpdateView(TemplateView):
+class BrandUpdateView(
+    PermissionRequiredMixin,
+    TemplateView):
+
+    permission_required = Permissions.ASSET_UPDATE
 
     template_name = "crud/form.html"
 
@@ -149,7 +167,10 @@ class BrandUpdateView(TemplateView):
         return redirect("assets:brand-list")
 
 
-class BrandDeleteView(TemplateView):
+class BrandDeleteView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_DELETE
 
     template_name = "crud/delete.html"
 

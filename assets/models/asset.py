@@ -96,6 +96,21 @@ class Asset(BaseModel):
         verbose_name = "Asset"
         verbose_name_plural = "Assets"
 
+        permissions = [
+        (
+            "assign_asset",
+            "Can assign asset",
+        ),
+        (
+            "transfer_asset",
+            "Can transfer asset",
+        ),
+        (
+            "export_asset",
+            "Can export asset",
+        ),
+        ]
+
     def save(self, *args, **kwargs):
 
         if not self.asset_tag:

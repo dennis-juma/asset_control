@@ -1,4 +1,6 @@
 from django.contrib import messages
+from core.permissions.constants import Permissions
+from core.permissions.mixins import PermissionRequiredMixin
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
@@ -15,7 +17,10 @@ from assets.repositories import AssetRepository
 from assets.services import AssetService
 
 
-class AssetListView(TemplateView):
+class AssetListView(
+     PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/list.html"
 
@@ -33,7 +38,10 @@ class AssetListView(TemplateView):
         )
 
 
-class AssetCreateView(TemplateView):
+class AssetCreateView(
+     PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_CREATE
 
     template_name = "crud/form.html"
 
@@ -80,7 +88,10 @@ class AssetCreateView(TemplateView):
         return redirect("assets:asset-list")
 
 
-class AssetDetailView(TemplateView):
+class AssetDetailView(
+     PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/form.html"
 
@@ -96,7 +107,10 @@ class AssetDetailView(TemplateView):
         )
 
 
-class AssetUpdateView(TemplateView):
+class AssetUpdateView(
+     PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_UPDATE
 
     template_name = "crud/form.html"
 
@@ -156,7 +170,10 @@ class AssetUpdateView(TemplateView):
         return redirect("assets:asset-list")
 
 
-class AssetDeleteView(TemplateView):
+class AssetDeleteView(
+     PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_DELETE
 
     template_name = "common/delete.html"
 

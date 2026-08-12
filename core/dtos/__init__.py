@@ -4,7 +4,9 @@ from .forms import (
     FormFieldDTO,
     FormSectionDTO,
 )
+from .asset_detail import AssetDetailContentDTO
 
+from .asset_attachments import AssetAttachmentsContentDTO
 from .cards import (
     CardDTO,
     InfoCardDTO,

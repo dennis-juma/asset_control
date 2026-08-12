@@ -40,7 +40,17 @@ from assets.views.asset_transfer import (
     AssetTransferDetailView,
     AssetTransferUpdateView,
 )
-from assets.views.asset_history import AssetHistoryListView
+from assets.views.asset_history import (
+    AssetHistoryListView,
+    AssetHistoryDetailView,
+)
+
+from assets.views.asset_attachment import (
+    AssetAttachmentCreateView,
+    AssetAttachmentDetailView,
+    AssetAttachmentUpdateView,
+    AssetAttachmentDeleteView,
+)
 app_name = "assets"
 urlpatterns = [
     path(
@@ -238,6 +248,34 @@ path(
     "assets/<uuid:pk>/history/",
     AssetHistoryListView.as_view(),
     name="asset-history",
+),
+path(
+    "history/uuid:<uuid:pk>/",
+    AssetHistoryDetailView.as_view(),
+    name="asset-history-detail",
+),
+path(
+    "attachments/create/",
+    AssetAttachmentCreateView.as_view(),
+    name="asset-attachment-create",
+),
+
+path(
+    "attachments/<uuid:pk>/",
+    AssetAttachmentDetailView.as_view(),
+    name="asset-attachment-detail",
+),
+
+path(
+    "attachments/<uuid:pk>/update/",
+    AssetAttachmentUpdateView.as_view(),
+    name="asset-attachment-update",
+),
+
+path(
+    "attachments/<uuid:pk>/delete/",
+    AssetAttachmentDeleteView.as_view(),
+    name="asset-attachment-delete",
 ),
 
 ]

@@ -23,6 +23,7 @@ class GridAction:
     css_class: str = "btn btn-sm btn-outline-secondary"
     method: str = "GET"
     confirm_message: str | None = None
+    permission: str | None = None
 
 
 @dataclass(slots=True, frozen=True)
@@ -67,3 +68,18 @@ class DataGrid:
     search_query: str = ""
 
     search_url: str | None = None
+    def filter_permissions(self, user):
+
+        from core.ui.actions.permissions import (
+            ActionPermissionService,
+        )
+
+        if user.is_superuser:
+            return self
+
+        self.actions = ActionPermissionService.filter(
+            self.actions,
+            user,
+        )
+
+        return self

@@ -1,11 +1,13 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model
 from django.shortcuts import (
     get_object_or_404,
     redirect,
     render,
 )
 from django.views import View
+
+from core.permissions.constants import Permissions
+from core.permissions.mixins import PermissionRequiredMixin
 
 from employees.dtos import (
     EmployeeCreateDTO,
@@ -21,10 +23,10 @@ from organizations.models import (
     Site,
 )
 
-User = get_user_model()
 
 
-class EmployeeListView(View):
+class EmployeeListView(PermissionRequiredMixin, View):
+    permission_required = Permissions.EMPLOYEE_VIEW
 
     page_service = EmployeePageService()
 
@@ -44,7 +46,8 @@ class EmployeeListView(View):
         )
 
 
-class EmployeeCreateView(View):
+class EmployeeCreateView(PermissionRequiredMixin, View):
+    permission_required = Permissions.EMPLOYEE_CREATE
 
     page_service = EmployeePageService()
     service = EmployeeService()
@@ -64,7 +67,6 @@ class EmployeeCreateView(View):
     def post(self, request):
 
         manager_id = request.POST.get("manager") or None
-        user_id = request.POST.get("user") or None
 
         dto = EmployeeCreateDTO(
 
@@ -94,11 +96,7 @@ class EmployeeCreateView(View):
                 else None
             ),
 
-            user=(
-                get_object_or_404(User, pk=user_id)
-                if user_id
-                else None
-            ),
+            
 
             employee_id=request.POST.get("employee_id", ""),
 
@@ -135,7 +133,8 @@ class EmployeeCreateView(View):
         )
 
 
-class EmployeeDetailView(View):
+class EmployeeDetailView(PermissionRequiredMixin, View):
+    permission_required = Permissions.EMPLOYEE_VIEW
 
     page_service = EmployeePageService()
 
@@ -163,7 +162,8 @@ class EmployeeDetailView(View):
         )
 
 
-class EmployeeUpdateView(View):
+class EmployeeUpdateView(PermissionRequiredMixin, View):
+    permission_required = Permissions.EMPLOYEE_UPDATE
 
     page_service = EmployeePageService()
     service = EmployeeService()
@@ -203,7 +203,6 @@ class EmployeeUpdateView(View):
         )
 
         manager_id = request.POST.get("manager") or None
-        user_id = request.POST.get("user") or None
 
         dto = EmployeeUpdateDTO(
 
@@ -233,11 +232,7 @@ class EmployeeUpdateView(View):
                 else None
             ),
 
-            user=(
-                get_object_or_404(User, pk=user_id)
-                if user_id
-                else None
-            ),
+            
 
             employee_id=request.POST.get("employee_id", ""),
 
@@ -279,7 +274,8 @@ class EmployeeUpdateView(View):
         )
 
 
-class EmployeeDeleteView(View):
+class EmployeeDeleteView(PermissionRequiredMixin, View):
+    permission_required = Permissions.EMPLOYEE_DELETE
 
     service = EmployeeService()
 

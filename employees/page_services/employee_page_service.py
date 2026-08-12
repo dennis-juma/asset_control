@@ -178,9 +178,8 @@ class EmployeePageService:
             .field("email", width=6)
             .field("photo", width=12)
 
-            .section("System")
+            .section("Additional Information")
 
-            .field("user", width=6)
             .field("remarks", width=12)
 
             .submit(
@@ -261,9 +260,8 @@ class EmployeePageService:
             .field("email", width=6)
             .field("photo", width=12)
 
-            .section("System")
+            .section("Additional Information")
 
-            .field("user", width=6)
             .field("remarks", width=12)
 
             .reverse(
@@ -357,9 +355,8 @@ class EmployeePageService:
             .field("email", width=6)
             .field("photo", width=12)
 
-            .section("System")
+            .section("Additional Information")
 
-            .field("user", width=6)
             .field("remarks", width=12)
             .field("is_active", width=12)
 

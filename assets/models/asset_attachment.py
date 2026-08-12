@@ -4,18 +4,26 @@ from django.db import models
 
 from assets.choices import AttachmentType
 from core.models import BaseModel
-from assets.validators import validate_attachment_file
+from assets.utils.file_validator import (
+    validate_attachment_file,
+)
 from .asset import Asset
 
 
 def asset_attachment_upload_path(instance, filename):
-    extension = os.path.splitext(filename)[1]
-    filename = f"{instance.attachment_type.lower()}{extension}"
+    extension = os.path.splitext(filename)[1].lower()
+    filename = (
+    f"{instance.attachment_type.lower()}"
+    f"{extension}"
+    )
 
     return f"asset_attachments/{instance.asset.asset_tag}/{filename}"
 
 
 class AssetAttachment(BaseModel):
+
+    slug_source = "original_filename"
+
     asset = models.ForeignKey(
         Asset,
         on_delete=models.CASCADE,

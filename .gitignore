@@ -10,6 +10,11 @@ env/
 
 # Environment variables
 .env
+.env.*
+!.env.example
+
+# Runtime uploads
+media/
 
 # Django
 db.sqlite3

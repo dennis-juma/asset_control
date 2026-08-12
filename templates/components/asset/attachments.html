@@ -1,0 +1,180 @@
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+
+    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center px-4 py-3">
+
+        <div>
+            <h5 class="fw-semibold mb-1">
+                Attachments
+            </h5>
+
+            <p class="text-muted small mb-0">
+                Documents and files associated with this asset.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'assets:asset-attachment-create' %}?asset={{ page.extra_content.asset.pk }}"
+            class="btn btn-primary"
+        >
+            <i class="bi bi-paperclip me-1"></i>
+            Add Attachment
+        </a>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        {% if page.extra_content.attachments %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th class="px-4">Type</th>
+                            <th>File</th>
+                            <th>Description</th>
+                            <th>Added</th>
+                            <th class="text-end px-4">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for attachment in page.extra_content.attachments %}
+                            <tr>
+
+                                <td class="px-4">
+
+                                    <span class="fw-semibold">
+                                        {{ attachment.get_attachment_type_display }}
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {% if attachment.file %}
+
+                                        <a
+                                            href="{{ attachment.file.url }}"
+                                            target="_blank"
+                                            rel="noopener"
+                                        >
+                                            <i class="bi bi-file-earmark me-1"></i>
+                                            {{ attachment.original_filename }}
+                                        </a>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            No file
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {% if attachment.description %}
+
+                                        {{ attachment.description }}
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            —
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {{ attachment.created_at|date:"d M Y H:i" }}
+
+                                </td>
+
+                                <td class="text-end px-4">
+
+                                    <div class="btn-group">
+
+                                        <a
+                                            href="{% url 'assets:asset-attachment-detail' attachment.pk %}"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            title="View"
+                                        >
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a
+                                            href="{% url 'assets:asset-attachment-update' attachment.pk %}"
+                                            class="btn btn-sm btn-outline-primary"
+                                            title="Edit"
+                                        >
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'assets:asset-attachment-delete' attachment.pk %}"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Delete this attachment?');"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Delete"
+                                            >
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="text-center py-5">
+
+                <i class="bi bi-paperclip fs-1 text-muted"></i>
+
+                <p class="text-muted mt-3 mb-3">
+                    No attachments have been added to this asset.
+                </p>
+
+                <a
+                    href="{% url 'assets:asset-attachment-create' %}?asset={{ page.extra_content.asset.pk }}"
+                    class="btn btn-primary"
+                >
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Add Attachment
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>

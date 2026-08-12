@@ -6,6 +6,8 @@ from django.shortcuts import (
 )
 from django.views import View
 
+from core.permissions.mixins import PermissionRequiredMixin
+
 from organizations.dtos import (
     JobTitleCreateDTO,
     JobTitleUpdateDTO,
@@ -22,7 +24,7 @@ from organizations.services.job_title import (
 )
 
 
-class JobTitleListView(View):
+class JobTitleListView(PermissionRequiredMixin, View):
 
     page_service = JobTitlePageService()
 
@@ -42,7 +44,7 @@ class JobTitleListView(View):
         )
 
 
-class JobTitleCreateView(View):
+class JobTitleCreateView(PermissionRequiredMixin, View):
 
     page_service = JobTitlePageService()
 
@@ -81,7 +83,7 @@ class JobTitleCreateView(View):
         )
 
 
-class JobTitleDetailView(View):
+class JobTitleDetailView(PermissionRequiredMixin, View):
 
     page_service = JobTitlePageService()
 
@@ -109,7 +111,7 @@ class JobTitleDetailView(View):
         )
 
 
-class JobTitleUpdateView(View):
+class JobTitleUpdateView(PermissionRequiredMixin, View):
 
     page_service = JobTitlePageService()
 
@@ -172,7 +174,7 @@ class JobTitleUpdateView(View):
         )
 
 
-class JobTitleDeleteView(View):
+class JobTitleDeleteView(PermissionRequiredMixin, View):
 
     service = JobTitleService()
 

@@ -5,6 +5,8 @@ from django.db.models import query
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
+from core.permissions.mixins import PermissionRequiredMixin
+
 from organizations.forms import (
     CompanyCreateForm,
     CompanyUpdateForm,
@@ -15,7 +17,7 @@ from organizations.page_services import CompanyPageService
 from organizations.services import CompanyService
 
 
-class CompanyListView(View):
+class CompanyListView(PermissionRequiredMixin, View):
 
     page_service = CompanyPageService()
 
@@ -40,7 +42,7 @@ class CompanyListView(View):
         )
 
 
-class CompanyCreateView(View):
+class CompanyCreateView(PermissionRequiredMixin, View):
 
     page_service = CompanyPageService()
     service = CompanyService()
@@ -85,7 +87,7 @@ class CompanyCreateView(View):
         )
 
 
-class CompanyUpdateView(View):
+class CompanyUpdateView(PermissionRequiredMixin, View):
 
     page_service = CompanyPageService()
     service = CompanyService()
@@ -148,7 +150,7 @@ class CompanyUpdateView(View):
         )
 
 
-class CompanyDetailView(View):
+class CompanyDetailView(PermissionRequiredMixin, View):
     def get(self, request, pk):
 
         company = get_object_or_404(
@@ -165,7 +167,7 @@ class CompanyDetailView(View):
         )
 
 
-class CompanyDeleteView(View):
+class CompanyDeleteView(PermissionRequiredMixin, View):
     service = CompanyService()
 
     def post(self, request, pk):

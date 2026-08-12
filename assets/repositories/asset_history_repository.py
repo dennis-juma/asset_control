@@ -4,6 +4,24 @@ from assets.models import AssetHistory
 
 
 class AssetHistoryRepository:
+    def get(
+    self,
+    pk,
+) -> AssetHistory:
+
+        return (
+            AssetHistory.objects
+            .select_related(
+                "company",
+                "asset",
+                "employee",
+                "site",
+                "performed_by",
+            )
+            .get(
+                pk=pk,
+            )   
+        )
 
     def list(
         self,
@@ -38,3 +56,5 @@ class AssetHistoryRepository:
         )
 
         return paginator.get_page(page)
+
+    

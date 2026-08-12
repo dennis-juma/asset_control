@@ -39,3 +39,21 @@ class Toolbar:
     show_export: bool = False
 
     show_import: bool = False
+
+    def filter_permissions(self, user):
+
+        from core.ui.actions.permissions import (
+            ActionPermissionService,
+        )
+
+        return Toolbar(
+            title=self.title,
+            buttons=ActionPermissionService.filter(
+                self.buttons,
+                user,
+            ),
+            bulk_actions=self.bulk_actions,
+            show_refresh=self.show_refresh,
+            show_export=self.show_export,
+            show_import=self.show_import,
+        )

@@ -1,5 +1,6 @@
 from django.urls import reverse
 
+from assets.forms import AssetHistoryDetailForm
 from assets.repositories import AssetHistoryRepository
 
 from core.dtos.page import (
@@ -8,6 +9,7 @@ from core.dtos.page import (
 )
 
 from core.ui.datagrid.builder import DataGridBuilder
+from core.ui.forms.builder import FormBuilder   
 
 
 class AssetHistoryPageService:
@@ -61,6 +63,12 @@ class AssetHistoryPageService:
             field="performed_by",
             label="Performed By",
         )
+
+        grid.action(
+    title="View",
+    icon="bi-eye",
+    url_name="assets:asset-history-detail",
+)
 
         for event in history:
 
@@ -143,4 +151,161 @@ class AssetHistoryPageService:
             ],
 
             content=grid.build(),
+        )
+
+
+    def detail_page(
+    self,
+    history,
+):
+
+        form = AssetHistoryDetailForm(
+            instance=history,
+        )
+
+        # History records are read-only
+        for field in form.fields.values():
+            field.disabled = True
+
+        
+        form_dto = (
+            FormBuilder(
+                title="History Event",
+                form=form,
+            )
+
+            .section(
+                "Event Information",
+                description="Details of the asset lifecycle event.",
+            )
+
+            .field(
+                "event_type",
+                width=6,
+            )
+
+            .field(
+                "event_date",
+                width=6,
+            )
+
+            .section(
+                "Asset Context",
+            )
+
+            .field(
+                "asset",
+                width=6,
+            )
+
+            .field(
+                "company",
+                width=6,
+            )
+
+            .section(
+                "Assignment / Location",
+            )
+
+            .field(
+                "employee",
+                width=6,
+            )
+
+            .field(
+                "site",
+                width=6,
+            )
+
+            .field(
+                "performed_by",
+                width=6,
+            )
+
+            .section(
+                "Status Change",
+            )
+
+            .field(
+                "old_status",
+                width=6,
+            )
+
+            .field(
+                "new_status",
+                width=6,
+            )
+
+            .section(
+                "Audit Information",
+            )
+
+            .field(
+                "reference",
+                width=6,
+            )
+
+            .field(
+                "notes",
+                width=12,
+            )
+
+            .field(
+                "metadata",
+                width=12,
+            )
+
+            .reverse(
+                "assets:asset-history",
+                kwargs={
+                    "pk": history.asset.pk,
+                },
+                label="Back to History",
+            )
+
+            .build()
+        )
+
+        return PageDTO(
+            title="History Event",
+
+            subtitle=(
+                f"{history.asset.asset_tag} - "
+                f"{history.get_event_type_display()}"
+            ),
+
+            breadcrumb=[
+                BreadcrumbDTO(
+                    label="Assets",
+                    url=reverse(
+                        "assets:asset-list",
+                    ),
+                ),
+
+                BreadcrumbDTO(
+                    label=history.asset.asset_tag,
+                    url=reverse(
+                        "assets:asset-detail",
+                        kwargs={
+                            "pk": history.asset.pk,
+                        },
+                    ),
+                ),
+
+                BreadcrumbDTO(
+                    label="History",
+                    url=reverse(
+                        "assets:asset-history",
+                        kwargs={
+                            "pk": history.asset.pk,
+                        },
+                    ),
+                ),
+
+                BreadcrumbDTO(
+                    label="Event",
+                ),
+            ],
+
+            content=form_dto,
         )

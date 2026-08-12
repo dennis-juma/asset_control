@@ -1,6 +1,8 @@
 from django.db import transaction
 from assets.choices.history_choices import AssetHistoryEvent
 from assets.services.asset_history_service import AssetHistoryService
+from assets.services.asset_service import AssetService
+
 
 from assets.choices import (
     AssetStatus,
@@ -42,34 +44,43 @@ class AssetAssignmentService:
         assignment = AssetAssignment(
             company=dto.company,
             asset=dto.asset,
-            assignment_type= dto.assignment_type,
+            assignment_type=dto.assignment_type,
             employee=dto.employee,
-            site=dto.employee.site if dto.employee else dto.site,
+            site=(
+                dto.employee.site
+                if dto.employee
+                else dto.site
+            ),
             assigned_date=dto.assigned_date,
             expected_return_date=dto.expected_return_date,
             remarks=dto.remarks,
             status=AssignmentStatus.ACTIVE,
         )
 
-        assignment = self.repository.create(assignment)
+        assignment = self.repository.create(
+            assignment
+        )
 
         asset = dto.asset
-        old_status = asset.status
-        asset.status = AssetStatus.ASSIGNED
-        asset.save(update_fields=["status"])
 
+        old_status = asset.status
+
+        asset.status = AssetStatus.ASSIGNED
+
+        asset.save(
+            update_fields=["status"]
+        )
 
         AssetHistoryService.log_event(
-        asset=asset,
-        event_type=AssetHistoryEvent.ASSIGNED,
-        employee=assignment.employee,
-        site=assignment.site,
-        old_status=old_status,
-        new_status=AssetStatus.ASSIGNED,
-        reference=str(assignment.pk),
-        notes=assignment.remarks or "Asset assigned.",
-    )
-        
+            asset=asset,
+            event_type=AssetHistoryEvent.ASSIGNED,
+            employee=assignment.employee,
+            site=assignment.site,
+            old_status=old_status,
+            new_status=AssetStatus.ASSIGNED,
+            reference=str(assignment.pk),
+            notes=dto.remarks or "Asset assigned.",
+        )
 
         return assignment
 
@@ -114,13 +125,16 @@ class AssetAssignmentService:
         assignment.status = AssignmentStatus.RETURNED
         assignment.remarks = dto.remarks
 
-        self.repository.update(assignment)
+        assignment = self.repository.update(
+            assignment
+        )
 
         asset = assignment.asset
 
         old_status = asset.status
 
         asset.status = AssetStatus.AVAILABLE
+
         asset.save(
             update_fields=["status"]
         )
@@ -137,4 +151,3 @@ class AssetAssignmentService:
         )
 
         return assignment
-        

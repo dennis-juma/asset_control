@@ -106,7 +106,7 @@ class AssetModel(BaseModel):
 
             self.code = CodeGenerator.generate(
                 model=AssetModel,
-                field="code",
+                field_name="code",
                 prefix="MOD",
             )
 

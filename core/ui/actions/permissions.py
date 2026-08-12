@@ -1,3 +1,6 @@
+from core.permissions.service import PermissionService
+
+
 class ActionPermissionService:
 
     @staticmethod
@@ -10,11 +13,20 @@ class ActionPermissionService:
 
         for action in actions:
 
-            if not action.permission:
+            permission = getattr(
+                action,
+                "permission",
+                None,
+            )
+
+            if not permission:
                 visible.append(action)
                 continue
 
-            if user.has_perm(action.permission):
+            if PermissionService.can(
+                user,
+                permission,
+            ):
                 visible.append(action)
 
         return visible

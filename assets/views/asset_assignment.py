@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
+from core.permissions.constants import Permissions
+from core.permissions.mixins import PermissionRequiredMixin
 
 from assets.dtos import (
     AssetAssignmentCreateDTO,
@@ -17,7 +19,10 @@ from assets.repositories import AssetAssignmentRepository
 from assets.services import AssetAssignmentService
 
 
-class AssetAssignmentListView(TemplateView):
+class AssetAssignmentListView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/list.html"
 
@@ -35,8 +40,10 @@ class AssetAssignmentListView(TemplateView):
         )
 
 
-class AssetAssignmentCreateView(TemplateView):
-
+class AssetAssignmentCreateView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_CREATE
     template_name = "crud/form.html"
 
     def get(self, request):
@@ -85,7 +92,10 @@ class AssetAssignmentCreateView(TemplateView):
         )
 
 
-class AssetAssignmentDetailView(TemplateView):
+class AssetAssignmentDetailView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/form.html"
 
@@ -102,7 +112,10 @@ class AssetAssignmentDetailView(TemplateView):
         )
 
 
-class AssetAssignmentUpdateView(TemplateView):
+class AssetAssignmentUpdateView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_UPDATE
 
     template_name = "crud/form.html"
 
@@ -139,6 +152,7 @@ class AssetAssignmentUpdateView(TemplateView):
             )
 
         dto = AssetAssignmentUpdateDTO(
+            assignment_type=form.cleaned_data["assignment_type"],
             employee=form.cleaned_data["employee"],
             site=form.cleaned_data["site"],
             assigned_date=form.cleaned_data["assigned_date"],
@@ -162,7 +176,10 @@ class AssetAssignmentUpdateView(TemplateView):
         )
 
 
-class AssetReturnView(TemplateView):
+class AssetReturnView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_UPDATE
 
     template_name = "crud/form.html"
 

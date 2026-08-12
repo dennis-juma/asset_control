@@ -3,6 +3,9 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
+from core.permissions.constants import Permissions
+from core.permissions.mixins import PermissionRequiredMixin
+
 from assets.dtos import (
     AssetCategoryCreateDTO,
     AssetCategoryUpdateDTO,
@@ -16,7 +19,10 @@ from assets.repositories import AssetCategoryRepository
 from assets.services import AssetCategoryService
 
 
-class AssetCategoryListView(TemplateView):
+class AssetCategoryListView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/list.html"
 
@@ -32,7 +38,10 @@ class AssetCategoryListView(TemplateView):
         })
 
 
-class AssetCategoryCreateView(TemplateView):
+class AssetCategoryCreateView(
+    PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_CREATE
 
     template_name = "crud/form.html"
 
@@ -75,7 +84,11 @@ class AssetCategoryCreateView(TemplateView):
         return redirect("assets:asset-category-list")
 
 
-class AssetCategoryDetailView(TemplateView):
+class AssetCategoryDetailView(
+     PermissionRequiredMixin,
+    TemplateView):
+
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/form.html"
 
@@ -92,7 +105,10 @@ class AssetCategoryDetailView(TemplateView):
         )
 
 
-class AssetCategoryUpdateView(TemplateView):
+class AssetCategoryUpdateView(
+     PermissionRequiredMixin,
+    TemplateView):
+    permission_required = Permissions.ASSET_UPDATE
 
     template_name = "crud/form.html"
 
@@ -147,7 +163,11 @@ class AssetCategoryUpdateView(TemplateView):
         return redirect("assets:asset-category-list")
 
 
-class AssetCategoryDeleteView(TemplateView):
+class AssetCategoryDeleteView(
+     PermissionRequiredMixin,
+    TemplateView):
+
+    permission_required = Permissions.ASSET_DELETE
 
     template_name = "common/delete.html"
 

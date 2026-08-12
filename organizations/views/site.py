@@ -6,6 +6,8 @@ from django.shortcuts import (
 )
 from django.views import View
 
+from core.permissions.mixins import PermissionRequiredMixin
+
 from organizations.dtos import (
     SiteCreateDTO,
     SiteUpdateDTO,
@@ -16,7 +18,7 @@ from organizations.services import SiteService
 
 
 
-class SiteListView(View):
+class SiteListView(PermissionRequiredMixin, View):
 
     page_service = SitePageService()
 
@@ -44,7 +46,7 @@ class SiteListView(View):
 
         )
 
-class SiteCreateView(View):
+class SiteCreateView(PermissionRequiredMixin, View):
 
     page_service = SitePageService()
 
@@ -113,7 +115,7 @@ class SiteCreateView(View):
 
         )
 
-class SiteDetailView(View):
+class SiteDetailView(PermissionRequiredMixin, View):
 
     page_service = SitePageService()
 
@@ -155,7 +157,7 @@ class SiteDetailView(View):
 
         )
 
-class SiteUpdateView(View):
+class SiteUpdateView(PermissionRequiredMixin, View):
 
     page_service = SitePageService()
 
@@ -268,7 +270,7 @@ class SiteUpdateView(View):
         )
 
 
-class SiteDeleteView(View):
+class SiteDeleteView(PermissionRequiredMixin, View):
 
     service = SiteService()
 

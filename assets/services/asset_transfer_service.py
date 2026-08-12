@@ -2,6 +2,7 @@ from django.db import transaction
 from django.core.exceptions import ValidationError
 from assets.choices.history_choices import AssetHistoryEvent
 from assets.services.asset_history_service import AssetHistoryService
+
 from assets.choices import (
     AssignmentStatus,
     AssignmentType,

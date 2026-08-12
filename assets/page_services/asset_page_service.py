@@ -1,11 +1,12 @@
 from django.urls import reverse
 
+from core.permissions.constants import Permissions
+from core.dtos.asset_attachments import (
+    AssetAttachmentsContentDTO,
+)
 from assets.forms import (
     AssetCreateForm,
     AssetUpdateForm,
-    AssetReturnForm,
-    AssetAssignmentUpdateForm
-    
 )
 from assets.repositories import AssetRepository
 from core.dtos import (
@@ -122,6 +123,7 @@ class AssetPageService:
                             "assets:asset-create",
                         ),
                         style="warning",
+                        permission=Permissions.ASSET_CREATE,
                     ),
                 ],
             ),
@@ -276,6 +278,7 @@ class AssetPageService:
                             },
                         ),
                         style="warning",
+                         permission=Permissions.ASSET_UPDATE,
                     ),
                     ToolbarButton(
                         label="Back",
@@ -295,6 +298,7 @@ class AssetPageService:
         + f"?asset={asset.pk}"
     ),
     style="warning",
+     permission=Permissions.ASSET_TRANSFER,
 ),
 ToolbarButton(
     label="History",
@@ -306,11 +310,16 @@ ToolbarButton(
         },
     ),
     style="secondary",
+     permission=Permissions.ASSET_VIEW,
 ),
                 ],
             ),
             
             content=form_dto,
+            extra_content=AssetAttachmentsContentDTO(
+        asset=asset,
+        attachments=asset.attachments.all(),
+    )
         )
 
     # =====================================================
@@ -321,172 +330,47 @@ ToolbarButton(
 # Update Page
 # =====================================================
 
-    def update_page(
-        self,
-        assignment,
-        form=None,
-    ):
-
+    def update_page(self, asset, form=None):
         if form is None:
-            form = AssetAssignmentUpdateForm(
-                instance=assignment,
-            )
+            form = AssetUpdateForm(instance=asset)
 
         form_dto = (
-            FormBuilder(
-                title="Edit Assignment",
-                form=form,
-            )
-
-            .section("Assignment Information")
-
-            .field("employee", width=6)
-            .field("site", width=6)
-
-            .section("Assignment Dates")
-
-            .field("assigned_date", width=6)
-            .field("expected_return_date", width=6)
-
-            .section("Remarks")
-
+            FormBuilder(title="Edit Asset", form=form)
+            .section("Asset Information")
+            .field("company", width=6)
+            .field("asset_model", width=6)
+            .field("serial_number", width=12)
+            .section("Procurement")
+            .field("purchase_date", width=6)
+            .field("received_date", width=6)
+            .field("purchase_cost", width=6)
+            .field("invoice_number", width=6)
+            .section("Additional Information")
+            .field("condition", width=6)
             .field("remarks", width=12)
-
             .section("System")
-
             .field("is_active", width=12)
-
-            .submit(
-                "Update Assignment",
-                icon="save",
-            )
-
-            .reverse(
-                "assets:asset-assignment-list",
-            )
-
+            .submit("Update Asset", icon="save")
+            .reverse("assets:asset-detail", kwargs={"pk": asset.pk})
             .build()
         )
 
-        assigned_to = (
-            assignment.employee.full_name
-            if assignment.employee
-            else assignment.site.name
-        )
-
         return PageDTO(
-            title="Edit Assignment",
-
-            subtitle=assignment.asset.asset_tag,
-
-            description=[
-                assignment.asset.asset_model.name,
-                f"Assigned To: {assigned_to}",
-                f"Status: {assignment.get_status_display()}",
-            ],
-
+            title="Edit Asset",
+            subtitle=asset.asset_tag,
             breadcrumb=[
                 BreadcrumbDTO(
-                    label="Assignments",
-                    url=reverse(
-                        "assets:asset-assignment-list",
-                    ),
+                    label="Assets",
+                    url=reverse("assets:asset-list"),
                 ),
                 BreadcrumbDTO(
-                    label=assignment.asset.asset_tag,
+                    label=asset.asset_tag,
                     url=reverse(
-                        "assets:asset-assignment-detail",
-                        kwargs={
-                            "pk": assignment.pk,
-                        },
+                        "assets:asset-detail",
+                        kwargs={"pk": asset.pk},
                     ),
                 ),
-                BreadcrumbDTO(
-                    label="Edit",
-                ),
+                BreadcrumbDTO(label="Edit"),
             ],
-
-            content=form_dto,
-        )
-
-# =====================================================
-# Return Page
-# =====================================================
-
-def return_page(
-    self,
-    assignment,
-    form=None,
-):
-
-        if form is None:
-            form = AssetReturnForm()
-
-        form_dto = (
-            FormBuilder(
-                title="Return Asset",
-                form=form,
-            )
-
-            .section("Return Information")
-
-            .field("returned_date", width=6)
-
-            .field("remarks", width=12)
-
-            .submit(
-                "Return Asset",
-                icon="arrow-return-left",
-            )
-
-            .reverse(
-                "assets:asset-assignment-detail",
-                kwargs={
-                    "pk": assignment.pk,
-                },
-            )
-
-            .build()
-        )
-
-        assigned_to = (
-            assignment.employee.full_name
-            if assignment.employee
-            else assignment.site.name
-        )
-
-        return PageDTO(
-            title="Return Asset",
-
-            subtitle=assignment.asset.asset_tag,
-
-            description=[
-                assignment.asset.asset_model.name,
-                f"Assigned To: {assigned_to}",
-                f"Assigned Date: {assignment.assigned_date}",
-                f"Status: {assignment.get_status_display()}",
-            ],
-
-            breadcrumb=[
-                BreadcrumbDTO(
-                    label="Assignments",
-                    url=reverse(
-                        "assets:asset-assignment-list",
-                    ),
-                ),
-                BreadcrumbDTO(
-                    label=assignment.asset.asset_tag,
-                    url=reverse(
-                        "assets:asset-assignment-detail",
-                        kwargs={
-                            "pk": assignment.pk,
-                        },
-                    ),
-                ),
-                BreadcrumbDTO(
-                    label="Return",
-                ),
-            ],
-
             content=form_dto,
         )

@@ -74,3 +74,5 @@ class PageDTO:
     # =====================================================
 
     content: Any = None
+
+    extra_content: Any = None

@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Any
 
-from accounts.models import User
 from employees.models.employee import Employee
 from organizations.models import (
     Company,
@@ -37,8 +36,6 @@ class EmployeeCreateDTO:
     phone: str = ""
     email: str = ""
 
-    user: User | None = None
-
     manager: "Employee | None" = None
 
     photo: Any | None = None
@@ -70,8 +67,6 @@ class EmployeeUpdateDTO:
 
     phone: str = ""
     email: str = ""
-
-    user: User | None = None
 
     manager: "Employee | None" = None
 

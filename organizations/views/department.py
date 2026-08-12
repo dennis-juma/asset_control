@@ -6,6 +6,8 @@ from django.shortcuts import (
 )
 from django.views import View
 
+from core.permissions.mixins import PermissionRequiredMixin
+
 from organizations.dtos import (
     DepartmentCreateDTO,
     DepartmentUpdateDTO,
@@ -17,7 +19,7 @@ from organizations.page_services.department_page_service import (
 from organizations.services import DepartmentService
 
 
-class DepartmentListView(View):
+class DepartmentListView(PermissionRequiredMixin, View):
 
     page_service = DepartmentPageService()
 
@@ -37,7 +39,7 @@ class DepartmentListView(View):
         )
 
 
-class DepartmentCreateView(View):
+class DepartmentCreateView(PermissionRequiredMixin, View):
 
     page_service = DepartmentPageService()
     service = DepartmentService()
@@ -77,7 +79,7 @@ class DepartmentCreateView(View):
         )
 
 
-class DepartmentDetailView(View):
+class DepartmentDetailView(PermissionRequiredMixin, View):
 
     page_service = DepartmentPageService()
 
@@ -105,7 +107,7 @@ class DepartmentDetailView(View):
         )
 
 
-class DepartmentUpdateView(View):
+class DepartmentUpdateView(PermissionRequiredMixin, View):
 
     page_service = DepartmentPageService()
     service = DepartmentService()
@@ -169,7 +171,7 @@ class DepartmentUpdateView(View):
         )
 
 
-class DepartmentDeleteView(View):
+class DepartmentDeleteView(PermissionRequiredMixin, View):
 
     service = DepartmentService()
 

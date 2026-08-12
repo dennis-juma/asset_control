@@ -1,7 +1,10 @@
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView
 from django.core.exceptions import ValidationError
+
+from core.permissions.constants import Permissions
+from core.permissions.mixins import PermissionRequiredMixin
 
 from assets.dtos.asset_transfer import (
     AssetTransferCreateDTO,
@@ -29,7 +32,10 @@ from assets.services.asset_transfer_service import (
 )
 
 
-class AssetTransferListView(TemplateView):
+class AssetTransferListView(
+    PermissionRequiredMixin,
+     TemplateView):
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/list.html"
 
@@ -59,7 +65,10 @@ class AssetTransferListView(TemplateView):
 
 
 
-class AssetTransferCreateView(TemplateView):
+class AssetTransferCreateView(
+    PermissionRequiredMixin,
+     TemplateView):
+    permission_required = Permissions.ASSET_TRANSFER
 
     template_name = "crud/form.html"
 
@@ -69,7 +78,7 @@ class AssetTransferCreateView(TemplateView):
         if not asset_id:
             return None
 
-        return AssetRepository().get(asset_id)
+        return get_object_or_404(Asset, pk=asset_id)
 
     def get(
         self,
@@ -236,7 +245,10 @@ class AssetTransferCreateView(TemplateView):
                     )
 
 
-class AssetTransferDetailView(TemplateView):
+class AssetTransferDetailView(
+    PermissionRequiredMixin,
+     TemplateView):
+    permission_required = Permissions.ASSET_VIEW
 
     template_name = "crud/form.html"
 
@@ -266,7 +278,10 @@ class AssetTransferDetailView(TemplateView):
         )
 
 
-class AssetTransferUpdateView(TemplateView):
+class AssetTransferUpdateView(
+    PermissionRequiredMixin,
+     TemplateView):
+    permission_required = Permissions.ASSET_TRANSFER
 
     template_name = "crud/form.html"
 

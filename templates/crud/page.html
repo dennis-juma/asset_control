@@ -41,6 +41,11 @@
         {% include "components/empty.html" %}
 
     {% endif %}
+    {% if page.extra_content %}
+
+    {% include page.extra_content.template %}
+
+{% endif %}
 
 </div>
 

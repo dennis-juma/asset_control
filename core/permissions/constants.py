@@ -21,6 +21,14 @@ class Permissions:
 
     EMPLOYEE_UPDATE = "employees.change_employee"
 
+    EMPLOYEE_CREATE = "employees.add_employee"
+    EMPLOYEE_DELETE = "employees.delete_employee"
+
+    ORGANIZATION_VIEW = "organizations.view_company"
+    ORGANIZATION_CREATE = "organizations.add_company"
+    ORGANIZATION_UPDATE = "organizations.change_company"
+    ORGANIZATION_DELETE = "organizations.delete_company"
+
     # Inventory
 
     INVENTORY_VIEW = "inventory.view_inventory"

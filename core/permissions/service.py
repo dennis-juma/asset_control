@@ -1,3 +1,5 @@
+from django.core.exceptions import PermissionDenied
+
 from core.permissions.providers.django_provider import (
     DjangoPermissionProvider,
 )
@@ -26,6 +28,8 @@ class PermissionService:
         permission,
     ):
 
-        if not cls.can(user, permission):
-
+        if not cls.can(
+            user,
+            permission,
+        ):
             raise PermissionDenied()

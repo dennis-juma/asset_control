@@ -6,6 +6,8 @@ from django.shortcuts import (
 )
 from django.views import View
 
+from core.permissions.mixins import PermissionRequiredMixin
+
 from organizations.dtos import (
     CountryCreateDTO,
     CountryUpdateDTO,
@@ -15,7 +17,7 @@ from organizations.page_services.country_page_service import CountryPageService
 from organizations.services import CountryService
 
 
-class CountryListView(View):
+class CountryListView(PermissionRequiredMixin, View):
 
     page_service = CountryPageService()
 
@@ -43,7 +45,7 @@ class CountryListView(View):
 
         )
 
-class CountryCreateView(View):
+class CountryCreateView(PermissionRequiredMixin, View):
 
     page_service = CountryPageService()
 
@@ -107,7 +109,7 @@ class CountryCreateView(View):
 
         )
 
-class CountryDetailView(View):
+class CountryDetailView(PermissionRequiredMixin, View):
 
     page_service = CountryPageService()
 
@@ -149,7 +151,7 @@ class CountryDetailView(View):
 
         )
 
-class CountryUpdateView(View):
+class CountryUpdateView(PermissionRequiredMixin, View):
 
     page_service = CountryPageService()
 
@@ -257,7 +259,7 @@ class CountryUpdateView(View):
 
         )
 
-class CountryDeleteView(View):
+class CountryDeleteView(PermissionRequiredMixin, View):
 
     service = CountryService()
 
