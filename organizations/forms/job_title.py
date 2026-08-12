@@ -9,7 +9,7 @@ class JobTitleCreateForm(forms.ModelForm):
         model = JobTitle
 
         fields = [
-            "company",
+            "country",
             "department",
             "name",
             "description",
@@ -30,7 +30,7 @@ class JobTitleUpdateForm(forms.ModelForm):
         model = JobTitle
 
         fields = [
-            "company",
+            "country",
             "department",
             "name",
             "description",

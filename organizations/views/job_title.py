@@ -65,7 +65,7 @@ class JobTitleCreateView(PermissionRequiredMixin, View):
     def post(self, request):
 
         dto = JobTitleCreateDTO(
-            company=request.POST.get("company"),
+            country=request.POST.get("country"),
             department=request.POST.get("department"),
             name=request.POST.get("name", ""),
             description=request.POST.get("description", ""),
@@ -152,7 +152,7 @@ class JobTitleUpdateView(PermissionRequiredMixin, View):
         )
 
         dto = JobTitleUpdateDTO(
-            company=request.POST.get("company"),
+            country=request.POST.get("country"),
             department=request.POST.get("department"),
             name=request.POST.get("name", ""),
             description=request.POST.get("description", ""),

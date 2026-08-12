@@ -31,7 +31,7 @@ class AssetService:
         self.validator.validate_create(dto)
 
         asset = Asset(
-            company=dto.company,
+            country=dto.country,
             asset_model=dto.asset_model,
             serial_number=dto.serial_number,
             purchase_date=dto.purchase_date,
@@ -68,7 +68,7 @@ class AssetService:
             dto,
         )
 
-        asset.company = dto.company
+        asset.country = dto.country
         asset.asset_model = dto.asset_model
         asset.serial_number = dto.serial_number
         asset.purchase_date = dto.purchase_date

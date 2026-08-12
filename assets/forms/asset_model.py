@@ -9,7 +9,7 @@ class AssetModelCreateForm(forms.ModelForm):
         model = AssetModel
 
         fields = [
-            "company",
+            "country",
             "category",
             "brand",
             "name",
@@ -25,7 +25,7 @@ class AssetModelUpdateForm(forms.ModelForm):
         model = AssetModel
 
         fields = [
-            "company",
+            "country",
             "category",
             "brand",
             "name",

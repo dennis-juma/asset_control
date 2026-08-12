@@ -2,19 +2,19 @@ from django.db import models
 
 from core.models import BaseModel
 from core.services import CodeGenerator
-from organizations.models import Company, Site
+from organizations.models import Country, Site
 
 
 class Department(BaseModel):
     """
-    Represents an organizational department within a company and site.
+    Represents an organizational department within a country and site.
     Supports hierarchical departments and cost center mapping.
     """
 
     slug_source = "name"
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="departments",
         null=True,
@@ -66,7 +66,7 @@ class Department(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=[
-                    "company",
+                    "country",
                     "site",
                     "name",
                 ],
@@ -75,7 +75,7 @@ class Department(BaseModel):
         ]
 
         indexes = [
-            models.Index(fields=["company"]),
+            models.Index(fields=["country"]),
             models.Index(fields=["site"]),
             models.Index(fields=["name"]),
         ]

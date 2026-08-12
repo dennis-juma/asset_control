@@ -23,7 +23,7 @@ class CustomUserAdmin(UserAdmin):
 
     fieldsets = UserAdmin.fieldsets + (
         (
-            "Company Information",
+            "Country Information",
             {
                 "fields": (
                     "employee_id",

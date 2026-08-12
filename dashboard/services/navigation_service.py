@@ -83,11 +83,6 @@ class NavigationService:
     icon="bi-buildings",
     children=[
         NavigationItem(
-            title="Companies",
-            url=reverse("organizations:company-list"),
-        ),
-
-        NavigationItem(
             title="Countries",
             url=reverse("organizations:country-list"),
         ),

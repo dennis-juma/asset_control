@@ -53,8 +53,8 @@ class BrandPageService:
 
 
         grid.column(
-            field="company",
-            label="Company",
+            field="country",
+            label="Country",
         )
 
 
@@ -69,7 +69,7 @@ class BrandPageService:
                 row_id=brand.pk,
                 code=brand.code,
                 name=brand.name,
-                company=brand.company.name,
+                country=brand.country.name,
                 is_active=brand.is_active,
             )
 
@@ -131,7 +131,7 @@ class BrandPageService:
 
             .section("Brand Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             
 
             .field("name", width=8)
@@ -195,7 +195,7 @@ class BrandPageService:
 
             .section("Brand Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             
             .field("name", width=8)
            
@@ -269,7 +269,7 @@ class BrandPageService:
 
             .section("Brand Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             
 
             .field("name", width=8)

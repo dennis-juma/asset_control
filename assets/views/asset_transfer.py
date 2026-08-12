@@ -181,7 +181,7 @@ class AssetTransferCreateView(
             )
 
         dto = AssetTransferCreateDTO(
-            company=asset.company,
+            country=asset.country,
             asset=asset,
             previous_assignment=previous_assignment,
             to_employee=form.cleaned_data.get(

@@ -15,7 +15,7 @@ class AssetCategoryRepository:
         queryset = (
             AssetCategory.objects
             .select_related(
-                "company",
+                "country",
                 "parent",
             )
             .order_by(
@@ -28,7 +28,7 @@ class AssetCategoryRepository:
             queryset = queryset.filter(
                 Q(code__icontains=query)
                 | Q(name__icontains=query)
-                | Q(company__name__icontains=query)
+                | Q(country__name__icontains=query)
                 | Q(parent__name__icontains=query)
             )
 
@@ -46,7 +46,7 @@ class AssetCategoryRepository:
         return (
             AssetCategory.objects
             .select_related(
-                "company",
+                "country",
                 "parent",
             )
             .get(

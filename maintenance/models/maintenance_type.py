@@ -3,7 +3,7 @@ from django.db import models
 
 from core.models import BaseModel
 from core.utils.code import generate_code
-from organizations.models import Company
+from organizations.models import Country
 
 
 class MaintenanceType(BaseModel):
@@ -21,10 +21,12 @@ class MaintenanceType(BaseModel):
 
     slug_source = "name"
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.CASCADE,
         related_name="maintenance_types",
+        null=True,
+        blank=True,
     )
 
     name = models.CharField(
@@ -49,17 +51,17 @@ class MaintenanceType(BaseModel):
 
         constraints = [
             models.UniqueConstraint(
-                fields=["company", "name"],
-                name="unique_maintenance_type_name_per_company",
+                fields=["country", "name"],
+                name="unique_maintenance_type_name_per_country",
             ),
             models.UniqueConstraint(
-                fields=["company", "code"],
-                name="unique_maintenance_type_code_per_company",
+                fields=["country", "code"],
+                name="unique_maintenance_type_code_per_country",
             ),
         ]
 
         indexes = [
-            models.Index(fields=["company"]),
+            models.Index(fields=["country"]),
             models.Index(fields=["name"]),
             models.Index(fields=["code"]),
             models.Index(fields=["is_active"]),
@@ -76,13 +78,13 @@ class MaintenanceType(BaseModel):
             })
 
         if MaintenanceType.objects.filter(
-            company=self.company,
+            country=self.country,
             name__iexact=self.name,
         ).exclude(pk=self.pk).exists():
             raise ValidationError({
                 "name": (
                     "A maintenance type with this name "
-                    "already exists for this company."
+                    "already exists for this country."
                 )
             })
 

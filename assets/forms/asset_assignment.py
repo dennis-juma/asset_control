@@ -11,7 +11,7 @@ class AssetAssignmentCreateForm(forms.ModelForm):
         model = AssetAssignment
 
         fields = [
-            "company",
+            "country",
             "asset",
             "assignment_type",
             "employee",

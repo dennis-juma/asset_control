@@ -70,7 +70,7 @@ class AssetAssignmentCreateView(
 
         dto = AssetAssignmentCreateDTO(
         
-            company=form.cleaned_data["company"],
+            country=form.cleaned_data["country"],
             asset=form.cleaned_data["asset"],
             assignment_type=form.cleaned_data["assignment_type"],
             employee=form.cleaned_data["employee"],

@@ -42,7 +42,7 @@ class AssetAssignmentService:
         self.validator.validate_create(dto)
 
         assignment = AssetAssignment(
-            company=dto.company,
+            country=dto.country,
             asset=dto.asset,
             assignment_type=dto.assignment_type,
             employee=dto.employee,

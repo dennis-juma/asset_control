@@ -20,7 +20,7 @@ class AssetModelService:
         """
 
         asset_model = AssetModel(
-            company=dto.company,
+            country=dto.country,
             category=dto.category,
             brand=dto.brand,
             name=dto.name,
@@ -40,7 +40,7 @@ class AssetModelService:
         Update an existing Asset Model.
         """
 
-        asset_model.company = dto.company
+        asset_model.country = dto.country
         asset_model.category = dto.category
         asset_model.brand = dto.brand
         asset_model.name = dto.name

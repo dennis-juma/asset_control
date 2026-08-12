@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -281,11 +282,15 @@ class CountryDeleteView(PermissionRequiredMixin, View):
 
         )
 
-        self.service.delete(
+        try:
+            self.service.delete(country)
+        except ProtectedError:
+            messages.error(
+                request,
+                "Country cannot be deleted because it is in use.",
+            )
 
-            country,
-
-        )
+            return redirect("organizations:country-list")
 
         messages.success(
 

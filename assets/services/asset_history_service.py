@@ -34,7 +34,7 @@ class AssetHistoryService:
     ) -> AssetHistory:
 
         return AssetHistory.objects.create(
-            company=asset.company,
+            country=asset.country,
             asset=asset,
             event_type=event_type,
             performed_by=performed_by,

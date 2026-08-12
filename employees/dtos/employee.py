@@ -4,7 +4,7 @@ from typing import Any
 
 from employees.models.employee import Employee
 from organizations.models import (
-    Company,
+    Country,
     Department,
     JobTitle,
     Site,
@@ -17,7 +17,7 @@ class EmployeeCreateDTO:
     Data Transfer Object for creating an employee.
     """
 
-    company: Company
+    country: Country
     site: Site
     department: Department
     job_title: JobTitle
@@ -49,7 +49,7 @@ class EmployeeUpdateDTO:
     Data Transfer Object for updating an employee.
     """
 
-    company: Company
+    country: Country
     site: Site
     department: Department
     job_title: JobTitle

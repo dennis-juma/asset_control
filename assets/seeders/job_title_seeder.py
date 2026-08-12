@@ -1,9 +1,9 @@
-from organizations.models import Company, JobTitle
+from organizations.models import Country, JobTitle
 
 
 class JobTitleSeeder:
     """
-    Seeds company job titles.
+    Seeds country job titles.
     """
 
     JOB_TITLES = [
@@ -37,21 +37,21 @@ class JobTitleSeeder:
     def run(stdout):
         stdout.write("Creating job titles...")
 
-        company = Company.objects.first()
+        country = Country.objects.first()
 
-        if not company:
+        if not country:
             raise Exception(
-                "No company found. Please run CompanySeeder first."
+                "No country found. Please run CompanySeeder first."
             )
 
         for title in JobTitleSeeder.JOB_TITLES:
 
             JobTitle.objects.get_or_create(
-                company=company,
+                country=country,
                 name=title,
                 defaults={
                     "description": title,
                 },
             )
 
-            stdout.write(f"  ✓ {title}")
+            stdout.write(f"  âœ“ {title}")

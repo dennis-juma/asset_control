@@ -4,7 +4,7 @@ from organizations.models import Site
 
 class SiteSeeder:
     """
-    Seeds default company sites.
+    Seeds default country sites.
     """
 
     DEFAULT_SITES = {
@@ -86,8 +86,8 @@ class SiteSeeder:
                 sites.append(site)
 
                 if created:
-                    stdout.write(f"  ✓ {site.name}")
+                    stdout.write(f"  âœ“ {site.name}")
                 else:
-                    stdout.write(f"  • {site.name} already exists")
+                    stdout.write(f"  â€¢ {site.name} already exists")
 
         return sites

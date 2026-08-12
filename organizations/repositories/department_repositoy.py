@@ -15,7 +15,7 @@ class DepartmentRepository:
         queryset = (
             Department.objects
             .select_related(
-                "company",
+                "country",
                 "site",
                 "parent",
             )
@@ -29,7 +29,7 @@ class DepartmentRepository:
                 Q(name__icontains=query)
                 | Q(code__icontains=query)
                 | Q(cost_center__icontains=query)
-                | Q(company__name__icontains=query)
+                | Q(country__name__icontains=query)
                 | Q(site__name__icontains=query)
             )
 
@@ -47,7 +47,7 @@ class DepartmentRepository:
         return (
             Department.objects
             .select_related(
-                "company",
+                "country",
                 "site",
                 "parent",
             )

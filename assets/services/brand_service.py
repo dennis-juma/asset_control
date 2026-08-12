@@ -20,7 +20,7 @@ class BrandService:
         """
 
         brand = Brand(
-            company=dto.company,
+            country=dto.country,
             name=dto.name,
             description=dto.description,
         )
@@ -36,7 +36,7 @@ class BrandService:
         Update an existing Brand.
         """
 
-        brand.company = dto.company
+        brand.country = dto.country
         brand.name = dto.name
         brand.description = dto.description
         brand.is_active = dto.is_active

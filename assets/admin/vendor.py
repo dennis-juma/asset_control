@@ -9,7 +9,7 @@ class VendorAdmin(admin.ModelAdmin):
         "code",
         "name",
         "vendor_type",
-        "company",
+        "country",
         "country",
         "contact_person",
         "phone",
@@ -18,7 +18,7 @@ class VendorAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        "company",
+        "country",
         "country",
         "vendor_type",
         "is_active",
@@ -35,7 +35,7 @@ class VendorAdmin(admin.ModelAdmin):
     )
 
     autocomplete_fields = (
-        "company",
+        "country",
         "country",
     )
 

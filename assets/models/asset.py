@@ -1,5 +1,5 @@
 from django.db import models
-from organizations.models import Company
+from organizations.models import Country
 from assets.choices import (
     AssetCondition,
     AssetStatus,
@@ -16,8 +16,8 @@ class Asset(BaseModel):
 
     slug_source = "asset_tag"
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.CASCADE,
         related_name="assets",
         null=True,

@@ -6,15 +6,17 @@ from assets.models.asset_assignment import AssetAssignment
 from core.models import TransactionModel
 
 from employees.models import Employee
-from organizations.models import Company, Site
+from organizations.models import Country, Site
 
 
 class AssetTransfer(TransactionModel):
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="asset_transfers",
+        null=True,
+        blank=True,
     )
 
     asset = models.ForeignKey(

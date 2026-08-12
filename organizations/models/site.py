@@ -3,7 +3,6 @@ from django.db import models
 from common.choices import SiteType
 from core.models import BaseModel
 from core.services import CodeGenerator
-from organizations.models.company import Company
 from organizations.models.country import Country
 
 
@@ -14,11 +13,6 @@ class Site(BaseModel):
     Physical office, warehouse, call center or AHQ.
     """
 
-    company = models.ForeignKey(
-    Company,
-    on_delete=models.PROTECT,
-    related_name="sites",
-)
     country = models.ForeignKey(
     Country,
     on_delete=models.PROTECT,
@@ -86,15 +80,13 @@ class Site(BaseModel):
 
         super().save(*args, **kwargs)
 
-class Meta:
-    ordering = ["name"]
-
-    constraints = [
-        models.UniqueConstraint(
-            fields=["company", "country", "name"],
-            name="unique_company_country_site",
-        )
-    ]
-
-    verbose_name = "Site"
-    verbose_name_plural = "Sites"
+    class Meta:
+        ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["country", "name"],
+                name="unique_country_site",
+            )
+        ]
+        verbose_name = "Site"
+        verbose_name_plural = "Sites"

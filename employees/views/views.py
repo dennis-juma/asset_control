@@ -17,7 +17,7 @@ from employees.models import Employee
 from employees.page_services import EmployeePageService
 from employees.services import EmployeeService
 from organizations.models import (
-    Company,
+    Country,
     Department,
     JobTitle,
     Site,
@@ -70,9 +70,9 @@ class EmployeeCreateView(PermissionRequiredMixin, View):
 
         dto = EmployeeCreateDTO(
 
-            company=get_object_or_404(
-                Company,
-                pk=request.POST.get("company"),
+            country=get_object_or_404(
+                Country,
+                pk=request.POST.get("country"),
             ),
 
             site=get_object_or_404(
@@ -206,9 +206,9 @@ class EmployeeUpdateView(PermissionRequiredMixin, View):
 
         dto = EmployeeUpdateDTO(
 
-            company=get_object_or_404(
-                Company,
-                pk=request.POST.get("company"),
+            country=get_object_or_404(
+                Country,
+                pk=request.POST.get("country"),
             ),
 
             site=get_object_or_404(

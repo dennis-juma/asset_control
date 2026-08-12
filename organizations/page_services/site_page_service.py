@@ -49,8 +49,8 @@ class SitePageService:
         )
 
         grid.column(
-            field="company",
-            label="Company",
+            field="country",
+            label="Country",
         )
 
         grid.column(
@@ -82,9 +82,7 @@ class SitePageService:
 
                 name=site.name,
 
-                company=site.company.name,
-
-                country=site.country.name,
+                country=site.country.name,
 
                 site_type=site.get_site_type_display(),
 
@@ -161,7 +159,7 @@ class SitePageService:
         .section("General Information")
 
         .field(
-            "company",
+            "country",
             width=6,
         )
 
@@ -296,7 +294,7 @@ class SitePageService:
         )
         .section("General Information")
         .field(
-            "company",
+            "country",
             width=6,
         )
         .field(
@@ -405,7 +403,7 @@ class SitePageService:
         .section("General Information")
 
         .field(
-            "company",
+            "country",
             width=6,
         )
 

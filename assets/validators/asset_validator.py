@@ -80,11 +80,11 @@ class AssetValidator:
         self,
         dto,
     ):
-        if dto.asset_model.company != dto.company:
+        if dto.asset_model.country != dto.country:
             raise ValidationError(
                 {
-                    "company":
-                    "Selected Asset Model belongs to another company."
+                    "country":
+                    "Selected Asset Model belongs to another country."
                 }
             )
 

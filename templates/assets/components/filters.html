@@ -79,28 +79,28 @@
 
                 </div>
 
-                <!-- Company -->
+                <!-- Country -->
                 <div class="col-lg-2">
 
                     <label class="form-label">
-                        Company
+                        Country
                     </label>
 
                     <select
                         class="form-select"
-                        name="company"
+                        name="country"
                     >
 
                         <option value="">All</option>
 
-                        {% for company in companies %}
+                        {% for country in companies %}
                             <option
-                                value="{{ company.id }}"
-                                {% if request.GET.company == company.id|stringformat:"s" %}
+                                value="{{ country.id }}"
+                                {% if request.GET.country == country.id|stringformat:"s" %}
                                     selected
                                 {% endif %}
                             >
-                                {{ company.name }}
+                                {{ country.name }}
                             </option>
                         {% endfor %}
 

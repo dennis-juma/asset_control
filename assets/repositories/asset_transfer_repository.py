@@ -25,7 +25,7 @@ class AssetTransferRepository:
         queryset = (
             AssetTransfer.objects
             .select_related(
-                "company",
+                "country",
                 "asset",
                 "previous_assignment",
                 "new_assignment",
@@ -75,7 +75,7 @@ class AssetTransferRepository:
         return (
             AssetTransfer.objects
             .select_related(
-                "company",
+                "country",
                 "asset",
                 "previous_assignment",
                 "new_assignment",
@@ -100,7 +100,7 @@ class AssetTransferRepository:
             AssetAssignment.objects
             .select_related(
                 "asset",
-                "company",
+                "country",
                 "employee",
                 "site",
             )

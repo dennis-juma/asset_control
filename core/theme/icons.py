@@ -8,7 +8,7 @@ class ThemeIcons:
 
     LOCATION = "bi-geo-alt"
 
-    COMPANY = "bi-building"
+    COUNTRY = "bi-globe2"
 
     SETTINGS = "bi-gear"
 

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class DepartmentCreateDTO:
-    company: str
+    country: str
     site: str
     parent: str | None
     name: str
@@ -13,7 +13,7 @@ class DepartmentCreateDTO:
 
 @dataclass
 class DepartmentUpdateDTO:
-    company: str
+    country: str
     site: str
     parent: str | None
     name: str   

@@ -13,7 +13,7 @@ class AssetCategoryService:
 
     def create(self, dto):
         category = AssetCategory(
-            company=dto.company,
+            country=dto.country,
             parent=dto.parent,
             name=dto.name,
             description=dto.description,
@@ -27,7 +27,7 @@ class AssetCategoryService:
         category,
         dto,
     ):
-        category.company = dto.company
+        category.country = dto.country
         category.parent = dto.parent
         category.name = dto.name
         category.description = dto.description

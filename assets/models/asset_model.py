@@ -2,7 +2,7 @@ from django.db import models
 
 from core.models import BaseModel
 from core.services import CodeGenerator
-from organizations.models import Company
+from organizations.models import Country
 
 from assets.models import (
     AssetCategory,
@@ -22,10 +22,12 @@ class AssetModel(BaseModel):
 
     slug_source = "name"
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="asset_models",
+        null=True,
+        blank=True,
     )
 
     category = models.ForeignKey(
@@ -71,7 +73,7 @@ class AssetModel(BaseModel):
         ]
 
         indexes = [
-            models.Index(fields=["company"]),
+            models.Index(fields=["country"]),
             models.Index(fields=["category"]),
             models.Index(fields=["brand"]),
             models.Index(fields=["code"]),
@@ -82,7 +84,7 @@ class AssetModel(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=[
-                    "company",
+                    "country",
                     "brand",
                     "name",
                 ],
@@ -90,10 +92,10 @@ class AssetModel(BaseModel):
             ),
             models.UniqueConstraint(
                 fields=[
-                    "company",
+                    "country",
                     "code",
                 ],
-                name="unique_asset_model_code_per_company",
+                name="unique_asset_model_code_per_country",
             ),
         ]
 

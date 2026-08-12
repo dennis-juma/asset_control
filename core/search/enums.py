@@ -16,7 +16,7 @@ class SearchResultType(str, Enum):
 
     EMPLOYEE = "employee"
 
-    COMPANY = "company"
+    COUNTRY = "country"
 
     LOCATION = "location"
 

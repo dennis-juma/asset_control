@@ -3,7 +3,7 @@ from django.db import models
 
 from core.models import BaseModel
 from core.utils.code import generate_code
-from organizations.models import Company, Country
+from organizations.models import Country
 
 from .choices import VendorType
 
@@ -21,16 +21,12 @@ class Vendor(BaseModel):
 
     slug_source = "name"
 
-    company = models.ForeignKey(
-        Company,
-        on_delete=models.CASCADE,
-        related_name="vendors",
-    )
-
     country = models.ForeignKey(
         Country,
         on_delete=models.PROTECT,
         related_name="vendors",
+        null=True,
+        blank=True,
     )
 
     vendor_type = models.CharField(
@@ -99,17 +95,16 @@ class Vendor(BaseModel):
 
         constraints = [
             models.UniqueConstraint(
-                fields=["company", "name"],
-                name="unique_vendor_name_per_company",
+                fields=["country", "name"],
+                name="unique_vendor_name_per_country",
             ),
             models.UniqueConstraint(
-                fields=["company", "code"],
-                name="unique_vendor_code_per_company",
+                fields=["country", "code"],
+                name="unique_vendor_code_per_country",
             ),
         ]
 
         indexes = [
-            models.Index(fields=["company"]),
             models.Index(fields=["country"]),
             models.Index(fields=["name"]),
             models.Index(fields=["code"]),
@@ -127,11 +122,11 @@ class Vendor(BaseModel):
             })
 
         if Vendor.objects.filter(
-            company=self.company,
+            country=self.country,
             name__iexact=self.name,
         ).exclude(pk=self.pk).exists():
             raise ValidationError({
-                "name": "A vendor with this name already exists for this company."
+                "name": "A vendor with this name already exists for this country."
             })
 
     def save(self, *args, **kwargs):
@@ -141,7 +136,7 @@ class Vendor(BaseModel):
             counter = 1
 
             while Vendor.objects.filter(
-                company=self.company,
+                country=self.country,
                 code=code,
             ).exclude(pk=self.pk).exists():
                 code = f"{base_code}{counter}"
@@ -152,4 +147,4 @@ class Vendor(BaseModel):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.company} - {self.name}"
+        return f"{self.country} - {self.name}"

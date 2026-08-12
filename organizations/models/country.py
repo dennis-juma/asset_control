@@ -19,7 +19,7 @@ class Country(BaseModel):
     Master list of countries used throughout the system.
 
     Referenced by:
-    - Company
+    - Country
     - Site
     - Employee
     - Vendor

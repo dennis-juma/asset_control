@@ -45,7 +45,7 @@ class JobTitlePageService:
 
         grid.column(field="code", label="Code")
         grid.column(field="name", label="Job Title")
-        grid.column(field="company", label="Company")
+        grid.column(field="country", label="Country")
         grid.column(field="department", label="Department")
         grid.column(field="is_active", label="Status")
 
@@ -55,7 +55,7 @@ class JobTitlePageService:
                 row_id=job.id,
                 code=job.code,
                 name=job.name,
-                company=job.company.name,
+                country=job.country.name,
                 department=job.department.name,
                 is_active=job.is_active,
             )
@@ -119,7 +119,7 @@ class JobTitlePageService:
 
             .section("General Information")
 
-            .field("company", 6)
+            .field("country", 6)
             .field("department", 6)
 
             .field("name", 12)
@@ -193,7 +193,7 @@ class JobTitlePageService:
 
             .section("General Information")
 
-            .field("company", 6)
+            .field("country", 6)
             .field("department", 6)
 
             .field("name", 12)
@@ -283,7 +283,7 @@ class JobTitlePageService:
 
             .section("General Information")
 
-            .field("company", 6)
+            .field("country", 6)
             .field("department", 6)
 
             .field("name", 12)

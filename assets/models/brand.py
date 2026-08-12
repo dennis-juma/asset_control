@@ -2,7 +2,7 @@ from django.db import models
 
 from core.models import BaseModel
 from core.services import CodeGenerator
-from organizations.models import Company
+from organizations.models import Country
 
 
 class Brand(BaseModel):
@@ -18,10 +18,12 @@ class Brand(BaseModel):
 
     slug_source = "name"
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="brands",
+        null=True,
+        blank=True,
     )
 
     code = models.CharField(
@@ -43,7 +45,7 @@ class Brand(BaseModel):
 
         indexes = [
             models.Index(
-                fields=["company"],
+                fields=["country"],
             ),
             models.Index(
                 fields=["code"],
@@ -58,12 +60,12 @@ class Brand(BaseModel):
 
         constraints = [
             models.UniqueConstraint(
-                fields=["company", "name"],
-                name="unique_brand_name_per_company",
+                fields=["country", "name"],
+                name="unique_brand_name_per_country",
             ),
             models.UniqueConstraint(
-                fields=["company", "code"],
-                name="unique_brand_code_per_company",
+                fields=["country", "code"],
+                name="unique_brand_code_per_country",
             ),
         ]
 

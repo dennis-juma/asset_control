@@ -1,7 +1,9 @@
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 from core.permissions.constants import Permissions
 from core.permissions.mixins import PermissionRequiredMixin
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import TemplateView
 
 from assets.dtos import (
@@ -67,7 +69,7 @@ class AssetCreateView(
             )
 
         dto = AssetCreateDTO(
-            company=form.cleaned_data["company"],
+            country=form.cleaned_data["country"],
             asset_model=form.cleaned_data["asset_model"],
             serial_number=form.cleaned_data["serial_number"],
             purchase_date=form.cleaned_data["purchase_date"],
@@ -145,7 +147,7 @@ class AssetUpdateView(
             )
 
         dto = AssetUpdateDTO(
-            company=form.cleaned_data["company"],
+            country=form.cleaned_data["country"],
             asset_model=form.cleaned_data["asset_model"],
             serial_number=form.cleaned_data["serial_number"],
             purchase_date=form.cleaned_data["purchase_date"],
@@ -175,13 +177,32 @@ class AssetDeleteView(
     TemplateView):
     permission_required = Permissions.ASSET_DELETE
 
-    template_name = "common/delete.html"
+    template_name = "crud/delete.html"
+
+    def get(self, request, pk):
+
+        asset = AssetRepository().get(pk)
+
+        return self.render_to_response(
+            {
+                "object": asset,
+                "cancel_url": reverse("assets:asset-list"),
+            }
+        )
 
     def post(self, request, pk):
 
         asset = AssetRepository().get(pk)
 
-        AssetService().delete(asset)
+        try:
+            AssetService().delete(asset)
+        except ProtectedError:
+            messages.error(
+                request,
+                "Asset cannot be deleted because it is in use.",
+            )
+
+            return redirect("assets:asset-list")
 
         messages.success(
             request,

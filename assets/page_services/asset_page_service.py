@@ -60,8 +60,8 @@ class AssetPageService:
         )
 
         grid.column(
-            field="company",
-            label="Company",
+            field="country",
+            label="Country",
         )
 
         grid.column(
@@ -81,7 +81,7 @@ class AssetPageService:
                 asset_tag=asset.asset_tag,
                 serial_number=asset.serial_number,
                 asset_model=asset.asset_model.name,
-                company=asset.company.name,
+                country=asset.country.name,
                 status=asset.get_status_display(),
                 condition=asset.get_condition_display(),
             )
@@ -108,7 +108,7 @@ class AssetPageService:
 
         return PageDTO(
             title="Assets",
-            subtitle="Manage Company Assets",
+            subtitle="Manage Country Assets",
             breadcrumb=[
                 BreadcrumbDTO(
                     label="Assets",
@@ -150,7 +150,7 @@ class AssetPageService:
 
             .section("Asset Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("asset_model", width=6)
 
             .field("serial_number", width=12)
@@ -182,7 +182,7 @@ class AssetPageService:
 
         return PageDTO(
             title="Register Asset",
-            subtitle="Register a new company asset",
+            subtitle="Register a new country asset",
             breadcrumb=[
                 BreadcrumbDTO(
                     label="Assets",
@@ -221,7 +221,7 @@ class AssetPageService:
 
             .section("Asset Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("asset_model", width=6)
 
             .field("serial_number", width=6)
@@ -337,7 +337,7 @@ ToolbarButton(
         form_dto = (
             FormBuilder(title="Edit Asset", form=form)
             .section("Asset Information")
-            .field("company", width=6)
+            .field("country", width=6)
             .field("asset_model", width=6)
             .field("serial_number", width=12)
             .section("Procurement")

@@ -56,8 +56,8 @@ class AssetCategoryPageService:
         )
 
         grid.column(
-            field="company",
-            label="Company",
+            field="country",
+            label="Country",
         )
 
         grid.column(
@@ -77,7 +77,7 @@ class AssetCategoryPageService:
                 code=category.code,
                 name=category.name,
                 parent=category.parent.name if category.parent else "-",
-                company=category.company.name,
+                country=category.country.name,
                 sort_order=category.sort_order,
                 is_active=category.is_active,
             )
@@ -140,7 +140,7 @@ class AssetCategoryPageService:
 
             .section("Category Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("parent", width=6)
 
             .field("name", width=8)
@@ -204,7 +204,7 @@ class AssetCategoryPageService:
 
             .section("Category Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("parent", width=6)
 
             .field("name", width=8)
@@ -280,7 +280,7 @@ class AssetCategoryPageService:
 
             .section("Category Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("parent", width=6)
 
             .field("name", width=8)

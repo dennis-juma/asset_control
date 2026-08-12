@@ -1,7 +1,7 @@
 from django.db import models
 from assets.models import Asset
 from core.models import TransactionModel
-from organizations.models import Company,Site
+from organizations.models import Country,Site
 from employees.models import Employee
 
 from assets.choices import (
@@ -13,8 +13,8 @@ from assets.choices import (
 
 class AssetAssignment(TransactionModel):
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="asset_assignments",
         null=True,
@@ -108,8 +108,8 @@ class AssetAssignment(TransactionModel):
     def __str__(self):
         if self.employee:
             return  (
-        f"{self.asset.asset_tag} → "
+        f"{self.asset.asset_tag} â†’ "
         f"{self.assigned_to_name}"
     )
 
-        return f"{self.asset.asset_tag} → {self.site}"
+        return f"{self.asset.asset_tag} â†’ {self.site}"

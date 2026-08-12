@@ -55,8 +55,8 @@ class DepartmentPageService:
         )
 
         grid.column(
-            field="company",
-            label="Company",
+            field="country",
+            label="Country",
         )
 
         grid.column(
@@ -85,7 +85,7 @@ class DepartmentPageService:
                 row_id=department.id,
                 code=department.code,
                 name=department.name,
-                company=department.company.name,
+                country=department.country.name,
                 site=department.site.name,
                 parent=department.parent.name if department.parent else "-",
                 cost_center=department.cost_center,
@@ -155,7 +155,7 @@ class DepartmentPageService:
 
             .section("General Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("site", width=6)
             .field("parent", width=6)
             .field("name", width=6)
@@ -225,7 +225,7 @@ class DepartmentPageService:
 
             .section("General Information")
 
-            .field("company", 6)
+            .field("country", 6)
             .field("site", 6)
             .field("parent", 6)
             .field("name", 6)
@@ -311,7 +311,7 @@ class DepartmentPageService:
 
             .section("General Information")
 
-            .field("company", 6)
+            .field("country", 6)
             .field("site", 6)
             .field("parent", 6)
             .field("name", 6)

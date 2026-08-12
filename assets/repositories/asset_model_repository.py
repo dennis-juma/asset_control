@@ -15,7 +15,7 @@ class AssetModelRepository:
         queryset = (
             AssetModel.objects
             .select_related(
-                "company",
+                "country",
                 "category",
                 "brand",
             )
@@ -32,7 +32,7 @@ class AssetModelRepository:
                 | Q(manufacturer_part_number__icontains=query)
                 | Q(category__name__icontains=query)
                 | Q(brand__name__icontains=query)
-                | Q(company__name__icontains=query)
+                | Q(country__name__icontains=query)
             )
 
         paginator = Paginator(
@@ -49,7 +49,7 @@ class AssetModelRepository:
         return (
             AssetModel.objects
             .select_related(
-                "company",
+                "country",
                 "category",
                 "brand",
             )

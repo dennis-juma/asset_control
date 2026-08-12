@@ -9,7 +9,7 @@ class AssetCategoryCreateForm(forms.ModelForm):
         model = AssetCategory
 
         fields = [
-            "company",
+            "country",
             "parent",
             "name",
             "description",
@@ -23,7 +23,7 @@ class AssetCategoryUpdateForm(forms.ModelForm):
         model = AssetCategory
 
         fields = [
-            "company",
+            "country",
             "parent",
             "name",
             "description",

@@ -148,7 +148,7 @@ class AssetAssignmentPageService:
 
             .section("Assignment Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("asset", width=6)
 
             .field("assignment_type", width=12)

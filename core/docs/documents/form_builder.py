@@ -79,7 +79,7 @@ It supports sections, actions and responsive layouts.
             content="""
 form = (
     FormBuilder(
-        title="Create Company",
+        title="Create Country",
         form=form,
     )
     .section("General")

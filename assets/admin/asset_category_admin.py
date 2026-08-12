@@ -10,12 +10,12 @@ class AssetCategoryAdmin(admin.ModelAdmin):
         "code",
         "name",
         "parent",
-        "company",
+        "country",
         "is_active",
     )
 
     list_filter = (
-        "company",
+        "country",
         "parent",
         "is_active",
     )

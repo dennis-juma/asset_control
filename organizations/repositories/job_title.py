@@ -15,7 +15,7 @@ class JobTitleRepository:
         queryset = (
             JobTitle.objects
             .select_related(
-                "company",
+                "country",
                 "department",
             )
             .filter(
@@ -28,7 +28,7 @@ class JobTitleRepository:
             queryset = queryset.filter(
                 Q(name__icontains=query)
                 | Q(code__icontains=query)
-                | Q(company__name__icontains=query)
+                | Q(country__name__icontains=query)
                 | Q(department__name__icontains=query)
             )
 
@@ -46,7 +46,7 @@ class JobTitleRepository:
         return (
             JobTitle.objects
             .select_related(
-                "company",
+                "country",
                 "department",
             )
             .get(pk=pk)

@@ -3,7 +3,7 @@ from django.db import models
 from core.models import BaseModel
 from core.services import CodeGenerator
 from organizations.models import (
-    Company,
+    Country,
     Department,
 )
 
@@ -15,8 +15,8 @@ class JobTitle(BaseModel):
 
     slug_source = "name"
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="job_titles",
         null=True,
@@ -55,7 +55,7 @@ class JobTitle(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=[
-                    "company",
+                    "country",
                     "department",
                     "name",
                 ],

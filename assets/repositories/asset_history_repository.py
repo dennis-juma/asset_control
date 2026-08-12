@@ -12,7 +12,7 @@ class AssetHistoryRepository:
         return (
             AssetHistory.objects
             .select_related(
-                "company",
+                "country",
                 "asset",
                 "employee",
                 "site",

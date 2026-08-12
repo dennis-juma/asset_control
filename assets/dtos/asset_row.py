@@ -17,7 +17,7 @@ class AssetRowDTO:
     serial_number: str
     barcode: Optional[str]
 
-    company: Optional[str]
+    country: Optional[str]
     category: Optional[str]
     brand: Optional[str]
     model: Optional[str]

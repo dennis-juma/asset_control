@@ -9,14 +9,14 @@ class DepartmentAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "name",
-        "company",
+        "country",
         "site",
         "cost_center",
         "is_active",
     )
 
     list_filter = (
-        "company",
+        "country",
         "site",
         "is_active",
     )

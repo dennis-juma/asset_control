@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -73,8 +74,6 @@ class SiteCreateView(PermissionRequiredMixin, View):
     def post(self, request):
 
         dto = SiteCreateDTO(
-
-            company_id=request.POST.get("company"),
 
             country_id=request.POST.get("country"),
 
@@ -221,8 +220,6 @@ class SiteUpdateView(PermissionRequiredMixin, View):
 
         dto = SiteUpdateDTO(
 
-            company_id=request.POST.get("company"),
-
             country_id=request.POST.get("country"),
 
             name=request.POST.get("name"),
@@ -292,11 +289,15 @@ class SiteDeleteView(PermissionRequiredMixin, View):
 
         )
 
-        self.service.delete(
+        try:
+            self.service.delete(site)
+        except ProtectedError:
+            messages.error(
+                request,
+                "Site cannot be deleted because it is in use.",
+            )
 
-            site,
-
-        )
+            return redirect("organizations:site-list")
 
         messages.success(
 

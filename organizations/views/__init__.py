@@ -1,9 +1,3 @@
-from .company import (
-    CompanyCreateView,
-    CompanyDetailView,
-    CompanyListView,
-    CompanyUpdateView,
-)
 from .country import (
     CountryListView,
     CountryCreateView,
@@ -28,11 +22,6 @@ from .job_title import (
 )
 
 __all__ = [
-    "CompanyListView",
-    "CompanyCreateView",
-    "CompanyDetailView",
-    "CompanyUpdateView",
-
     "CountryListView",
     "CountryCreateView",
     "CountryDetailView",

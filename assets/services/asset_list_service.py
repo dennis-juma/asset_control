@@ -31,7 +31,7 @@ class AssetListService:
 
         queryset = self.repository.filter(
             queryset,
-            company=request.GET.get("company"),
+            country=request.GET.get("country"),
             category=request.GET.get("category"),
             status=request.GET.get("status"),
         )
@@ -78,7 +78,7 @@ class AssetListService:
             asset_tag=asset.asset_tag,
             serial_number=asset.serial_number,
             barcode=asset.barcode,
-            company=asset.company.name if asset.company else None,
+            country=asset.country.name if asset.country else None,
             category=asset.category.name if asset.category else None,
             brand=asset.brand.name if asset.brand else None,
             model=asset.model.name if asset.model else None,

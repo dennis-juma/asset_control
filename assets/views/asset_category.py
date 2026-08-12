@@ -1,6 +1,7 @@
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse
 from django.views.generic import TemplateView
 
 from core.permissions.constants import Permissions
@@ -67,7 +68,7 @@ class AssetCategoryCreateView(
             )
 
         dto = AssetCategoryCreateDTO(
-            company=form.cleaned_data["company"],
+            country=form.cleaned_data["country"],
             parent=form.cleaned_data["parent"],
             name=form.cleaned_data["name"],
             description=form.cleaned_data["description"],
@@ -142,7 +143,7 @@ class AssetCategoryUpdateView(
             )
 
         dto = AssetCategoryUpdateDTO(
-            company=form.cleaned_data["company"],
+            country=form.cleaned_data["country"],
             parent=form.cleaned_data["parent"],
             name=form.cleaned_data["name"],
             description=form.cleaned_data["description"],
@@ -169,13 +170,32 @@ class AssetCategoryDeleteView(
 
     permission_required = Permissions.ASSET_DELETE
 
-    template_name = "common/delete.html"
+    template_name = "crud/delete.html"
+
+    def get(self, request, pk):
+
+        category = AssetCategoryRepository().get(pk=pk)
+
+        return self.render_to_response(
+            {
+                "object": category,
+                "cancel_url": reverse("assets:asset-category-list"),
+            }
+        )
 
     def post(self, request, pk):
 
         category = AssetCategoryRepository().get(pk=pk)
 
-        AssetCategoryRepository().delete(category)
+        try:
+            AssetCategoryRepository().delete(category)
+        except ProtectedError:
+            messages.error(
+                request,
+                "Asset Category cannot be deleted because it is in use.",
+            )
+
+            return redirect("assets:asset-category-list")
 
         messages.success(
             request,

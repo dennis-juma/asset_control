@@ -143,12 +143,12 @@ class AssetTransferValidator:
                     }
                 )
 
-            if employee.company_id != dto.company.pk:
+            if employee.country_id != dto.country.pk:
 
                 raise ValidationError(
                     {
                         "to_employee":
-                        "Selected employee belongs to another company."
+                        "Selected employee belongs to another country."
                     }
                 )
 
@@ -178,12 +178,12 @@ class AssetTransferValidator:
                     }
                 )
 
-            if site.company_id != dto.company.pk:
+            if site.country_id != dto.country.pk:
 
                 raise ValidationError(
                     {
                         "to_site":
-                        "Selected site belongs to another company."
+                        "Selected site belongs to another country."
                     }
                 )
 
@@ -201,7 +201,7 @@ class AssetTransferValidator:
         if assignment is None:
             return
 
-        # Employee → same employee
+        # Employee â†’ same employee
         if (
             dto.to_employee is not None
             and assignment.employee_id is not None
@@ -216,7 +216,7 @@ class AssetTransferValidator:
                 }
             )
 
-        # Site → same site
+        # Site â†’ same site
         if (
             dto.to_site is not None
             and assignment.site_id is not None

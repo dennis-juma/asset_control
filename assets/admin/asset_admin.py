@@ -10,7 +10,7 @@ class AssetAdmin(admin.ModelAdmin):
         "asset_tag",
         "serial_number",
         "asset_model",
-        "company",
+        "country",
         "status",
         "condition",
         "is_active",
@@ -24,14 +24,14 @@ class AssetAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        "company",
+        "country",
         "status",
         "condition",
         "is_active",
     )
 
     autocomplete_fields = (
-        "company",
+        "country",
         "asset_model",
     )
 

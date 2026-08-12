@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from organizations.models import Company
+from organizations.models import Country
 
 from assets.models import (
     AssetCategory,
@@ -14,7 +14,7 @@ class AssetModelCreateDTO:
     Data Transfer Object for creating an Asset Model.
     """
 
-    company: Company
+    country: Country
 
     category: AssetCategory
 
@@ -35,7 +35,7 @@ class AssetModelUpdateDTO:
     Data Transfer Object for updating an Asset Model.
     """
 
-    company: Company
+    country: Country
 
     category: AssetCategory
 

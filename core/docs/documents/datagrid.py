@@ -103,7 +103,7 @@ It supports:
 grid = (
     DataGridBuilder("Companies")
         .column(field="code", label="Code")
-        .column(field="name", label="Company")
+        .column(field="name", label="Country")
         .row(
             row_id=1,
             code="CMP001",

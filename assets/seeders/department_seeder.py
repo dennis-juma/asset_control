@@ -1,9 +1,9 @@
-from organizations.models import Company, Department
+from organizations.models import Country, Department
 
 
 class DepartmentSeeder:
     """
-    Seeds company departments.
+    Seeds country departments.
     """
 
     DEPARTMENTS = [
@@ -27,11 +27,11 @@ class DepartmentSeeder:
     def run(stdout):
         stdout.write("Creating departments...")
 
-        company = Company.objects.first()
+        country = Country.objects.first()
 
-        if not company:
+        if not country:
             raise Exception(
-                "No company found. Please run CompanySeeder first."
+                "No country found. Please run CompanySeeder first."
             )
 
         departments = {}
@@ -43,7 +43,7 @@ class DepartmentSeeder:
                 continue
 
             department, created = Department.objects.get_or_create(
-                company=company,
+                country=country,
                 name=name,
                 defaults={
                     "description": f"{name} Department",
@@ -52,7 +52,7 @@ class DepartmentSeeder:
 
             departments[name] = department
 
-            stdout.write(f"  ✓ {name}")
+            stdout.write(f"  âœ“ {name}")
 
         # Create child departments
         for name, parent_name in DepartmentSeeder.DEPARTMENTS:
@@ -61,7 +61,7 @@ class DepartmentSeeder:
                 continue
 
             department, created = Department.objects.get_or_create(
-                company=company,
+                country=country,
                 name=name,
                 defaults={
                     "parent": departments[parent_name],
@@ -71,6 +71,6 @@ class DepartmentSeeder:
 
             departments[name] = department
 
-            stdout.write(f"  ✓ {name}")
+            stdout.write(f"  âœ“ {name}")
 
         return departments

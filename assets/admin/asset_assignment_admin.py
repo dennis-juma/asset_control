@@ -27,14 +27,14 @@ class AssetAssignmentAdmin(admin.ModelAdmin):
 
     list_filter = (
         "status",
-        "company",
+        "country",
         "assigned_date",
         "returned_date",
         "is_active",
     )
 
     autocomplete_fields = (
-        "company",
+        "country",
         "asset",
         "employee",
         "site",
@@ -50,7 +50,7 @@ class AssetAssignmentAdmin(admin.ModelAdmin):
     )
 
     list_select_related = (
-        "company",
+        "country",
         "asset",
         "employee",
         "site",

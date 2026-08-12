@@ -49,8 +49,8 @@ class AssetModelPageService:
 
 
         grid.column(
-            field="company",
-            label="Company",
+            field="country",
+            label="Country",
         )
 
 
@@ -67,7 +67,7 @@ class AssetModelPageService:
                 category=asset_model.category.name,
                 brand=asset_model.brand.name,
                 name=asset_model.name,
-                company=asset_model.company.name,
+                country=asset_model.country.name,
                 is_active=asset_model.is_active,
             )
 
@@ -132,7 +132,7 @@ class AssetModelPageService:
 
             .section("Asset Model Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
 
             .field("category", width=6)
 
@@ -202,7 +202,7 @@ class AssetModelPageService:
 
             .section("Asset Model Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
 
             .field("category", width=6)
 
@@ -284,7 +284,7 @@ class AssetModelPageService:
 
             .section("Asset Model Information")
 
-            .field("company", width=6)
+            .field("country", width=6)
 
             .field("category", width=6)
 

@@ -1,4 +1,3 @@
-from assets.seeders.company_seeder import CompanySeeder
 from assets.seeders.currency_seeder import CurrencySeeder
 from assets.seeders.country_seeder import CountrySeeder
 from assets.seeders.region_seeder import RegionSeeder
@@ -23,7 +22,7 @@ class SeederOrchestrator:
 
         countries = CountrySeeder.run(self.stdout)
 
-        company = CompanySeeder.run(self.stdout, countries[0])
+        country = countries[0]
 
         regions = RegionSeeder.run(
             self.stdout,
@@ -40,7 +39,7 @@ class SeederOrchestrator:
         job_titles = JobTitleSeeder.run(self.stdout)
 
         return {
-            "company": company,
+            "country": country,
             "currencies": currencies,
             "countries": countries,
             "regions": regions,

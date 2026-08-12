@@ -17,7 +17,7 @@ class JobTitleService:
     ) -> JobTitle:
 
         job_title = JobTitle(
-            company_id=dto.company,
+            country_id=dto.country,
             department_id=dto.department,
             name=dto.name,
             description=dto.description,
@@ -33,7 +33,7 @@ class JobTitleService:
         dto: JobTitleUpdateDTO,
     ) -> JobTitle:
 
-        job_title.company_id = dto.company
+        job_title.country_id = dto.country
         job_title.department_id = dto.department
         job_title.name = dto.name
         job_title.description = dto.description

@@ -2,15 +2,17 @@ from django.db import models
 
 from core.models import BaseModel
 from core.utils.code import generate_code
-from organizations.models import Company
+from organizations.models import Country
 
 
 class AssetStatus(BaseModel):
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.CASCADE,
         related_name="asset_statuses",
+        null=True,
+        blank=True,
     )
 
     code = models.CharField(

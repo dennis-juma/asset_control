@@ -62,17 +62,13 @@ class SiteRepository:
         page=1,
         per_page=10,
     ):
-        queryset = Site.objects.select_related(
-            "company",
-            "country",
-        ).order_by("name")
+        queryset = Site.objects.select_related("country").order_by("name")
 
         if query:
             queryset = queryset.filter(
                 Q(name__icontains=query)
                 | Q(code__icontains=query)
                 | Q(city__icontains=query)
-                | Q(company__name__icontains=query)
                 | Q(country__name__icontains=query)
             )
 

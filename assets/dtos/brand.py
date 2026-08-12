@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-from organizations.models import Company
+from organizations.models import Country
 
 
 @dataclass
@@ -10,7 +10,7 @@ class BrandCreateDTO:
     Data Transfer Object for creating a Brand.
     """
 
-    company: Company
+    country: Country
 
     name: str
 
@@ -23,7 +23,7 @@ class BrandUpdateDTO:
     Data Transfer Object for updating a Brand.
     """
 
-    company: Company
+    country: Country
 
     name: str
 

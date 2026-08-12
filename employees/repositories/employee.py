@@ -15,7 +15,7 @@ class EmployeeRepository:
         queryset = (
             Employee.objects
             .select_related(
-                "company",
+                "country",
                 "site",
                 "department",
                 "job_title",
@@ -38,7 +38,7 @@ class EmployeeRepository:
                 | Q(last_name__icontains=query)
                 | Q(email__icontains=query)
                 | Q(phone__icontains=query)
-                | Q(company__name__icontains=query)
+                | Q(country__name__icontains=query)
                 | Q(site__name__icontains=query)
                 | Q(department__name__icontains=query)
                 | Q(job_title__name__icontains=query)
@@ -59,7 +59,7 @@ class EmployeeRepository:
         return (
             Employee.objects
             .select_related(
-                "company",
+                "country",
                 "site",
                 "department",
                 "job_title",

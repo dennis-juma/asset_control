@@ -7,7 +7,7 @@ from common.choices import (
 )
 from core.models import BaseModel
 from organizations.models import (
-    Company,
+    Country,
     Department,
     JobTitle,
     Site,
@@ -26,10 +26,12 @@ class Employee(BaseModel):
     # Organization Information
     # =====================================================
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="employees",
+        null=True,
+        blank=True,
     )
 
     site = models.ForeignKey(
@@ -136,15 +138,15 @@ class Employee(BaseModel):
 
         constraints = [
             models.UniqueConstraint(
-                fields=["company", "employee_id"],
-                name="unique_company_employee_id",
+                fields=["country", "employee_id"],
+                name="unique_country_employee_id",
             ),
         ]
 
         indexes = [
             models.Index(fields=["employee_id"]),
             models.Index(fields=["last_name"]),
-            models.Index(fields=["company"]),
+            models.Index(fields=["country"]),
             models.Index(fields=["site"]),
             models.Index(fields=["department"]),
             models.Index(fields=["job_title"]),

@@ -9,12 +9,12 @@ class MaintenanceTypeAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "name",
-        "company",
+        "country",
         "is_active",
     )
 
     list_filter = (
-        "company",
+        "country",
         "is_active",
     )
 
@@ -28,7 +28,7 @@ class MaintenanceTypeAdmin(admin.ModelAdmin):
     )
 
     autocomplete_fields = (
-        "company",
+        "country",
     )
 
     readonly_fields = (

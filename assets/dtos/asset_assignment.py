@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from assets.models import Asset, AssetAssignment
-from organizations.models import Company, Site
+from organizations.models import Country, Site
 from employees.models import Employee
 from assets.choices import AssignmentType
 
@@ -10,7 +10,7 @@ from assets.choices import AssignmentType
 @dataclass
 class AssetAssignmentCreateDTO:
 
-    company: Company
+    country: Country
 
     asset: Asset
 

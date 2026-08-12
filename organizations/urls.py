@@ -1,12 +1,5 @@
 from django.urls import path
 
-from organizations.views.company import (
-    CompanyCreateView,
-    CompanyDeleteView,
-    CompanyDetailView,
-    CompanyListView,
-    CompanyUpdateView,
-)
 from organizations.views import (
     CountryListView,
     CountryCreateView,
@@ -42,36 +35,6 @@ from organizations.views.job_title import (
 app_name = "organizations"
 
 urlpatterns = [
-
-    # Company
-    path(
-        "companies/",
-        CompanyListView.as_view(),
-        name="company-list",
-    ),
-
-    path(
-        "companies/create/",
-        CompanyCreateView.as_view(),
-        name="company-create",
-    ),
-
-    path(
-        "companies/<uuid:pk>/",
-        CompanyDetailView.as_view(),
-        name="company-detail",
-    ),
-
-    path(
-        "companies/<uuid:pk>/edit/",
-        CompanyUpdateView.as_view(),
-        name="company-edit",
-    ),
-    path(
-        "companies/<uuid:pk>/delete/",
-        CompanyDeleteView.as_view(),
-        name="company-delete",
-    ),
 
     # Countries
 

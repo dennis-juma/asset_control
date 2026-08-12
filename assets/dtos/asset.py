@@ -3,12 +3,12 @@ from datetime import date
 from decimal import Decimal
 
 from assets.models import AssetModel
-from organizations.models import Company
+from organizations.models import Country
 
 
 @dataclass
 class AssetCreateDTO:
-    company: Company
+    country: Country
     asset_model: AssetModel
     serial_number: str
 
@@ -22,7 +22,7 @@ class AssetCreateDTO:
 
 @dataclass
 class AssetUpdateDTO:
-    company: Company
+    country: Country
     asset_model: AssetModel
     serial_number: str
 

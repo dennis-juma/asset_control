@@ -80,20 +80,20 @@ class AssetHistoryPageService:
             ):
                 status = (
                     f"{event.get_old_status_display()}"
-                    f" → "
+                    f" â†’ "
                     f"{event.get_new_status_display()}"
                 )
 
             employee = (
                 str(event.employee)
                 if event.employee
-                else "—"
+                else "â€”"
             )
 
             site = (
                 str(event.site)
                 if event.site
-                else "—"
+                else "â€”"
             )
 
             performed_by = (
@@ -199,7 +199,7 @@ class AssetHistoryPageService:
             )
 
             .field(
-                "company",
+                "country",
                 width=6,
             )
 

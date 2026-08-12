@@ -131,7 +131,7 @@ class AssetTransferService:
         # -------------------------------------------------
 
         new_assignment = AssetAssignment.objects.create(
-            company=dto.company,
+            country=dto.country,
             asset=dto.asset,
             assignment_type=assignment_type,
             employee=to_employee,
@@ -150,7 +150,7 @@ class AssetTransferService:
         # -------------------------------------------------
 
         transfer = self.repository.create(
-            company=dto.company,
+            country=dto.country,
             asset=dto.asset,
             previous_assignment=previous_assignment,
             new_assignment=new_assignment,

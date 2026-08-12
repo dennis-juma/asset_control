@@ -10,7 +10,7 @@ class EmployeeAdmin(admin.ModelAdmin):
         "employee_id",
         "first_name",
         "last_name",
-        "company",
+        "country",
         "department",
         "job_title",
         "is_active",
@@ -23,7 +23,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        "company",
+        "country",
         "site",
         "department",
         "job_title",

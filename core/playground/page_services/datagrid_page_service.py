@@ -23,7 +23,7 @@ class DataGridPageService:
 
             .column(
                 field="name",
-                label="Company",
+                label="Country",
             )
 
             .column(

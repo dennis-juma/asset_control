@@ -2,7 +2,7 @@ from django.db import models
 
 from core.models import BaseModel
 from core.services import CodeGenerator
-from organizations.models import Company
+from organizations.models import Country
 
 
 class AssetCategory(BaseModel):
@@ -11,22 +11,24 @@ class AssetCategory(BaseModel):
 
     Examples:
         IT Equipment
-            ├── Laptop
-            ├── Desktop
-            └── Printer
+            â”œâ”€â”€ Laptop
+            â”œâ”€â”€ Desktop
+            â””â”€â”€ Printer
 
         Networking
-            ├── Router
-            ├── Switch
-            └── Firewall
+            â”œâ”€â”€ Router
+            â”œâ”€â”€ Switch
+            â””â”€â”€ Firewall
     """
 
     slug_source = "name"
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="asset_categories",
+        null=True,
+        blank=True,
     )
 
     parent = models.ForeignKey(
@@ -66,7 +68,7 @@ class AssetCategory(BaseModel):
         verbose_name_plural = "Asset Categories"
 
         indexes = [
-            models.Index(fields=["company"]),
+            models.Index(fields=["country"]),
             models.Index(fields=["parent"]),
             models.Index(fields=["name"]),
             models.Index(fields=["code"]),
@@ -76,7 +78,7 @@ class AssetCategory(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=[
-                    "company",
+                    "country",
                     "parent",
                     "name",
                 ],

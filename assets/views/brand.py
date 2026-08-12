@@ -1,6 +1,7 @@
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse
 from django.views.generic import TemplateView
 
 from core.permissions.constants import Permissions
@@ -72,7 +73,7 @@ class BrandCreateView(
             )
 
         dto = BrandCreateDTO(
-            company=form.cleaned_data["company"],
+            country=form.cleaned_data["country"],
             name=form.cleaned_data["name"],
             description=form.cleaned_data["description"],
         )
@@ -146,7 +147,7 @@ class BrandUpdateView(
             )
 
         dto = BrandUpdateDTO(
-            company=form.cleaned_data["company"],
+            country=form.cleaned_data["country"],
             
             name=form.cleaned_data["name"],
             description=form.cleaned_data["description"],
@@ -174,11 +175,30 @@ class BrandDeleteView(
 
     template_name = "crud/delete.html"
 
+    def get(self, request, pk):
+
+        brand = BrandRepository().get(pk=pk)
+
+        return self.render_to_response(
+            {
+                "object": brand,
+                "cancel_url": reverse("assets:brand-list"),
+            }
+        )
+
     def post(self, request, pk):
 
         brand = BrandRepository().get(pk=pk)
 
-        BrandRepository().delete(brand)
+        try:
+            BrandRepository().delete(brand)
+        except ProtectedError:
+            messages.error(
+                request,
+                "Brand cannot be deleted because it is in use.",
+            )
+
+            return redirect("assets:brand-list")
 
         messages.success(
             request,

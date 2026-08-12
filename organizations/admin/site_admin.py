@@ -7,7 +7,7 @@ class SiteAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "name",
-        "company",
+        "country",
         "country",
         "site_type",
         "is_active",
@@ -20,7 +20,7 @@ class SiteAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        "company",
+        "country",
         "country",
         "site_type",
         "is_active",

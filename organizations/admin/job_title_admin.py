@@ -9,7 +9,7 @@ class JobTitleAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "name",
-        "company",
+        "country",
         "is_active",
     )
 
@@ -19,12 +19,12 @@ class JobTitleAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        "company",
+        "country",
         "is_active",
     )
 
     autocomplete_fields = (
-        "company",
+        "country",
     )
 
     readonly_fields = (
@@ -34,6 +34,6 @@ class JobTitleAdmin(admin.ModelAdmin):
     )
 
     ordering = (
-        "company",
+        "country",
         "name",
     )

@@ -51,8 +51,8 @@ class EmployeePageService:
         )
 
         grid.column(
-            field="company",
-            label="Company",
+            field="country",
+            label="Country",
         )
 
         grid.column(
@@ -86,7 +86,7 @@ class EmployeePageService:
                 row_id=employee.pk,
                 employee_id=employee.employee_id,
                 name=employee.full_name,
-                company=employee.company.name,
+                country=employee.country.name,
                 site=employee.site.name,
                 department=employee.department.name,
                 job_title=employee.job_title.name,
@@ -161,7 +161,7 @@ class EmployeePageService:
 
             .section("Organization")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("site", width=6)
             .field("department", width=6)
             .field("job_title", width=6)
@@ -243,7 +243,7 @@ class EmployeePageService:
 
             .section("Organization")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("site", width=6)
             .field("department", width=6)
             .field("job_title", width=6)
@@ -338,7 +338,7 @@ class EmployeePageService:
 
             .section("Organization")
 
-            .field("company", width=6)
+            .field("country", width=6)
             .field("site", width=6)
             .field("department", width=6)
             .field("job_title", width=6)

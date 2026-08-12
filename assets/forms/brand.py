@@ -8,7 +8,7 @@ class BrandCreateForm(forms.ModelForm):
         model = Brand
 
         fields = [
-            "company",
+            "country",
             "name",
             "description",
         ]
@@ -19,7 +19,7 @@ class BrandUpdateForm(forms.ModelForm):
         model = Brand
 
         fields = [
-            "company",
+            "country",
             "name",
             "description",
             "is_active",

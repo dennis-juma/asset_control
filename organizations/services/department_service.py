@@ -3,7 +3,7 @@ from organizations.dtos import (
     DepartmentUpdateDTO,
 )
 from organizations.models import (
-    Company,
+    Country,
     Department,
     Site,
 )
@@ -16,8 +16,8 @@ class DepartmentService:
         dto: DepartmentCreateDTO,
     ):
 
-        company = Company.objects.get(
-            pk=dto.company,
+        country = Country.objects.get(
+            pk=dto.country,
         )
 
         site = Site.objects.get(
@@ -32,7 +32,7 @@ class DepartmentService:
             )
 
         return Department.objects.create(
-            company=company,
+            country=country,
             site=site,
             parent=parent,
             name=dto.name,
@@ -46,8 +46,8 @@ class DepartmentService:
         dto: DepartmentUpdateDTO,
     ):
 
-        department.company = Company.objects.get(
-            pk=dto.company,
+        department.country = Country.objects.get(
+            pk=dto.country,
         )
 
         department.site = Site.objects.get(

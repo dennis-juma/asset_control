@@ -1,4 +1,4 @@
-from organizations.models import Company
+from organizations.models import Country
 from assets.models import AssetCategory
 from assets.choices.choices import AssetStatus
 
@@ -12,6 +12,6 @@ class AssetLookupService:
 
         return {
             "asset_statuses": AssetStatus.choices,
-            "companies": Company.objects.order_by("name"),
+            "companies": Country.objects.order_by("name"),
             "categories": AssetCategory.objects.order_by("name"),
         }

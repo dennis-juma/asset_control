@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -59,7 +60,7 @@ class DepartmentCreateView(PermissionRequiredMixin, View):
     def post(self, request):
 
         dto = DepartmentCreateDTO(
-            company=request.POST.get("company"),
+            country=request.POST.get("country"),
             site=request.POST.get("site"),
             parent=request.POST.get("parent") or None,
             name=request.POST.get("name"),
@@ -147,7 +148,7 @@ class DepartmentUpdateView(PermissionRequiredMixin, View):
         )
 
         dto = DepartmentUpdateDTO(
-            company=request.POST.get("company"),
+            country=request.POST.get("country"),
             site=request.POST.get("site"),
             parent=request.POST.get("parent") or None,
             name=request.POST.get("name"),
@@ -186,9 +187,15 @@ class DepartmentDeleteView(PermissionRequiredMixin, View):
             pk=pk,
         )
 
-        self.service.delete(
-            department,
-        )
+        try:
+            self.service.delete(department)
+        except ProtectedError:
+            messages.error(
+                request,
+                "Department cannot be deleted because it is in use.",
+            )
+
+            return redirect("organizations:department-list")
 
         messages.success(
             request,

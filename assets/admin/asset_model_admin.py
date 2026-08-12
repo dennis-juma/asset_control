@@ -11,13 +11,13 @@ class AssetModelAdmin(admin.ModelAdmin):
         "brand",
         "name",
         "category",
-        "company",
+        "country",
         "is_active",
         "created_at",
     )
 
     list_filter = (
-        "company",
+        "country",
         "category",
         "brand",
         "is_active",
@@ -47,7 +47,7 @@ class AssetModelAdmin(admin.ModelAdmin):
             "Asset Model Information",
             {
                 "fields": (
-                    "company",
+                    "country",
                     "category",
                     "brand",
                     "code",

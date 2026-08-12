@@ -3,7 +3,7 @@ from random import choice
 
 from employees.models import Employee
 from organizations.models import (
-    Company,
+    Country,
     Department,
     JobTitle,
     Site,
@@ -16,13 +16,13 @@ class EmployeeSeeder:
 
     @staticmethod
     def run(stdout, total=30):
-        company = Company.objects.first()
+        country = Country.objects.first()
 
         departments = list(Department.objects.all())
         job_titles = list(JobTitle.objects.all())
         sites = list(Site.objects.all())
 
-        if not all([company, departments, job_titles, sites]):
+        if not all([country, departments, job_titles, sites]):
             stdout.write(
                 "Please seed organizations before employees."
             )
@@ -41,7 +41,7 @@ class EmployeeSeeder:
                 continue
 
             Employee.objects.create(
-                company=company,
+                country=country,
                 first_name=first,
                 last_name=last,
                 email=email,
@@ -59,5 +59,5 @@ class EmployeeSeeder:
             created += 1
 
         stdout.write(
-            "✔ Employees seeded successfully."
+            "âœ” Employees seeded successfully."
         )

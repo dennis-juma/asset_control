@@ -3,7 +3,7 @@ from django.db import models
 
 from core.models import BaseModel
 
-from organizations.models import Company, Site
+from organizations.models import Country, Site
 from employees.models import Employee
 
 from assets.models.asset import Asset
@@ -20,10 +20,12 @@ class AssetHistory(BaseModel):
     """
     slug_source = "id"
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.CASCADE,
         related_name="asset_histories",
+        null=True,
+        blank=True,
     )
 
     asset = models.ForeignKey(

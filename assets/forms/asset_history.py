@@ -24,8 +24,8 @@ class AssetHistoryDetailForm(forms.Form):
         disabled=True,
     )
 
-    company = forms.CharField(
-        label="Company",
+    country = forms.CharField(
+        label="Country",
         required=False,
         disabled=True,
     )
@@ -117,9 +117,9 @@ class AssetHistoryDetailForm(forms.Form):
                 else ""
             ),
 
-            "company": (
-                str(history.company)
-                if history.company
+            "country": (
+                str(history.country)
+                if history.country
                 else ""
             ),
 
@@ -144,18 +144,18 @@ class AssetHistoryDetailForm(forms.Form):
             "old_status": (
                 history.get_old_status_display()
                 if history.old_status
-                else "—"
+                else "â€”"
             ),
 
             "new_status": (
                 history.get_new_status_display()
                 if history.new_status
-                else "—"
+                else "â€”"
             ),
 
-            "reference": history.reference or "—",
+            "reference": history.reference or "â€”",
 
-            "notes": history.notes or "—",
+            "notes": history.notes or "â€”",
 
             "metadata": (
     json.dumps(
@@ -164,6 +164,6 @@ class AssetHistoryDetailForm(forms.Form):
         ensure_ascii=False,
     )
     if history.metadata
-    else "—"
+    else "â€”"
 ),
         })

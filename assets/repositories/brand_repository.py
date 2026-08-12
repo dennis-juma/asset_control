@@ -15,7 +15,7 @@ class BrandRepository:
         queryset = (
             Brand.objects
             .select_related(
-                "company",
+                "country",
             )
             .order_by(
                 "name",
@@ -27,7 +27,7 @@ class BrandRepository:
                 Q(code__icontains=query)
                 | Q(name__icontains=query)
                 | Q(description__icontains=query)
-                | Q(company__name__icontains=query)
+                | Q(country__name__icontains=query)
             )
 
         paginator = Paginator(
@@ -44,7 +44,7 @@ class BrandRepository:
         return (
             Brand.objects
             .select_related(
-                "company",
+                "country",
             )
             .get(
                 pk=pk,

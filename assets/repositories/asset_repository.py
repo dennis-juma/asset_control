@@ -14,7 +14,7 @@ class AssetRepository:
         queryset = (
             Asset.objects
             .select_related(
-                "company",
+                "country",
                 "asset_model",
                 "asset_model__brand",
                 "asset_model__category",
@@ -45,7 +45,7 @@ class AssetRepository:
         return (
             Asset.objects
             .select_related(
-                "company",
+                "country",
                 "asset_model",
                 "asset_model__brand",
                 "asset_model__category",

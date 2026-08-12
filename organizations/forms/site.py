@@ -1,7 +1,6 @@
 from django import forms
 
 from organizations.models import (
-    Company,
     Country,
     Site,
 )
@@ -11,10 +10,6 @@ class SiteCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-
-        self.fields["company"].queryset = Company.objects.filter(
-        is_active=True,
-    )
 
         self.fields["country"].queryset = Country.objects.filter(
         is_active=True,
@@ -30,8 +25,6 @@ class SiteCreateForm(forms.ModelForm):
         }
 
     )
-        self.fields["company"].widget.attrs["class"] = "form-select"
-
         self.fields["country"].widget.attrs["class"] = "form-select"
 
         self.fields["site_type"].widget.attrs["class"] = "form-select"
@@ -41,8 +34,6 @@ class SiteCreateForm(forms.ModelForm):
         model = Site
 
         fields = [
-
-            "company",
 
             "country",
 

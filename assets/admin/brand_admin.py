@@ -9,13 +9,13 @@ class BrandAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "name",
-        "company",
+        "country",
         "is_active",
         "created_at",
     )
 
     list_filter = (
-        "company",
+        "country",
         "is_active",
     )
 
@@ -40,7 +40,7 @@ class BrandAdmin(admin.ModelAdmin):
             "Brand Information",
             {
                 "fields": (
-                    "company",
+                    "country",
                     "code",
                     "name",
                     "description",

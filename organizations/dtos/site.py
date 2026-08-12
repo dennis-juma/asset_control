@@ -9,8 +9,6 @@ from common.choices import SiteType
 @dataclass(slots=True)
 class SiteCreateDTO:
 
-    company_id: UUID
-
     country_id: UUID
 
     name: str
@@ -36,8 +34,6 @@ class SiteCreateDTO:
 
 @dataclass(slots=True)
 class SiteUpdateDTO:
-
-    company_id: UUID
 
     country_id: UUID
 
@@ -69,8 +65,6 @@ class SiteDetailDTO:
     id: UUID
 
     code: str
-
-    company: str
 
     country: str
 

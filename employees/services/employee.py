@@ -24,7 +24,7 @@ class EmployeeService:
         )
 
         employee = Employee(
-            company=dto.company,
+            country=dto.country,
             site=dto.site,
             department=dto.department,
             job_title=dto.job_title,
@@ -57,7 +57,7 @@ class EmployeeService:
             dto.last_working_date,
         )
 
-        employee.company = dto.company
+        employee.country = dto.country
         employee.site = dto.site
         employee.department = dto.department
         employee.job_title = dto.job_title

@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from core.models import BaseModel
 from core.services.code_generator import CodeGenerator
-from organizations.models import Company, Currency
+from organizations.models import Country, Currency
 
 from assets.models import Asset, Vendor
 
@@ -22,10 +22,12 @@ class Maintenance(BaseModel):
 
     slug_source = None
 
-    company = models.ForeignKey(
-        Company,
+    country = models.ForeignKey(
+        Country,
         on_delete=models.PROTECT,
         related_name="maintenances",
+        null=True,
+        blank=True,
     )
 
     asset = models.ForeignKey(
@@ -163,7 +165,7 @@ class Maintenance(BaseModel):
         verbose_name_plural = "Maintenance"
 
         indexes = [
-            models.Index(fields=["company"]),
+            models.Index(fields=["country"]),
             models.Index(fields=["asset"]),
             models.Index(fields=["maintenance_type"]),
             models.Index(fields=["vendor"]),
@@ -178,29 +180,29 @@ class Maintenance(BaseModel):
 
         errors = {}
 
-        # Company consistency
+        # Country consistency
         if (
             self.asset_id
-            and self.asset.company_id != self.company_id
+            and self.asset.country_id != self.country_id
         ):
             errors["asset"] = (
-                "Asset belongs to another company."
+                "Asset belongs to another country."
             )
 
         if (
             self.vendor_id
-            and self.vendor.company_id != self.company_id
+            and self.vendor.country_id != self.country_id
         ):
             errors["vendor"] = (
-                "Vendor belongs to another company."
+                "Vendor belongs to another country."
             )
 
         if (
             self.maintenance_type_id
-            and self.maintenance_type.company_id != self.company_id
+            and self.maintenance_type.country_id != self.country_id
         ):
             errors["maintenance_type"] = (
-                "Maintenance Type belongs to another company."
+                "Maintenance Type belongs to another country."
             )
 
         # Cost validation
@@ -254,10 +256,10 @@ class Maintenance(BaseModel):
         
         if (
         self.currency_id
-        and self.currency.company_id != self.company_id
+        and self.currency.country_id != self.country_id
     ):
             errors["currency"] = (
-            "Currency belongs to another company."
+            "Currency belongs to another country."
         )
         if not self.description.strip():
                 errors["description"] = (

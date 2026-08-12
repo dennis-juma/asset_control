@@ -19,7 +19,7 @@ class MaintenanceAdmin(admin.ModelAdmin):
         "estimated_completion_date",
         "completed_date",
         "cost",
-        "company",
+        "country",
         "is_active",
     )
         
@@ -43,7 +43,7 @@ class MaintenanceAdmin(admin.ModelAdmin):
         "priority",
         "maintenance_type",
         "vendor",
-        "company",
+        "country",
         "under_warranty",
         "scheduled_date",
         "completed_date",
@@ -64,7 +64,7 @@ class MaintenanceAdmin(admin.ModelAdmin):
     )
         
         autocomplete_fields = (
-        "company",
+        "country",
         #"asset",
         "maintenance_type",
         "vendor",
@@ -76,7 +76,7 @@ class MaintenanceAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "reference",
-                    "company",
+                    "country",
                     "asset",
                     "maintenance_type",
                     "vendor",

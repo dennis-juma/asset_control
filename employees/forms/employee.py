@@ -13,7 +13,7 @@ class EmployeeCreateForm(forms.ModelForm):
         model = Employee
 
         fields = [
-            "company",
+            "country",
             "site",
             "department",
             "job_title",
@@ -60,7 +60,7 @@ class EmployeeUpdateForm(forms.ModelForm):
         model = Employee
 
         fields = [
-            "company",
+            "country",
             "site",
             "department",
             "job_title",
