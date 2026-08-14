@@ -11,6 +11,7 @@ class AssetCategoryRepository:
         query="",
         page=1,
         per_page=10,
+        country_context=None,
     ):
         queryset = (
             AssetCategory.objects
@@ -23,6 +24,11 @@ class AssetCategoryRepository:
                 "name",
             )
         )
+
+        if country_context and country_context.country:
+            queryset = queryset.filter(
+                country=country_context.country,
+            )
 
         if query:
             queryset = queryset.filter(

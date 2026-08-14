@@ -35,11 +35,13 @@ class AssetPageService:
         self,
         query="",
         page=1,
+        country_context=None,
     ):
 
         assets = self.repository.list(
             query=query,
             page=page,
+            country_context=country_context,
         )
 
         grid = DataGridBuilder("Assets")

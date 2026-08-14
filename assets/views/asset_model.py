@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 
 from core.permissions.constants import Permissions
 from core.permissions.mixins import PermissionRequiredMixin
+from core.services.country_context import CountryContextService
 
 from assets.dtos import (
     AssetModelCreateDTO,
@@ -32,6 +33,7 @@ class AssetModelListView(
         page = AssetModelPageService().list_page(
             query=request.GET.get("q", ""),
             page=request.GET.get("page", 1),
+            country_context=CountryContextService.resolve_request(request),
         )
 
         return self.render_to_response(

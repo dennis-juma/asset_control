@@ -10,6 +10,7 @@ class AssetRepository:
         query="",
         page=1,
         per_page=20,
+        country_context=None,
     ):
         queryset = (
             Asset.objects
@@ -21,6 +22,11 @@ class AssetRepository:
             )
             .order_by("asset_tag")
         )
+
+        if country_context and country_context.country:
+            queryset = queryset.filter(
+                country=country_context.country,
+            )
 
         if query:
             queryset = queryset.filter(

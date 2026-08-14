@@ -75,8 +75,15 @@ class TrendService:
         )
 
     def _maintenance_trend(self) -> ChartData:
+        queryset = Maintenance.objects.all()
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
+            )
+
         labels, values = self._group_by_period(
-            Maintenance.objects.all(),
+            queryset,
             "scheduled_date",
         )
 

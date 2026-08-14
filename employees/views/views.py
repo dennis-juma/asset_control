@@ -8,6 +8,7 @@ from django.views import View
 
 from core.permissions.constants import Permissions
 from core.permissions.mixins import PermissionRequiredMixin
+from core.services.country_context import CountryContextService
 
 from employees.dtos import (
     EmployeeCreateDTO,
@@ -35,6 +36,7 @@ class EmployeeListView(PermissionRequiredMixin, View):
         page = self.page_service.list_page(
             query=request.GET.get("q", ""),
             page=request.GET.get("page", 1),
+            country_context=CountryContextService.resolve_request(request),
         )
 
         return render(

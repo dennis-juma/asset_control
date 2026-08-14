@@ -1,0 +1,80 @@
+{% if user.is_authenticated %}
+
+    {% if available_countries|length > 1 or user.user_type == "SUPER_ADMIN" %}
+
+        <div class="dropdown">
+
+            <button
+                class="btn btn-light dropdown-toggle d-flex align-items-center gap-2"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+                <i class="bi bi-globe2"></i>
+
+                {% if country_context.is_global %}
+                    All Countries
+                {% elif country_context.country %}
+                    {{ country_context.country.name }}
+                {% else %}
+                    Country
+                {% endif %}
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+
+                {% if user.user_type == "SUPER_ADMIN" %}
+
+                    <li>
+                        <a
+                            class="dropdown-item {% if country_context.is_global %}active{% endif %}"
+                            href="{% url 'country-switch' %}?country=all"
+                        >
+                            <i class="bi bi-globe2 me-2"></i>
+                            All Countries
+                        </a>
+                    </li>
+
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                {% endif %}
+
+                {% for country in available_countries %}
+
+                    <li>
+                        <a
+                            class="dropdown-item {% if country_context.country and country_context.country.pk == country.pk %}active{% endif %}"
+                            href="{% url 'country-switch' %}?country={{ country.pk }}"
+                        >
+
+                            {% if country_context.country and country_context.country.pk == country.pk %}
+                                <i class="bi bi-check2 me-2"></i>
+                            {% else %}
+                                <i class="bi bi-geo-alt me-2"></i>
+                            {% endif %}
+
+                            {{ country.name }}
+
+                        </a>
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    {% elif country_context.country %}
+
+        <span
+            class="badge bg-light text-dark border d-flex align-items-center gap-2 px-3 py-2"
+        >
+            <i class="bi bi-globe2"></i>
+            {{ country_context.country.name }}
+        </span>
+
+    {% endif %}
+
+{% endif %}

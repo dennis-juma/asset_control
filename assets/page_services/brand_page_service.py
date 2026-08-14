@@ -32,11 +32,13 @@ class BrandPageService:
         self,
         query="",
         page=1,
+        country_context=None,
     ) -> PageDTO:
 
         brands = self.repository.list(
             query=query,
             page=page,
+            country_context=country_context,
         )
 
         grid = DataGridBuilder("Brands")

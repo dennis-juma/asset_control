@@ -12,6 +12,7 @@ class AssetAssignmentRepository:
         query="",
         page=1,
         per_page=20,
+        country_context=None,
     ):
 
         queryset = (
@@ -25,6 +26,11 @@ class AssetAssignmentRepository:
             )
             .order_by("-assigned_date")
         )
+
+        if country_context and country_context.country:
+            queryset = queryset.filter(
+                country=country_context.country,
+            )
 
         if query:
             queryset = queryset.filter(

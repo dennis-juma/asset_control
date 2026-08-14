@@ -16,9 +16,8 @@ class DashboardService:
         self.request = request
 
         self.country_context = (
-            CountryContextService.resolve(
-                request.user,
-                request.GET.get("country"),
+            CountryContextService.resolve_request(
+                request,
             )
         )
 

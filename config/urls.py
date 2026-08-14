@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from core.views.country import CountrySwitchView
 
 """
 URL configuration for config project.
@@ -22,6 +23,11 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(
+    "country/switch/",
+    CountrySwitchView.as_view(),
+    name="country-switch",
+),
     path("", include("dashboard.urls")),
     path(
         "organizations/",

@@ -31,11 +31,13 @@ class AssetAssignmentPageService:
         self,
         query="",
         page=1,
+        country_context=None,
     ) -> PageDTO:
 
         assignments = self.repository.list(
             query=query,
             page=page,
+            country_context=country_context,
         )
 
         grid = DataGridBuilder("Asset Assignments")

@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 from core.permissions.constants import Permissions
 from core.permissions.mixins import PermissionRequiredMixin
+from core.services.country_context import CountryContextService
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -31,6 +32,7 @@ class AssetListView(
         page = AssetPageService().list_page(
             query=request.GET.get("q", ""),
             page=request.GET.get("page", 1),
+            country_context=CountryContextService.resolve_request(request),
         )
 
         return self.render_to_response(

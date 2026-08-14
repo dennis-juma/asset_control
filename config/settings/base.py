@@ -108,6 +108,7 @@ TEMPLATES = [
 ]
 TEMPLATES[0]["OPTIONS"]["context_processors"] += [
     "core.context_processors.notifications",
+    "core.context_processors.country_context",
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
