@@ -16,6 +16,8 @@ class AlertService:
     """
     Builds operational alerts displayed on the dashboard.
     """
+    def __init__(self, country=None):
+        self.country = country
 
     def get_alerts(self) -> list[AlertDTO]:
         alerts: list[AlertDTO] = []
@@ -37,9 +39,16 @@ class AlertService:
         return alerts
 
     def _maintenance_alert(self) -> AlertDTO | None:
-        count = Maintenance.objects.filter(
-            status=MaintenanceStatus.IN_PROGRESS,
-        ).count()
+        queryset = Maintenance.objects.filter(
+    status=MaintenanceStatus.IN_PROGRESS,
+)
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
+            )
+
+        count = queryset.count()
 
         if not count:
             return None
@@ -55,12 +64,17 @@ class AlertService:
     def _overdue_return_alert(self) -> AlertDTO | None:
         today = timezone.now().date()
 
-        count = (
-            AssetAssignment.objects.filter(
-                status=AssignmentStatus.ACTIVE,
-                expected_return_date__lt=today,
-            ).count()
-        )
+        queryset = AssetAssignment.objects.filter(
+    status=AssignmentStatus.ACTIVE,
+    expected_return_date__lt=today,
+)
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
+            )
+
+        count = queryset.count()
 
         if not count:
             return None
@@ -76,12 +90,17 @@ class AlertService:
     def _overdue_maintenance_alert(self) -> AlertDTO | None:
         today = timezone.now().date()
 
-        count = (
-            Maintenance.objects.filter(
-                status=MaintenanceStatus.SCHEDULED,
-                scheduled_date__lt=today,
-            ).count()
-        )
+        queryset = Maintenance.objects.filter(
+    status=MaintenanceStatus.SCHEDULED,
+    scheduled_date__lt=today,
+)
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
+            )
+
+        count = queryset.count()
 
         if not count:
             return None

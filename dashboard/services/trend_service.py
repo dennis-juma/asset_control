@@ -13,6 +13,8 @@ class TrendService:
     """
     Builds all dashboard trend analytics.
     """
+    def __init__(self, country=None):
+        self.country = country
 
     def get_trends(self) -> list[ChartData]:
         return [
@@ -47,8 +49,15 @@ class TrendService:
         return labels, values
 
     def _assignment_trend(self) -> ChartData:
+        queryset = AssetAssignment.objects.all()
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
+            )
+
         labels, values = self._group_by_period(
-            AssetAssignment.objects.all(),
+            queryset,
             "assigned_date",
         )
 

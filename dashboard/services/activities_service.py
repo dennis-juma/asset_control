@@ -17,7 +17,8 @@ class ActivityService:
 
     ACTIVITY_LIMIT = 5
     DASHBOARD_LIMIT = 10
-
+    def __init__(self, country=None):
+        self.country = country
     # =====================================================
     # Helpers
     # =====================================================
@@ -98,16 +99,18 @@ class ActivityService:
     def _get_asset_activities(
         self,
     ) -> list[ActivityDTO]:
-
-        assets = (
-            Asset.objects
-            .select_related(
-                "asset_model",
+        queryset = Asset.objects.select_related(
+        "asset_model",
+    )
+        
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
             )
-            .order_by("-created_at")[
-                : self.ACTIVITY_LIMIT
-            ]
-        )
+
+        assets = queryset.order_by(
+            "-created_at"
+        )[: self.ACTIVITY_LIMIT]
 
         return [
             ActivityDTO(
@@ -139,20 +142,22 @@ class ActivityService:
         self,
     ) -> list[ActivityDTO]:
 
-        assignments = (
-            AssetAssignment.objects
-            .select_related(
-                "asset",
-                "employee",
-                "site",
+        queryset = AssetAssignment.objects.select_related(
+    "asset",
+    "employee",
+    "site",
+).filter(
+    status="ACTIVE",
+)
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
             )
-            .filter(
-                status="ACTIVE",
-            )
-            .order_by("-assigned_date")[
-                : self.ACTIVITY_LIMIT
-            ]
-        )
+
+        assignments = queryset.order_by(
+            "-assigned_date"
+        )[: self.ACTIVITY_LIMIT]
 
         return [
             ActivityDTO(
@@ -185,20 +190,22 @@ class ActivityService:
         self,
     ) -> list[ActivityDTO]:
 
-        returns = (
-            AssetAssignment.objects
-            .select_related(
-                "asset",
-                "employee",
-                "site",
+        queryset = AssetAssignment.objects.select_related(
+    "asset",
+    "employee",
+    "site",
+).filter(
+    returned_date__isnull=False,
+)
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
             )
-            .filter(
-                returned_date__isnull=False,
-            )
-            .order_by("-returned_date")[
-                : self.ACTIVITY_LIMIT
-            ]
-        )
+
+        returns = queryset.order_by(
+            "-returned_date"
+        )[: self.ACTIVITY_LIMIT]
 
         return [
             ActivityDTO(
@@ -232,15 +239,18 @@ class ActivityService:
         self,
     ) -> list[ActivityDTO]:
 
-        maintenances = (
-            Maintenance.objects
-            .select_related(
-                "asset",
+        queryset = Maintenance.objects.select_related(
+    "asset",
+)
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
             )
-            .order_by("-created_at")[
-                : self.ACTIVITY_LIMIT
-            ]
-        )
+
+        maintenances = queryset.order_by(
+            "-created_at"
+        )[: self.ACTIVITY_LIMIT]
 
         return [
             ActivityDTO(

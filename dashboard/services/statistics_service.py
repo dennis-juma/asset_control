@@ -8,12 +8,15 @@ from dashboard.enums import StatFormatter
 
 
 class StatisticsService:
+
     """
     Service responsible for generating dashboard KPI cards.
 
     All dashboard statistics should be calculated here to keep
     views thin and templates free of business logic.
     """
+    def __init__(self,country = None):
+        self.country = country
 
     def get_cards(self) -> list[StatCard]:
         """
@@ -33,7 +36,15 @@ class StatisticsService:
         """
         Retrieve dashboard statistics using a single database query.
         """
-        return Asset.objects.aggregate(
+        queryset = Asset.objects.all()
+        
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
+            )
+
+        return queryset.aggregate(
             total=Count("id"),
             assigned=Count(
                 "id",

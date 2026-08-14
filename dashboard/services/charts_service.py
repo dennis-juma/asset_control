@@ -15,6 +15,10 @@ class ChartsService:
     This service only provides charts representing the current state
     of the system. Time-series analytics are handled by TrendService.
     """
+    queryset = Asset.objects.all()
+
+    def __init__(self, country=None):
+        self.country = country
 
     def get_charts(self) -> list[ChartData]:
         """
@@ -29,13 +33,20 @@ class ChartsService:
         """
         Build asset status distribution chart.
         """
+        queryset = Asset.objects.all()
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
+            )
 
         status_counts = (
-            Asset.objects
+            queryset
             .values("status")
             .annotate(total=Count("pk"))
             .order_by("status")
         )
+
 
         labels = []
         values = []
@@ -63,13 +74,19 @@ class ChartsService:
         Build asset category distribution chart.
         """
 
+        queryset = Asset.objects.all()
+
+        if self.country:
+            queryset = queryset.filter(
+                country=self.country,
+            )
+
         category_counts = (
-            Asset.objects
+            queryset
             .values("asset_model__category__name")
             .annotate(total=Count("pk"))
             .order_by("-total")
         )
-
         labels = []
         values = []
 

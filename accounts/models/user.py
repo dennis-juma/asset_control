@@ -29,10 +29,10 @@ class User(AbstractUser):
     )
 
     user_type = models.CharField(
-        max_length=30,
-        choices=UserType.choices,
-        default=UserType.EMPLOYEE,
-    )
+    max_length=30,
+    choices=UserType.choices,
+    default=UserType.USER,
+)
 
     def __str__(self):
         return self.get_full_name() or self.username
