@@ -19,20 +19,23 @@ class CSVExporter(BaseExporter):
 
         writer = csv.writer(response)
 
+        # Header
         writer.writerow(
             [
-                c.label
-                for c in grid.columns
-                if c.visible
+                column.label
+                for column in grid.columns
+                if column.visible
             ]
         )
 
+        # Rows
         for row in grid.rows:
 
             writer.writerow(
                 [
-                    cell.display_value
-                    for cell in row.cells
+                    row.cells[column.field].display
+                    for column in grid.columns
+                    if column.visible
                 ]
             )
 

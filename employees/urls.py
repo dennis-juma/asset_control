@@ -6,6 +6,7 @@ from employees.views import (
     EmployeeDetailView,
     EmployeeListView,
     EmployeeUpdateView,
+    EmployeeBulkUpdateView,
 )
 
 app_name = "employees"
@@ -26,6 +27,12 @@ urlpatterns = [
         "create/",
         EmployeeCreateView.as_view(),
         name="employee-create",
+    ),
+
+    path(
+        "bulk-update/",
+        EmployeeBulkUpdateView.as_view(),
+        name="employee-bulk-update",
     ),
 
     path(

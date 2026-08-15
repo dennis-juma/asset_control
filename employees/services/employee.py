@@ -1,4 +1,11 @@
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from accounts.models.choices import UserType
+from accounts.models import User, UserCountryAccess
+from accounts.services.user_provisioning import (
+    UserProvisioningService,
+)
+
 
 from employees.dtos import (
     EmployeeCreateDTO,
@@ -12,7 +19,7 @@ class EmployeeService:
 
     def __init__(self):
         self.repository = EmployeeRepository()
-
+    @transaction.atomic
     def create_employee(
         self,
         dto: EmployeeCreateDTO,
@@ -44,13 +51,20 @@ class EmployeeService:
 
         employee.full_clean()
 
-        return self.repository.create(employee)
+        employee = self.repository.create(employee)
+
+        UserProvisioningService.provision_for_employee(
+            employee
+        )
+
+        return employee
 
     def update_employee(
         self,
         employee: Employee,
         dto: EmployeeUpdateDTO,
     ) -> Employee:
+        
 
         self._validate_dates(
             dto.joining_date,
@@ -72,6 +86,7 @@ class EmployeeService:
         employee.phone = dto.phone
         employee.email = dto.email
         employee.photo = dto.photo
+        Employee.user_type = dto.user_type
         employee.remarks = dto.remarks
         employee.is_active = dto.is_active
 
@@ -79,7 +94,15 @@ class EmployeeService:
 
         employee.full_clean()
 
-        return self.repository.update(employee)
+        employee= self.repository.update(employee)
+        UserProvisioningService.sync_for_employee(
+                employee,
+                user_type=dto.system_role,
+            
+            )
+            
+        return employee
+        
 
     def delete(
         self,

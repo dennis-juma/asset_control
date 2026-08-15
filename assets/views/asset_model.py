@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from core.permissions.constants import Permissions
 from core.permissions.mixins import PermissionRequiredMixin
 from core.services.country_context import CountryContextService
+from core.views.bulk_status import BulkStatusUpdateView
 
 from assets.dtos import (
     AssetModelCreateDTO,
@@ -19,6 +20,14 @@ from assets.forms import (
 from assets.page_services import AssetModelPageService
 from assets.repositories import AssetModelRepository
 from assets.services import AssetModelService
+from assets.models import AssetModel
+
+
+class AssetModelBulkUpdateView(PermissionRequiredMixin, BulkStatusUpdateView):
+    permission_required = Permissions.ASSET_UPDATE
+    model = AssetModel
+    redirect_url = "assets:asset-model-list"
+    record_label = "model"
 
 
 class AssetModelListView(

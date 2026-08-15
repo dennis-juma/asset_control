@@ -5,14 +5,8 @@ from assets.models import Asset
 
 class AssetRepository:
 
-    def list(
-        self,
-        query="",
-        page=1,
-        per_page=20,
-        country_context=None,
-    ):
-        queryset = (
+    def _base_queryset(self):
+        return (
             Asset.objects
             .select_related(
                 "country",
@@ -23,6 +17,12 @@ class AssetRepository:
             .order_by("asset_tag")
         )
 
+    def _filter_queryset(
+        self,
+        queryset,
+        query="",
+        country_context=None,
+    ):
         if country_context and country_context.country:
             queryset = queryset.filter(
                 country=country_context.country,
@@ -39,23 +39,43 @@ class AssetRepository:
                 asset_model__brand__name__icontains=query,
             )
 
+        return queryset
+
+    def list(
+        self,
+        query="",
+        page=1,
+        per_page=20,
+        country_context=None,
+    ):
+        queryset = self._filter_queryset(
+            self._base_queryset(),
+            query=query,
+            country_context=country_context,
+        )
+
         return Paginator(
             queryset,
             per_page,
         ).get_page(page)
+
+    def export_queryset(
+        self,
+        query="",
+        country_context=None,
+    ):
+        return self._filter_queryset(
+            self._base_queryset(),
+            query=query,
+            country_context=country_context,
+        )
 
     def get(
         self,
         pk,
     ):
         return (
-            Asset.objects
-            .select_related(
-                "country",
-                "asset_model",
-                "asset_model__brand",
-                "asset_model__category",
-            )
+            self._base_queryset()
             .get(pk=pk)
         )
 
@@ -84,7 +104,6 @@ class AssetRepository:
         serial_number: str,
         exclude_pk=None,
     ) -> bool:
-
         queryset = Asset.objects.filter(
             serial_number=serial_number,
         )

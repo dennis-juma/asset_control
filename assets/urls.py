@@ -1,23 +1,26 @@
 from django.urls import path
 
-
+from assets.views.asset_import import AssetImportView
 from assets.views import (
     AssetCategoryCreateView,
     AssetCategoryDeleteView,
     AssetCategoryDetailView,
     AssetCategoryListView,
     AssetCategoryUpdateView,
+    AssetCategoryBulkUpdateView,
     BrandCreateView,
     BrandDeleteView,
     BrandDetailView,
     BrandListView,
     BrandUpdateView,
+    BrandBulkUpdateView,
 
     AssetModelCreateView,
     AssetModelDeleteView,
     AssetModelDetailView,
     AssetModelListView,
     AssetModelUpdateView,
+    AssetModelBulkUpdateView,
 )
 from assets.views import (
     AssetListView,
@@ -25,6 +28,8 @@ from assets.views import (
     AssetDetailView,
     AssetUpdateView,
     AssetDeleteView,
+    AssetBulkUpdateView,
+    AssetExportView
 )
 
 from assets.views import (
@@ -64,6 +69,16 @@ urlpatterns = [
         name="asset-category-create",
     ),
     path(
+        "categories/bulk-update/",
+        AssetCategoryBulkUpdateView.as_view(),
+        name="asset-category-bulk-update",
+    ),
+    path(
+    "import/",
+    AssetImportView.as_view(),
+    name="asset-import",
+),
+    path(
         "categories/<uuid:pk>/",
         AssetCategoryDetailView.as_view(),
         name="asset-category-detail",
@@ -93,6 +108,11 @@ urlpatterns = [
         "brands/create/",
         BrandCreateView.as_view(),
         name="brand-create",
+    ),
+    path(
+        "brands/bulk-update/",
+        BrandBulkUpdateView.as_view(),
+        name="brand-bulk-update",
     ),
 
     path(
@@ -128,6 +148,11 @@ urlpatterns = [
         AssetModelCreateView.as_view(),
         name="asset-model-create",
     ),
+    path(
+        "models/bulk-update/",
+        AssetModelBulkUpdateView.as_view(),
+        name="asset-model-bulk-update",
+    ),
 
     path(
         "models/<uuid:pk>/",
@@ -152,35 +177,45 @@ urlpatterns = [
 # =====================================================
 
     path(
-        "assets/",
-        AssetListView.as_view(),
-        name="asset-list",
-    ),
+    "",
+    AssetListView.as_view(),
+    name="asset-list",
+),
+path(
+    "export/",
+    AssetExportView.as_view(),
+    name="asset-export",
+),
 
-    path(
-        "assets/create/",
-        AssetCreateView.as_view(),
-        name="asset-create",
-    ),
+path(
+    "create/",
+    AssetCreateView.as_view(),
+    name="asset-create",
+),
 
-    path(
-        "assets/<uuid:pk>/",
-        AssetDetailView.as_view(),
-        name="asset-detail",
-    ),
+path(
+    "bulk-update/",
+    AssetBulkUpdateView.as_view(),
+    name="asset-bulk-update",
+),
 
-    path(
-        "assets/<uuid:pk>/update/",
-        AssetUpdateView.as_view(),
-        name="asset-update",
-    ),
+path(
+    "<uuid:pk>/",
+    AssetDetailView.as_view(),
+    name="asset-detail",
+),
 
-    path(
-        "assets/<uuid:pk>/delete/",
-        AssetDeleteView.as_view(),
-        name="asset-delete",
-    ),
+path(
+    "<uuid:pk>/update/",
+    AssetUpdateView.as_view(),
+    name="asset-update",
+),
 
+path(
+    "<uuid:pk>/delete/",
+    AssetDeleteView.as_view(),
+    name="asset-delete",
+),
 
     # =====================================================
 # Asset Assignment

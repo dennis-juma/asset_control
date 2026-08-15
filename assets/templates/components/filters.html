@@ -1,18 +1,142 @@
-from .asset_history_service import AssetHistoryService
-from .asset_service import AssetService
-from .asset_category_service import AssetCategoryService
-from .brand_service import BrandService
-from .asset_model_service import AssetModelService
-from .asset_assignment_service import AssetAssignmentService
-from .asset_transfer_service import AssetTransferService
-from .asset_attachment_service import AssetAttachmentService
-__all__ = [
-    "AssetHistoryService",
-    "AssetService",
-    "AssetCategoryService",
-    "BrandService",
-    "AssetModelService",
-    "AssetAssignmentService",
-    "AssetTransferService",
-    "AssetAttachmentService"
-]
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-body">
+
+        <form method="get">
+
+            <div class="row g-3 align-items-end">
+
+                <!-- Search -->
+                <div class="col-lg-4">
+
+                    <label class="form-label">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="search"
+                        placeholder="Asset Tag, Serial, Barcode..."
+                        value="{{ asset_list.search }}"
+                    >
+
+                </div>
+
+                <!-- Status -->
+                <div class="col-lg-2">
+
+                    <label class="form-label">
+                        Status
+                    </label>
+
+                    <select
+                        class="form-select"
+                        name="status"
+                    >
+
+                        <option value="">All</option>
+
+                        {% for value, label in asset_statuses %}
+                            <option
+                                value="{{ value }}"
+                                {% if request.GET.status == value %}selected{% endif %}
+                            >
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- Category -->
+                <div class="col-lg-2">
+
+                    <label class="form-label">
+                        Category
+                    </label>
+
+                    <select
+                        class="form-select"
+                        name="category"
+                    >
+
+                        <option value="">All</option>
+
+                        {% for category in categories %}
+                            <option
+                                value="{{ category.id }}"
+                                {% if request.GET.category == category.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- Country -->
+                <div class="col-lg-2">
+
+                    <label class="form-label">
+                        Country
+                    </label>
+
+                    <select
+                        class="form-select"
+                        name="country"
+                    >
+
+                        <option value="">All</option>
+
+                        {% for country in companies %}
+                            <option
+                                value="{{ country.id }}"
+                                {% if request.GET.country == country.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ country.name }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-lg-2 d-grid gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Search
+
+                    </button>
+
+                    <a
+                        href="{% url 'assets:list' %}"
+                        class="btn btn-outline-secondary"
+                    >
+
+                        Clear
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

@@ -6,13 +6,17 @@ from .asset_category import (
     AssetCategoryDetailView,
     AssetCategoryListView,
     AssetCategoryUpdateView,
+    AssetCategoryBulkUpdateView,
 )
+from .asset_import import AssetImportView
+from .asset import AssetExportView
 from .brand import (
     BrandCreateView,
     BrandDeleteView,
     BrandDetailView,
     BrandListView,
     BrandUpdateView,
+    BrandBulkUpdateView,
 )
 from .asset_model import (
     AssetModelCreateView,
@@ -20,6 +24,7 @@ from .asset_model import (
     AssetModelDetailView,
     AssetModelListView,
     AssetModelUpdateView,
+    AssetModelBulkUpdateView,
 )
 from .asset_attachment import (
     AssetAttachmentCreateView,
@@ -54,6 +59,9 @@ __all__ = [
     "AssetAttachmentDetailView",
     "AssetAttachmentUpdateView",
     "AssetAttachmentDeleteView",
+    "AssetExportView",
+
+    "AssetImportView",
     
     
 

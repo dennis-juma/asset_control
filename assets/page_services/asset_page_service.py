@@ -45,6 +45,7 @@ class AssetPageService:
         )
 
         grid = DataGridBuilder("Assets")
+        grid.bulk_update("assets:asset-bulk-update", "assets")
 
         grid.column(
             field="asset_tag",
@@ -118,6 +119,15 @@ class AssetPageService:
             ],
             toolbar=Toolbar(
                 buttons=[
+                    ToolbarButton(
+            label="Export",
+            icon="bi-download",
+            url=reverse(
+                "assets:asset-export",
+            ),
+            style="secondary",
+            permission=Permissions.ASSET_EXPORT,
+        ),
                     ToolbarButton(
                         label="Register Asset",
                         icon="bi-plus-lg",

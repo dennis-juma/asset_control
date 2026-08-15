@@ -15,19 +15,16 @@ class AssetRowDTO:
 
     asset_tag: str
     serial_number: str
-    barcode: Optional[str]
 
     country: Optional[str]
     category: Optional[str]
     brand: Optional[str]
     model: Optional[str]
-    vendor: Optional[str]
 
     status: str
     condition: str
 
     purchase_date: Optional[date]
-    purchase_price: Optional[Decimal]
-
-
-    under_warranty: bool
+    received_date: Optional[date]
+    purchase_cost: Optional[Decimal]
+    invoice_number: str

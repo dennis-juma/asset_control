@@ -3,9 +3,14 @@ from django.db.models.deletion import ProtectedError
 from core.permissions.constants import Permissions
 from core.permissions.mixins import PermissionRequiredMixin
 from core.services.country_context import CountryContextService
+from core.views.bulk_status import BulkStatusUpdateView
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
+
+from core.dtos.export import ExportRequestDTO
+from core.exports.enums import ExportType
+from core.exports.service import ExportService
 
 from assets.dtos import (
     AssetCreateDTO,
@@ -18,6 +23,14 @@ from assets.forms import (
 from assets.page_services import AssetPageService
 from assets.repositories import AssetRepository
 from assets.services import AssetService
+from assets.models import Asset
+
+
+class AssetBulkUpdateView(PermissionRequiredMixin, BulkStatusUpdateView):
+    permission_required = Permissions.ASSET_UPDATE
+    model = Asset
+    redirect_url = "assets:asset-list"
+    record_label = "asset"
 
 
 class AssetListView(
@@ -41,6 +54,121 @@ class AssetListView(
             }
         )
 
+
+class AssetExportView(PermissionRequiredMixin, TemplateView):
+    permission_required = Permissions.ASSET_EXPORT
+
+    def get(self, request, *args, **kwargs):
+        export_type = request.GET.get("format", "xlsx")
+
+        if export_type not in ("csv", "xlsx"):
+            messages.error(
+                request,
+                "Unsupported export format.",
+            )
+            return redirect("assets:asset-list")
+
+        query = request.GET.get("q", "").strip()
+
+        queryset = AssetRepository().export_queryset(
+            query=query,
+            country_context=CountryContextService.resolve_request(request),
+        )
+
+        from core.ui.datagrid import DataGridBuilder
+
+        grid = DataGridBuilder(
+            title="Assets"
+        )
+
+        grid.column(
+            field="asset_tag",
+            label="Asset Tag",
+        )
+        grid.column(
+            field="serial_number",
+            label="Serial Number",
+        )
+        grid.column(
+            field="country",
+            label="Country",
+        )
+        grid.column(
+            field="category",
+            label="Category",
+        )
+        grid.column(
+            field="brand",
+            label="Brand",
+        )
+        grid.column(
+            field="model",
+            label="Model",
+        )
+        grid.column(
+            field="status",
+            label="Status",
+        )
+        grid.column(
+            field="condition",
+            label="Condition",
+        )
+        grid.column(
+            field="purchase_date",
+            label="Purchase Date",
+        )
+        grid.column(
+            field="purchase_cost",
+            label="Purchase Cost",
+        )
+
+        for asset in queryset:
+            grid.row(
+                asset.id,
+                asset_tag=asset.asset_tag,
+                serial_number=asset.serial_number,
+                country=(
+                    asset.country.name
+                    if asset.country
+                    else ""
+                ),
+                category=(
+                    asset.asset_model.category.name
+                    if asset.asset_model
+                    and asset.asset_model.category
+                    else ""
+                ),
+                brand=(
+                    asset.asset_model.brand.name
+                    if asset.asset_model
+                    and asset.asset_model.brand
+                    else ""
+                ),
+                model=(
+                    asset.asset_model.name
+                    if asset.asset_model
+                    else ""
+                ),
+                status=asset.get_status_display(),
+                condition=asset.get_condition_display(),
+                purchase_date=asset.purchase_date or "",
+                purchase_cost=asset.purchase_cost or "",
+            )
+
+        from core.dtos.export import ExportRequestDTO
+        from core.exports.enums import ExportType
+        from core.exports.service import ExportService
+
+        export_request = ExportRequestDTO(
+            filename="assets",
+            title="Assets",
+            export_type=ExportType(export_type),
+        )
+
+        return ExportService.export(
+            grid.build(),
+            export_request,
+        )
 
 class AssetCreateView(
      PermissionRequiredMixin,

@@ -1,7 +1,7 @@
 from io import BytesIO
 
-from openpyxl import Workbook
 from django.http import HttpResponse
+from openpyxl import Workbook
 
 from .base import BaseExporter
 
@@ -16,26 +16,35 @@ class ExcelExporter(BaseExporter):
 
         sheet.title = request.title
 
-        sheet.append(
-            [
-                c.label
-                for c in grid.columns
-                if c.visible
-            ]
-        )
+        visible_columns = [
+            column
+            for column in grid.columns
+            if column.visible
+        ]
 
-        for row in grid.rows:
-
+        # Header
+        if request.include_header:
             sheet.append(
                 [
-                    cell.display_value
-                    for cell in row.cells
+                    column.label
+                    for column in visible_columns
+                ]
+            )
+
+        # Data rows
+        for row in grid.rows:
+            sheet.append(
+                [
+                    row.cells[column.field].display
+                    for column in visible_columns
                 ]
             )
 
         output = BytesIO()
 
         workbook.save(output)
+
+        output.seek(0)
 
         response = HttpResponse(
             output.getvalue(),

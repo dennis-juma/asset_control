@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 from typing import Any
+from accounts.models.choices import UserType
 
 from employees.models.employee import Employee
 from organizations.models import (
@@ -75,3 +76,4 @@ class EmployeeUpdateDTO:
     remarks: str = ""
 
     is_active: bool = True
+    system_role: str = UserType.USER

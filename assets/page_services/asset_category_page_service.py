@@ -41,6 +41,7 @@ class AssetCategoryPageService:
         )
 
         grid = DataGridBuilder("Asset Categories")
+        grid.bulk_update("assets:asset-category-bulk-update", "categories")
 
         grid.column(
             field="code",

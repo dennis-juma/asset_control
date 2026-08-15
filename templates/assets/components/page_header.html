@@ -12,14 +12,33 @@
 
     </div>
 
-    <div>
+    <div class="d-flex align-items-center gap-2">
 
-        <a href="{% url 'assets:create' %}" class="btn btn-primary">
+        <!-- Import Assets -->
+        <a
+            href="{% url 'assets:asset-import' %}"
+            class="btn btn-outline-primary"
+        >
+            <i class="bi bi-upload me-1"></i>
+            Import
+        </a>
 
-            <i class="bi bi-plus-circle me-2"></i>
+        <!-- Export Assets -->
+        <a
+            href="{% url 'assets:asset-export' %}"
+            class="btn btn-outline-success"
+        >
+            <i class="bi bi-download me-1"></i>
+            Export
+        </a>
 
-            Register Asset
-
+        <!-- New Asset -->
+        <a
+            href="{% url 'assets:asset-create' %}"
+            class="btn btn-primary"
+        >
+            <i class="bi bi-plus-lg me-1"></i>
+            New Asset
         </a>
 
     </div>

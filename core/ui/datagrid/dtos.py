@@ -12,6 +12,7 @@ class GridColumn:
     width: str | None = None
     align: str = "start"
     component: str = "text"
+    visible: bool = True
 
 
 @dataclass(slots=True, frozen=True)
@@ -68,6 +69,11 @@ class DataGrid:
     search_query: str = ""
 
     search_url: str | None = None
+
+    bulk_update_url: str | None = None
+
+    selection_label: str = "records"
+
     def filter_permissions(self, user):
 
         from core.ui.actions.permissions import (

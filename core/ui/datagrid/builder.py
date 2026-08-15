@@ -71,6 +71,13 @@ class DataGridBuilder:
 
         return self
 
+    def bulk_update(self, url_name, selection_label="records"):
+
+        self.grid.bulk_update_url = url_name
+        self.grid.selection_label = selection_label
+
+        return self
+
     def build(self):
 
         return self.grid

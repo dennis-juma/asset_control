@@ -4,6 +4,7 @@ from .views import (
     EmployeeDetailView,
     EmployeeListView,
     EmployeeUpdateView,
+    EmployeeBulkUpdateView,
 )
 
 __all__ = [
@@ -11,5 +12,6 @@ __all__ = [
     "EmployeeCreateView",
     "EmployeeDetailView",
     "EmployeeUpdateView",
+    "EmployeeBulkUpdateView",
     "EmployeeDeleteView",
 ]

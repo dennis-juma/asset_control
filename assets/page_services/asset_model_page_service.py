@@ -38,6 +38,7 @@ class AssetModelPageService:
         )
 
         grid = DataGridBuilder("Asset Models")
+        grid.bulk_update("assets:asset-model-bulk-update", "models")
 
         grid.column(
             field="code",

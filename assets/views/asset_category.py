@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from core.permissions.constants import Permissions
 from core.permissions.mixins import PermissionRequiredMixin
 from core.services.country_context import CountryContextService
+from core.views.bulk_status import BulkStatusUpdateView
 
 from assets.dtos import (
     AssetCategoryCreateDTO,
@@ -19,6 +20,14 @@ from assets.forms.asset_category import (
 from assets.page_services import AssetCategoryPageService
 from assets.repositories import AssetCategoryRepository
 from assets.services import AssetCategoryService
+from assets.models import AssetCategory
+
+
+class AssetCategoryBulkUpdateView(PermissionRequiredMixin, BulkStatusUpdateView):
+    permission_required = Permissions.ASSET_UPDATE
+    model = AssetCategory
+    redirect_url = "assets:asset-category-list"
+    record_label = "category"
 
 
 class AssetCategoryListView(

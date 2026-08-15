@@ -1,6 +1,7 @@
 from django import forms
 
 from employees.models import Employee
+from accounts.models.choices import UserType
 
 from django.contrib.auth import get_user_model
 
@@ -56,6 +57,16 @@ class EmployeeCreateForm(forms.ModelForm):
 
 
 class EmployeeUpdateForm(forms.ModelForm):
+    system_role = forms.ChoiceField(
+        label="System Role",
+        choices=[
+            (UserType.USER, "User"),
+            (UserType.ADMIN, "Administrator"),
+            (UserType.COUNTRY_ADMIN, "Country Administrator"),
+        ],
+        required=True,
+    )
+
     class Meta:
         model = Employee
 
@@ -91,3 +102,11 @@ class EmployeeUpdateForm(forms.ModelForm):
                 attrs={"rows": 3},
             ),
         }
+        def __init__(self, *args, **kwargs):
+
+            if self.instance and self.instance.user_id:
+                self.initial["system_role"] = (
+                    self.instance.user.user_type
+                )
+            else:
+                self.initial["system_role"] = UserType.USER

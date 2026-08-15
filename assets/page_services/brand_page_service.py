@@ -42,6 +42,7 @@ class BrandPageService:
         )
 
         grid = DataGridBuilder("Brands")
+        grid.bulk_update("assets:brand-bulk-update", "brands")
 
         grid.column(
             field="code",

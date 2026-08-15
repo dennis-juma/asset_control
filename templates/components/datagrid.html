@@ -1,4 +1,4 @@
-{% load grid_tags %}
+{% load grid_tags static %}
 
 <div class="card shadow-sm border-0 rounded-4 overflow-hidden data-grid">
 
@@ -53,9 +53,12 @@
 
                 <tr>
 
-                    {% if page.content.selectable %}
+                    {% if page.content.selectable and page.content.bulk_update_url %}
                         <th style="width:40px;">
-                            <input type="checkbox">
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="select-all">
                         </th>
                     {% endif %}
 
@@ -81,10 +84,11 @@
 
                     <tr>
 
-                        {% if page.content.selectable %}
+                        {% if page.content.selectable and page.content.bulk_update_url %}
                             <td>
                                 <input
                                     type="checkbox"
+                                    class="form-check-input bulk-select-checkbox"
                                     value="{{ row.id }}">
                             </td>
                         {% endif %}
@@ -170,3 +174,8 @@
     </div>
 
 </div>
+
+{% if page.content.bulk_update_url %}
+    {% include "components/bulk_actions.html" %}
+    <script src="{% static 'js/bulk_actions.js' %}"></script>
+{% endif %}

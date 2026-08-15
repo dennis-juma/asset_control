@@ -9,6 +9,7 @@ from django.views import View
 from core.permissions.constants import Permissions
 from core.permissions.mixins import PermissionRequiredMixin
 from core.services.country_context import CountryContextService
+from core.views.bulk_status import BulkStatusUpdateView
 
 from employees.dtos import (
     EmployeeCreateDTO,
@@ -23,6 +24,13 @@ from organizations.models import (
     JobTitle,
     Site,
 )
+
+
+class EmployeeBulkUpdateView(PermissionRequiredMixin, BulkStatusUpdateView):
+    permission_required = Permissions.EMPLOYEE_UPDATE
+    model = Employee
+    redirect_url = "employees:employee-list"
+    record_label = "employee"
 
 
 

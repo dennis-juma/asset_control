@@ -41,6 +41,7 @@ class EmployeePageService:
         )
 
         grid = DataGridBuilder("Employees")
+        grid.bulk_update("employees:employee-bulk-update", "employees")
 
         grid.column(
             field="employee_id",
@@ -264,7 +265,11 @@ class EmployeePageService:
 
             .section("Additional Information")
 
-            .field("remarks", width=12)
+            
+
+                .field("system_role", width=6)
+                .field("is_active", width=6)
+                .field("remarks", width=12)
 
             .reverse(
                 "employees:employee-list",
@@ -358,9 +363,10 @@ class EmployeePageService:
             .field("photo", width=12)
 
             .section("Additional Information")
-
-            .field("remarks", width=12)
+            .field("system_role", width=6)
             .field("is_active", width=12)
+            .field("remarks", width=12)
+            
 
             .submit(
                 "Update",

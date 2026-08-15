@@ -18,33 +18,20 @@ class AssetListService:
 
     def get_asset_list(self, request) -> AssetListDTO:
 
-        search = request.GET.get("search", "").strip()
-        ordering = request.GET.get("sort", "-created_at")
-        page = request.GET.get("page", 1)
+        search = request.GET.get(
+            "search",
+            "",
+        ).strip()
 
-        queryset = self.repository.get_queryset()
-
-        queryset = self.repository.search(
-            queryset,
-            search,
+        page = request.GET.get(
+            "page",
+            1,
         )
 
-        queryset = self.repository.filter(
-            queryset,
-            country=request.GET.get("country"),
-            category=request.GET.get("category"),
-            status=request.GET.get("status"),
-        )
-
-        queryset = self.repository.order(
-            queryset,
-            ordering,
-        )
-
-        page_obj = self.repository.paginate(
-            queryset,
-            page,
-            self.PAGE_SIZE,
+        page_obj = self.repository.list(
+            query=search,
+            page=page,
+            per_page=self.PAGE_SIZE,
         )
 
         rows = [
@@ -52,24 +39,53 @@ class AssetListService:
             for asset in page_obj.object_list
         ]
 
-
-        stats = self.repository.statistics()
-
-        statistics = AssetStatisticsDTO(
-            total=stats["total"],
-            assigned=stats["assigned"],
-            in_stock=stats["in_stock"],
-            maintenance=stats["maintenance"],
-            retired=stats["retired"],
-        )
+        statistics = self._get_statistics()
 
         return AssetListDTO(
-    assets=rows,
-    page=page_obj,
-    statistics=statistics,
-    search=search,
-    ordering=ordering,
-)
+            assets=rows,
+            page=page_obj,
+            statistics=statistics,
+            search=search,
+            ordering=request.GET.get(
+                "sort",
+                "-created_at",
+            ),
+        )
+
+    def get_export_queryset(self, request):
+
+        search = request.GET.get(
+            "search",
+            "",
+        ).strip()
+
+        return self.repository.export_queryset(
+            query=search,
+        )
+
+    def _get_statistics(self):
+
+        queryset = self.repository._base_queryset()
+
+        return AssetStatisticsDTO(
+            total=queryset.count(),
+
+            assigned=queryset.filter(
+                status="ASSIGNED",
+            ).count(),
+
+            in_stock=queryset.filter(
+                status="AVAILABLE",
+            ).count(),
+
+            maintenance=queryset.filter(
+                status="MAINTENANCE",
+            ).count(),
+
+            retired=queryset.filter(
+                status="RETIRED",
+            ).count(),
+        )
 
     def _to_row(self, asset):
 
@@ -77,16 +93,36 @@ class AssetListService:
             id=asset.id,
             asset_tag=asset.asset_tag,
             serial_number=asset.serial_number,
-            barcode=asset.barcode,
-            country=asset.country.name if asset.country else None,
-            category=asset.category.name if asset.category else None,
-            brand=asset.brand.name if asset.brand else None,
-            model=asset.model.name if asset.model else None,
-            vendor=asset.vendor.name if asset.vendor else None,
+
+            country=(
+                asset.country.name
+                if asset.country
+                else None
+            ),
+
+            category=(
+                asset.asset_model.category.name
+                if asset.asset_model
+                else None
+            ),
+
+            brand=(
+                asset.asset_model.brand.name
+                if asset.asset_model
+                else None
+            ),
+
+            model=(
+                asset.asset_model.name
+                if asset.asset_model
+                else None
+            ),
+
             status=asset.get_status_display(),
             condition=asset.get_condition_display(),
+
             purchase_date=asset.purchase_date,
-            purchase_price=asset.purchase_price,
-            under_warranty=asset.is_under_warranty,
+            received_date=asset.received_date,
+            purchase_cost=asset.purchase_cost,
+            invoice_number=asset.invoice_number,
         )
-    

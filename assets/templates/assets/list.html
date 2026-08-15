@@ -1,18 +1,33 @@
-from .asset_history_service import AssetHistoryService
-from .asset_service import AssetService
-from .asset_category_service import AssetCategoryService
-from .brand_service import BrandService
-from .asset_model_service import AssetModelService
-from .asset_assignment_service import AssetAssignmentService
-from .asset_transfer_service import AssetTransferService
-from .asset_attachment_service import AssetAttachmentService
-__all__ = [
-    "AssetHistoryService",
-    "AssetService",
-    "AssetCategoryService",
-    "BrandService",
-    "AssetModelService",
-    "AssetAssignmentService",
-    "AssetTransferService",
-    "AssetAttachmentService"
-]
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %}
+    Assets
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    {% include "assets/components/page_header.html" %}
+
+    {% include "assets/components/statistics.html" %}
+
+    {% include "components/filters/filters.html" with filters=filters %}
+
+    {% include "assets/components/bulk_actions.html" %}
+
+    {% include "assets/components/asset_table.html" %}
+
+    {% include "assets/components/pagination.html" %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'js/assets/bulk_actions.js' %}"></script>
+
+{% endblock %}
