@@ -2,6 +2,8 @@ from django.db import transaction
 from assets.choices.history_choices import AssetHistoryEvent
 from assets.services.asset_history_service import AssetHistoryService
 from assets.services.asset_service import AssetService
+from core.notifications.service import NotificationService
+from core.notifications.enums import NotificationEvent
 
 
 from assets.choices import (
@@ -72,15 +74,55 @@ class AssetAssignmentService:
         )
 
         AssetHistoryService.log_event(
-            asset=asset,
-            event_type=AssetHistoryEvent.ASSIGNED,
-            employee=assignment.employee,
-            site=assignment.site,
-            old_status=old_status,
-            new_status=AssetStatus.ASSIGNED,
-            reference=str(assignment.pk),
-            notes=dto.remarks or "Asset assigned.",
-        )
+    asset=asset,
+    event_type=AssetHistoryEvent.ASSIGNED,
+    employee=assignment.employee,
+    site=assignment.site,
+    old_status=old_status,
+    new_status=AssetStatus.ASSIGNED,
+    reference=str(assignment.pk),
+    notes=dto.remarks or "Asset assigned.",
+)
+
+# -----------------------------------------------------
+# Send assignment email
+# -----------------------------------------------------
+
+        if (
+            assignment.assignment_type == AssignmentType.EMPLOYEE
+            and assignment.employee
+            and assignment.employee.email
+        ):
+            assigned_assets = (
+                AssetAssignment.objects
+                .filter(
+                    employee=assignment.employee,
+                    status=AssignmentStatus.ACTIVE,
+                )
+                .select_related(
+                    "asset",
+                    "asset__asset_model",
+                    "asset__asset_model__brand",
+                )
+                .order_by(
+                    "asset__asset_tag",
+                )
+            )
+
+            NotificationService.send_email(
+                event=NotificationEvent.ASSET_ASSIGNED,
+                recipient=assignment.employee.user,
+                subject="New Asset Assigned",
+                template="emails/asset_assigned.html",
+                context={
+                    "employee": assignment.employee,
+                    "assignment": assignment,
+                    "assigned_assets": assigned_assets,
+                    "subject": "New Asset Assigned",
+                },
+            )
+
+
 
         return assignment
 

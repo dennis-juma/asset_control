@@ -1,4 +1,8 @@
 from django.urls import path
+from employees.views.employee_export import EmployeeExportView
+from employees.views.employee_import import EmployeeImportView
+from .views.employee_profile import employee_profile
+from .views.employee_asset_detail import employee_asset_detail
 
 from employees.views import (
     EmployeeCreateView,
@@ -18,6 +22,17 @@ urlpatterns = [
     # =====================================================
 
     path(
+    "my-profile/",
+    employee_profile,
+    name="my-profile",
+),
+path(
+    "my-assets/<uuid:asset_pk>/",
+    employee_asset_detail,
+    name="my-asset-detail",
+),
+
+    path(
         "",
         EmployeeListView.as_view(),
         name="employee-list",
@@ -33,6 +48,11 @@ urlpatterns = [
         "bulk-update/",
         EmployeeBulkUpdateView.as_view(),
         name="employee-bulk-update",
+    ),
+    path(
+    "import/",
+    EmployeeImportView.as_view(),
+    name="employee-import",
     ),
 
     path(
@@ -52,4 +72,9 @@ urlpatterns = [
         EmployeeDeleteView.as_view(),
         name="employee-delete",
     ),
+    path(
+    "export/",
+    EmployeeExportView.as_view(),
+    name="employee-export",
+),
 ]

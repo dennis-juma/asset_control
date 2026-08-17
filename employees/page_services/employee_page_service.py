@@ -126,17 +126,34 @@ class EmployeePageService:
                 ),
             ],
             toolbar=Toolbar(
-                buttons=[
-                    ToolbarButton(
-                        label="New Employee",
-                        icon="bi-plus-lg",
-                        url=reverse(
-                            "employees:employee-create",
-                        ),
-                        style="warning",
-                    ),
-                ],
+    buttons=[
+        ToolbarButton(
+    label="Import",
+    icon="bi-upload",
+    url=reverse(
+        "employees:employee-import",
+    ),
+    style="primary",
+),
+        ToolbarButton(
+            label="Export",
+            icon="bi-download",
+            url=reverse(
+                "employees:employee-export",
             ),
+            style="secondary",
+        ),
+
+        ToolbarButton(
+            label="New Employee",
+            icon="bi-plus-lg",
+            url=reverse(
+                "employees:employee-create",
+            ),
+            style="warning",
+        ),
+    ],
+),
             content=grid.build(),
         )
 
@@ -293,26 +310,26 @@ class EmployeePageService:
                 ),
             ],
             toolbar=Toolbar(
-                buttons=[
-                    ToolbarButton(
-                        label="Edit",
-                        icon="bi-pencil",
-                        url=reverse(
-                            "employees:employee-update",
-                            kwargs={"pk": employee.pk},
-                        ),
-                        style="warning",
-                    ),
-                    ToolbarButton(
-                        label="Back",
-                        icon="bi-arrow-left",
-                        url=reverse(
-                            "employees:employee-list",
-                        ),
-                        style="secondary",
-                    ),
-                ],
+    buttons=[
+        ToolbarButton(
+            label="Export",
+            icon="bi-download",
+            url=reverse(
+                "employees:employee-export",
             ),
+            style="secondary",
+        ),
+
+        ToolbarButton(
+            label="New Employee",
+            icon="bi-plus-lg",
+            url=reverse(
+                "employees:employee-create",
+            ),
+            style="warning",
+        ),
+    ],
+),
             content=form_dto,
         )
 

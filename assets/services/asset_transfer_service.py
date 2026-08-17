@@ -9,6 +9,13 @@ from assets.choices import (
     AssetStatus,
 )
 
+from core.notifications.service import NotificationService
+from core.notifications.enums import NotificationEvent
+
+from assets.services.asset_notification_service import (
+    AssetNotificationService,
+)
+
 from assets.dtos.asset_transfer import (
     AssetTransferCreateDTO,
     AssetTransferUpdateDTO,
@@ -215,6 +222,81 @@ class AssetTransferService:
         "reason": dto.reason or "",
     },
 )
+
+                # -------------------------------------------------
+        # 8B. Send transfer notifications
+        # -------------------------------------------------
+
+        notification_context = {
+            "title": "Asset Transferred",
+            "subject": "Asset Transferred",
+            "asset": dto.asset,
+            "transfer": transfer,
+            "from_employee_name": (
+                from_employee.full_name
+                if from_employee
+                else "Previous Holder"
+            ),
+            "to_employee_name": (
+                to_employee.full_name
+                if to_employee
+                else (
+                    to_site.name
+                    if to_site
+                    else "Site"
+                )
+            ),
+        }
+
+        # ---------------------------------------------
+        # Notify previous employee
+        # ---------------------------------------------
+
+        if from_employee and from_employee.email:
+
+            remaining_assets = (
+                AssetNotificationService.employee_assets(
+                    from_employee
+                )
+            )
+
+            NotificationService.send_email(
+                event=NotificationEvent.ASSET_TRANSFERRED,
+                recipient=from_employee.user or from_employee,
+                subject="Asset Transferred",
+                template="emails/asset_transferred.html",
+                context={
+                    **notification_context,
+                    "employee": from_employee,
+                    "remaining_assets": remaining_assets,
+                },
+            )
+
+        # ---------------------------------------------
+        # Notify new employee
+        # ---------------------------------------------
+
+            if to_employee and to_employee.email:
+
+                assigned_assets = (
+                    AssetNotificationService.employee_assets(
+                        to_employee
+                    )
+                )
+
+                NotificationService.send_email(
+                    event=NotificationEvent.ASSET_TRANSFERRED,
+                    recipient=to_employee.user or to_employee,
+                    subject="New Asset Transferred To You",
+                    template="emails/asset_transferred.html",
+                    context={
+                        **notification_context,
+                        "title": "New Asset Transferred To You",
+                        "subject": "New Asset Transferred To You",
+                        "employee": to_employee,
+                        "remaining_assets": assigned_assets,
+                    },
+                )
 
         # -------------------------------------------------
         # 9. Keep asset assigned

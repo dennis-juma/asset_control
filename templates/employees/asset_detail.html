@@ -1,0 +1,288 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+    {{ asset.asset_tag }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                {{ asset.asset_tag }}
+            </h2>
+
+            <p class="text-muted mb-0">
+                Asset details and assignment history
+            </p>
+        </div>
+
+        <a
+            href="{% url 'employees:my-profile' %}"
+            class="btn btn-outline-secondary"
+        >
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to My Profile
+        </a>
+
+    </div>
+
+
+    <!-- Asset Information -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+                Asset Information
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+
+                    <small class="text-muted">
+                        Asset Tag
+                    </small>
+
+                    <div class="fw-semibold">
+                        {{ asset.asset_tag }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <small class="text-muted">
+                        Model
+                    </small>
+
+                    <div>
+                        {{ asset.asset_model.name|default:"-" }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <small class="text-muted">
+                        Serial Number
+                    </small>
+
+                    <div>
+                        {{ asset.serial_number }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <small class="text-muted">
+                        Condition
+                    </small>
+
+                    <div>
+                        {{ asset.get_condition_display }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <small class="text-muted">
+                        Status
+                    </small>
+
+                    <div>
+
+                        <span class="badge bg-success">
+                            {{ asset.get_status_display }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <small class="text-muted">
+                        Assigned Date
+                    </small>
+
+                    <div>
+                        {{ assignment.assigned_date }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <small class="text-muted">
+                        Expected Return
+                    </small>
+
+                    <div>
+                        {{ assignment.expected_return_date|default:"Not specified" }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <small class="text-muted">
+                        Assigned To
+                    </small>
+
+                    <div>
+                        {{ assignment.assigned_to_name }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Assignment History -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+                Asset History
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            {% if history %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover mb-0">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Event
+                                </th>
+
+                                <th>
+                                    Employee
+                                </th>
+
+                                <th>
+                                    Site
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Notes
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for event in history %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ event.event_date|date:"d M Y H:i" }}
+                                    </td>
+
+                                    <td>
+                                        {{ event.get_event_type_display }}
+                                    </td>
+
+                                    <td>
+                                        {% if event.employee %}
+                                            {{ event.employee.full_name }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if event.site %}
+                                            {{ event.site.name }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+
+                                        {% if event.new_status %}
+                                            {{ event.get_new_status_display }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        {{ event.notes|default:"-" }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center p-5">
+
+                    <p class="text-muted mb-0">
+                        No asset history available.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

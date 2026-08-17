@@ -1,0 +1,373 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+    Import Employees
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                Import Employees
+            </h2>
+
+            <p class="text-muted mb-0">
+                Import employees from CSV or Excel files.
+            </p>
+        </div>
+
+        <div>
+            <a
+                href="{% url 'employees:employee-list' %}"
+                class="btn btn-outline-secondary"
+            >
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to Employees
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- Upload -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-upload me-2"></i>
+                Upload File
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-9">
+
+                        <label
+                            for="import_file"
+                            class="form-label fw-semibold"
+                        >
+                            File
+                        </label>
+
+                        <input
+                            type="file"
+                            name="file"
+                            id="import_file"
+                            class="form-control"
+                            accept=".csv,.xlsx"
+                            required
+                        >
+
+                        <div class="form-text">
+                            Supported formats: CSV and Excel (.xlsx)
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+                            <i class="bi bi-cloud-upload me-1"></i>
+                            Upload & Preview
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    {% if result %}
+
+    <!-- Import Summary -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="text-muted small">
+                        Total Rows
+                    </div>
+
+                    <div class="fs-3 fw-bold">
+                        {{ result.total }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="text-muted small">
+                        Valid
+                    </div>
+
+                    <div class="fs-3 fw-bold text-success">
+                        {{ result.valid }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="text-muted small">
+                        Errors
+                    </div>
+
+                    <div class="fs-3 fw-bold text-danger">
+                        {{ result.errors }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="text-muted small">
+                        Status
+                    </div>
+
+                    {% if result.can_import %}
+
+                        <span class="badge text-bg-success fs-6">
+                            Ready to Import
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge text-bg-danger fs-6">
+                            Fix Errors
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Preview Table -->
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">
+                    Import Preview
+                </h5>
+
+                {% if result.can_import %}
+
+                    <form
+                        method="post"
+                        action="{% url 'employees:employee-import' %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="action"
+                            value="confirm"
+                        >
+
+                        <button
+                            type="submit"
+                            class="btn btn-success"
+                        >
+                            <i class="bi bi-check-circle me-1"></i>
+                            Import Employees
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover table-bordered mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>Row</th>
+                            <th>Employee ID</th>
+                            <th>Country</th>
+                            <th>Site</th>
+                            <th>Department</th>
+                            <th>Job Title</th>
+                            <th>Status</th>
+                            <th>Errors</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for row in result.rows %}
+
+                        <tr>
+
+                            <td>
+                                {{ row.row_number }}
+                            </td>
+
+                            <td>
+                                {{ row.employee_id }}
+                            </td>
+
+                            <td>
+                                {{ row.country }}
+                            </td>
+
+                            <td>
+                                {{ row.site }}
+                            </td>
+
+                            <td>
+                                {{ row.department }}
+                            </td>
+
+                            <td>
+                                {{ row.job_title }}
+                            </td>
+
+                            <td>
+
+                                {% if row.valid %}
+
+                                    <span class="badge text-bg-success">
+                                        Valid
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge text-bg-danger">
+                                        Invalid
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if row.errors %}
+
+                                    {% for error in row.errors %}
+
+                                        <div class="text-danger small mb-1">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="text-center text-muted py-4"
+                            >
+                                No rows found.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

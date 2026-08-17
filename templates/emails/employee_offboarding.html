@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Offboarding</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; line-height: 1.6;">
+
+    <h2>Employee Offboarding - Asset Return Required</h2>
+
+    <p>
+        Hello {{ employee.full_name }},
+    </p>
+
+    <p>
+        Your employment record has been marked as inactive in the
+        Asset Management System.
+    </p>
+
+    <table cellpadding="8"
+           cellspacing="0"
+           border="1"
+           style="border-collapse: collapse; width: 100%;">
+
+        <tr>
+            <th align="left">Employee ID</th>
+            <td>{{ employee.employee_id }}</td>
+        </tr>
+
+        <tr>
+            <th align="left">Employee Name</th>
+            <td>{{ employee.full_name }}</td>
+        </tr>
+
+        <tr>
+            <th align="left">Last Working Date</th>
+            <td>{{ employee.last_working_date|default:"Not specified" }}</td>
+        </tr>
+
+    </table>
+
+    {% if assigned_assets %}
+
+        <h3>Assets Currently Assigned To You</h3>
+
+        <p>
+            The following {{ asset_count }} asset{{ asset_count|pluralize }}
+            remain assigned to your employee record and must be returned
+            according to the company's asset return process.
+        </p>
+
+        <table cellpadding="8"
+               cellspacing="0"
+               border="1"
+               style="border-collapse: collapse; width: 100%;">
+
+            <thead>
+                <tr>
+                    <th>Asset Tag</th>
+                    <th>Serial Number</th>
+                    <th>Model</th>
+                    <th>Assigned Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for assignment in assigned_assets %}
+
+                <tr>
+                    <td>
+                        {{ assignment.asset.asset_tag }}
+                    </td>
+
+                    <td>
+                        {{ assignment.asset.serial_number }}
+                    </td>
+
+                    <td>
+                        {{ assignment.asset.asset_model.name }}
+                    </td>
+
+                    <td>
+                        {{ assignment.assigned_date }}
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p>
+            <strong>No active assets are currently assigned
+            to your employee record.</strong>
+        </p>
+
+    {% endif %}
+
+    <p>
+        Please coordinate the return of any outstanding assets
+        with the IT / Asset Management team.
+    </p>
+
+    <p>
+        This is an automated notification from the
+        Asset Management System.
+    </p>
+
+</body>
+</html>

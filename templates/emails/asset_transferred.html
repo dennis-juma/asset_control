@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject }}</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; line-height: 1.6;">
+
+    <h2>{{ title }}</h2>
+
+    <p>
+        Hello {{ employee.full_name }},
+    </p>
+
+    <p>
+        Asset <strong>{{ asset.asset_tag }}</strong>
+        has been transferred.
+    </p>
+
+    <table cellpadding="8" cellspacing="0" border="1"
+           style="border-collapse: collapse; width: 100%;">
+        <tr>
+            <th align="left">Asset Tag</th>
+            <td>{{ asset.asset_tag }}</td>
+        </tr>
+
+        <tr>
+            <th align="left">Serial Number</th>
+            <td>{{ asset.serial_number }}</td>
+        </tr>
+
+        <tr>
+            <th align="left">Model</th>
+            <td>{{ asset.asset_model.name }}</td>
+        </tr>
+
+        <tr>
+            <th align="left">Transfer Date</th>
+            <td>{{ transfer.transfer_date }}</td>
+        </tr>
+
+        <tr>
+            <th align="left">Transferred From</th>
+            <td>{{ from_employee_name }}</td>
+        </tr>
+
+        <tr>
+            <th align="left">Transferred To</th>
+            <td>{{ to_employee_name }}</td>
+        </tr>
+    </table>
+
+    {% if remaining_assets %}
+        <h3>Your Remaining Assigned Assets</h3>
+
+        <table cellpadding="8" cellspacing="0" border="1"
+               style="border-collapse: collapse; width: 100%;">
+
+            <thead>
+                <tr>
+                    <th>Asset Tag</th>
+                    <th>Serial Number</th>
+                    <th>Model</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for assignment in remaining_assets %}
+                <tr>
+                    <td>{{ assignment.asset.asset_tag }}</td>
+                    <td>{{ assignment.asset.serial_number }}</td>
+                    <td>{{ assignment.asset.asset_model.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    {% else %}
+        <p>
+            You currently have no other assets assigned to you.
+        </p>
+    {% endif %}
+
+    <p>
+        This is an automated notification from the
+        Asset Management System.
+    </p>
+
+</body>
+</html>

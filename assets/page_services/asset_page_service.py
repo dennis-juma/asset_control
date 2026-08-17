@@ -120,6 +120,15 @@ class AssetPageService:
             toolbar=Toolbar(
                 buttons=[
                     ToolbarButton(
+            label="Import",
+            icon="bi-upload",
+            url=reverse(
+                "assets:asset-import",
+            ),
+            style="primary",
+            permission=Permissions.ASSET_CREATE,
+        ),
+                    ToolbarButton(
             label="Export",
             icon="bi-download",
             url=reverse(

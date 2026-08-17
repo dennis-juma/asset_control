@@ -5,6 +5,12 @@ from accounts.models import User, UserCountryAccess
 from accounts.services.user_provisioning import (
     UserProvisioningService,
 )
+from assets.services.asset_notification_service import (
+    AssetNotificationService,
+)
+
+from core.notifications.service import NotificationService
+from core.notifications.enums import NotificationEvent
 
 
 from employees.dtos import (
@@ -59,16 +65,22 @@ class EmployeeService:
 
         return employee
 
+    @transaction.atomic
     def update_employee(
         self,
         employee: Employee,
         dto: EmployeeUpdateDTO,
     ) -> Employee:
-        
 
         self._validate_dates(
             dto.joining_date,
             dto.last_working_date,
+        )
+
+        # Detect deactivation BEFORE changing the employee
+        is_being_deactivated = (
+            employee.is_active
+            and not dto.is_active
         )
 
         employee.country = dto.country
@@ -86,7 +98,6 @@ class EmployeeService:
         employee.phone = dto.phone
         employee.email = dto.email
         employee.photo = dto.photo
-        Employee.user_type = dto.user_type
         employee.remarks = dto.remarks
         employee.is_active = dto.is_active
 
@@ -94,13 +105,39 @@ class EmployeeService:
 
         employee.full_clean()
 
-        employee= self.repository.update(employee)
+        employee = self.repository.update(employee)
+
         UserProvisioningService.sync_for_employee(
-                employee,
-                user_type=dto.system_role,
-            
+            employee,
+            user_type=dto.system_role,
+        )
+
+    # -------------------------------------------------
+    # Employee Offboarding Notification
+    # -------------------------------------------------
+
+        if is_being_deactivated:
+
+            assigned_assets = (
+                AssetNotificationService.employee_assets(
+                    employee
+                )
             )
-            
+
+            if employee.user and employee.user.email:
+
+                NotificationService.send_email(
+                    event=NotificationEvent.EMPLOYEE_OFFBOARDING,
+                    recipient=employee.user,
+                    subject="Employee Offboarding - Asset Return Required",
+                    template="emails/employees/employee_offboarding.html",
+                    context={
+                        "employee": employee,
+                        "assigned_assets": assigned_assets,
+                        "asset_count": assigned_assets.count(),
+                    },
+                )
+
         return employee
         
 
