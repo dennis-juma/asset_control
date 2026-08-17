@@ -29,6 +29,7 @@ class NotificationEmailService:
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[recipient_email],
+            cc=["tz-it@sunking.com"],
         )
 
         email.attach_alternative(
