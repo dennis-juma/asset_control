@@ -5,7 +5,7 @@ from organizations.dtos import (
 from organizations.models import (
     Country,
     Department,
-    Site,
+   
 )
 
 
@@ -20,10 +20,6 @@ class DepartmentService:
             pk=dto.country,
         )
 
-        site = Site.objects.get(
-            pk=dto.site,
-        )
-
         parent = None
 
         if dto.parent:
@@ -33,7 +29,6 @@ class DepartmentService:
 
         return Department.objects.create(
             country=country,
-            site=site,
             parent=parent,
             name=dto.name,
             cost_center=dto.cost_center,
@@ -50,9 +45,6 @@ class DepartmentService:
             pk=dto.country,
         )
 
-        department.site = Site.objects.get(
-            pk=dto.site,
-        )
 
         department.parent = (
             Department.objects.get(pk=dto.parent)

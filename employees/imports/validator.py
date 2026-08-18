@@ -74,7 +74,6 @@ class EmployeeImportValidator:
         department = self._resolve_department(
             row.get("Department"),
             country,
-            site,
             errors,
         )
 
@@ -161,15 +160,7 @@ class EmployeeImportValidator:
                 "Department does not belong to the selected country."
             )
 
-        if (
-            site
-            and department
-            and department.site_id
-            and department.site_id != site.id
-        ):
-            errors.append(
-                "Department does not belong to the selected site."
-            )
+
 
         if (
             country
@@ -280,7 +271,6 @@ class EmployeeImportValidator:
         self,
         value,
         country,
-        site,
         errors,
     ):
         value = self._text(value)
@@ -296,10 +286,7 @@ class EmployeeImportValidator:
                 country=country
             )
 
-        if site:
-            queryset = queryset.filter(
-                site=site
-            )
+        
 
         department = (
             queryset.filter(name__iexact=value).first()

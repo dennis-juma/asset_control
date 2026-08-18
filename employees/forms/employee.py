@@ -1,15 +1,15 @@
 from django import forms
-
-from employees.models import Employee
-from accounts.models.choices import UserType
-
 from django.contrib.auth import get_user_model
+
+from accounts.models.choices import UserType
+from employees.models import Employee
 
 
 User = get_user_model()
 
 
 class EmployeeCreateForm(forms.ModelForm):
+
     class Meta:
         model = Employee
 
@@ -33,7 +33,6 @@ class EmployeeCreateForm(forms.ModelForm):
             "remarks",
         ]
 
-
         widgets = {
             "joining_date": forms.DateInput(
                 attrs={"type": "date"},
@@ -45,18 +44,40 @@ class EmployeeCreateForm(forms.ModelForm):
                 attrs={"rows": 3},
             ),
         }
-        def __init__(self, *args, **kwargs):
 
-            super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-            self.fields["user"].queryset = (
-                User.objects
-                .filter(employee__isnull=True)
-                .order_by("username")
+        self.fields["manager"].queryset = (
+            Employee.objects
+            .filter(is_active=True)
+            .select_related(
+                "country",
+                "site",
+                "department",
+                "job_title",
             )
+            .order_by("employee_id")
+        )
+
+        self.fields["manager"].widget.attrs.update({
+            "class": "form-select tom-select",
+            "data-placeholder": "Search manager...",
+        })
+        self.fields["job_title"].widget.attrs.update({
+    "class": "form-select tom-select",
+    "data-placeholder": "Search job title...",
+})
+
+        self.fields["user"].queryset = (
+            User.objects
+            .filter(employee__isnull=True)
+            .order_by("username")
+        )
 
 
 class EmployeeUpdateForm(forms.ModelForm):
+
     system_role = forms.ChoiceField(
         label="System Role",
         choices=[
@@ -102,11 +123,35 @@ class EmployeeUpdateForm(forms.ModelForm):
                 attrs={"rows": 3},
             ),
         }
-        def __init__(self, *args, **kwargs):
 
-            if self.instance and self.instance.user_id:
-                self.initial["system_role"] = (
-                    self.instance.user.user_type
-                )
-            else:
-                self.initial["system_role"] = UserType.USER
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["manager"].queryset = (
+            Employee.objects
+            .filter(is_active=True)
+            .exclude(pk=self.instance.pk)
+            .select_related(
+                "country",
+                "site",
+                "department",
+                "job_title",
+            )
+            .order_by("employee_id")
+        )
+
+        self.fields["manager"].widget.attrs.update({
+            "class": "form-select tom-select",
+            "data-placeholder": "Search manager...",
+        })
+        self.fields["job_title"].widget.attrs.update({
+    "class": "form-select tom-select",
+    "data-placeholder": "Search job title...",
+})
+
+        if self.instance and self.instance.user_id:
+            self.initial["system_role"] = (
+                self.instance.user.user_type
+            )
+        else:
+            self.initial["system_role"] = UserType.USER

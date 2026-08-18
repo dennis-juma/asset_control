@@ -41,6 +41,12 @@ class AssetCategoryPageService:
         )
 
         grid = DataGridBuilder("Asset Categories")
+        grid.search(
+    url=reverse("assets:asset-category-list"),
+    query=query,
+    placeholder="Search asset Category...",
+)
+
         grid.bulk_update("assets:asset-category-bulk-update", "categories")
 
         grid.column(

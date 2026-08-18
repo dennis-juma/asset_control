@@ -8,7 +8,11 @@ class UserProvisioningService:
 
     @staticmethod
     @transaction.atomic
-    def provision_for_employee(employee):
+    def provision_for_employee(
+        employee,
+    user_type=UserType.USER,
+
+                               ):
 
         if employee.user_id:
             return employee.user
@@ -22,7 +26,7 @@ class UserProvisioningService:
             email=employee.email,
             employee_id=employee.employee_id,
             phone=employee.phone,
-            user_type=UserType.USER,
+            user_type=user_type,
             is_active=employee.is_current_employee,
         )
 
@@ -48,7 +52,7 @@ class UserProvisioningService:
     
     @staticmethod
     @transaction.atomic
-    def sync_for_employee(employee):
+    def sync_for_employee(employee,user_type=UserType.USER):
         """
         Synchronize an employee's system account.
 
@@ -63,7 +67,8 @@ class UserProvisioningService:
 
         if not employee.user_id:
             return UserProvisioningService.provision_for_employee(
-                employee
+                employee,
+                 user_type=user_type,
             )
 
         user = employee.user
@@ -75,6 +80,7 @@ class UserProvisioningService:
         user.email = employee.email
         user.phone = employee.phone
         user.is_active = employee.is_current_employee
+        user.user_type = user_type
 
         user.save(
             update_fields=[
@@ -85,6 +91,7 @@ class UserProvisioningService:
                 "email",
                 "phone",
                 "is_active",
+                "user_type"
             ]
         )
 

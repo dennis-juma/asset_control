@@ -86,7 +86,6 @@ class DepartmentPageService:
                 code=department.code,
                 name=department.name,
                 country=department.country.name,
-                site=department.site.name,
                 parent=department.parent.name if department.parent else "-",
                 cost_center=department.cost_center,
                 is_active=department.is_active,
@@ -156,7 +155,6 @@ class DepartmentPageService:
             .section("General Information")
 
             .field("country", width=6)
-            .field("site", width=6)
             .field("parent", width=6)
             .field("name", width=6)
 
@@ -226,7 +224,6 @@ class DepartmentPageService:
             .section("General Information")
 
             .field("country", 6)
-            .field("site", 6)
             .field("parent", 6)
             .field("name", 6)
 
@@ -312,7 +309,6 @@ class DepartmentPageService:
             .section("General Information")
 
             .field("country", 6)
-            .field("site", 6)
             .field("parent", 6)
             .field("name", 6)
 

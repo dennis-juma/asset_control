@@ -10,7 +10,6 @@ class DepartmentCreateForm(forms.ModelForm):
 
         fields = [
             "country",
-            "site",
             "parent",
             "name",
             "cost_center",
@@ -33,7 +32,6 @@ class DepartmentUpdateForm(forms.ModelForm):
 
         fields = [
             "country",
-            "site",
             "parent",
             "name",
             "cost_center",

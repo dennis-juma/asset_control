@@ -2,12 +2,15 @@ from django.db import models
 
 from core.models import BaseModel
 from core.services import CodeGenerator
-from organizations.models import Country, Site
+from organizations.models import Country
 
 
 class Department(BaseModel):
     """
-    Represents an organizational department within a country and site.
+    Represents an organizational department within a country.
+
+    Departments and sites are independent organizational entities.
+    Employees are assigned to both a department and a site.
     Supports hierarchical departments and cost center mapping.
     """
 
@@ -15,14 +18,6 @@ class Department(BaseModel):
 
     country = models.ForeignKey(
         Country,
-        on_delete=models.PROTECT,
-        related_name="departments",
-        null=True,
-        blank=True,
-    )
-
-    site = models.ForeignKey(
-        Site,
         on_delete=models.PROTECT,
         related_name="departments",
         null=True,
@@ -67,21 +62,19 @@ class Department(BaseModel):
             models.UniqueConstraint(
                 fields=[
                     "country",
-                    "site",
                     "name",
                 ],
-                name="unique_department_per_site",
+                name="unique_department_per_country",
             ),
         ]
 
         indexes = [
             models.Index(fields=["country"]),
-            models.Index(fields=["site"]),
             models.Index(fields=["name"]),
         ]
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
     def save(self, *args, **kwargs):
         if not self.code:

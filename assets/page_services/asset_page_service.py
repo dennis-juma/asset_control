@@ -45,6 +45,11 @@ class AssetPageService:
         )
 
         grid = DataGridBuilder("Assets")
+        grid.search(
+    url=reverse("assets:asset-list"),
+    query=query,
+    placeholder="Search assets...",
+)
         grid.bulk_update("assets:asset-bulk-update", "assets")
 
         grid.column(

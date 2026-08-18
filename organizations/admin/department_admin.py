@@ -10,14 +10,12 @@ class DepartmentAdmin(admin.ModelAdmin):
         "code",
         "name",
         "country",
-        "site",
         "cost_center",
         "is_active",
     )
 
     list_filter = (
         "country",
-        "site",
         "is_active",
     )
 

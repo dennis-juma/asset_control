@@ -34,7 +34,7 @@ class AssetModelRepository:
         if query:
             queryset = queryset.filter(
                 Q(code__icontains=query)
-                | Q(model_name__icontains=query)
+                | Q(name__icontains=query)
                 | Q(manufacturer_part_number__icontains=query)
                 | Q(category__name__icontains=query)
                 | Q(brand__name__icontains=query)

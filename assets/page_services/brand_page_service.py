@@ -42,6 +42,12 @@ class BrandPageService:
         )
 
         grid = DataGridBuilder("Brands")
+        grid.search(
+    url=reverse("assets:brand-list"),
+    query=query,
+    placeholder="Search brand...",
+)
+
         grid.bulk_update("assets:brand-bulk-update", "brands")
 
         grid.column(
