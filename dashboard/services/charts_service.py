@@ -50,10 +50,21 @@ class ChartsService:
 
         labels = []
         values = []
+        background_colors = []
+        border_colors = []
+
+        status_colors = {
+            "ASSIGNED": "#22c55e",
+            "AVAILABLE": "#facc15",
+        }
 
         for item in status_counts:
-            labels.append(item["status"])
+            status = item["status"]
+            labels.append(status)
             values.append(item["total"])
+            color = status_colors.get(status, "#6c757d")
+            background_colors.append(color)
+            border_colors.append(color)
 
         return ChartData(
             chart_id="asset-status-chart",
@@ -64,6 +75,8 @@ class ChartsService:
                 ChartDataset(
                     label="Assets",
                     data=values,
+                    background_color=background_colors,
+                    border_color=border_colors,
                 ),
             ],
             options=ChartOptions(),

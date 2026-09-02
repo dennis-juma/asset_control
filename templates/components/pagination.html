@@ -1,3 +1,5 @@
+{% load grid_tags %}
+
 {% if page.content.page %}
 
 <nav class="mt-3">
@@ -9,7 +11,7 @@
         <li class="page-item">
 
             <a class="page-link"
-               href="?page={{ page.content.page.previous_page_number }}&q={{ page.content.search_query }}">
+               href="?page={{ page.content.page.previous_page_number }}&q={{ page.content.search_query|urlencode }}">
 
                 Previous
 
@@ -19,18 +21,15 @@
 
         {% endif %}
 
-        {% for num in page.content.page.paginator.page_range %}
+        {% for num in page.content.page.paginator|elided_page_range:page.content.page.number %}
 
-            <li class="page-item {% if num == page.content.page.number %}active{% endif %}">
-
-                <a class="page-link"
-                   href="?page={{ num }}&q={{ page.content.search_query }}">
-
-                    {{ num }}
-
-                </a>
-
-            </li>
+            {% if num == '...' %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% else %}
+                <li class="page-item {% if num == page.content.page.number %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}&q={{ page.content.search_query|urlencode }}">{{ num }}</a>
+                </li>
+            {% endif %}
 
         {% endfor %}
 
@@ -39,7 +38,7 @@
         <li class="page-item">
 
             <a class="page-link"
-               href="?page={{ page.content.page.next_page_number }}&q={{ page.content.search_query }}">
+               href="?page={{ page.content.page.next_page_number }}&q={{ page.content.search_query|urlencode }}">
 
                 Next
 

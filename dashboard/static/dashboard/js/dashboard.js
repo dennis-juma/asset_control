@@ -5,9 +5,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const chartData = JSON.parse(
-        document.getElementById("dashboard-chart-data").textContent
-    );
+    const chartScript = document.getElementById("dashboard-chart-data");
+
+    if (!chartScript) {
+        return;
+    }
+
+    const chartData = JSON.parse(chartScript.textContent);
 
     chartData.forEach(chart => {
 

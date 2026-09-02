@@ -45,35 +45,35 @@ document.addEventListener("DOMContentLoaded", function () {
     const siteGroup =
         document.getElementById("div_id_site");
 
+    if (!assignmentType.length) {
+        return;
+    }
+
     function toggleFields() {
 
-        const value =
-            document.querySelector(
-                'input[name="assignment_type"]:checked'
-            ).value;
+        const selected = document.querySelector(
+            'input[name="assignment_type"]:checked'
+        );
 
-        if (value === "EMPLOYEE") {
+        if (!selected) {
+            return;
+        }
 
-            employeeGroup.style.display = "";
+        const value = selected.value;
 
-            siteGroup.style.display = "none";
-
-        } else {
-
-            employeeGroup.style.display = "none";
-
-            siteGroup.style.display = "";
-
+        if (employeeGroup && siteGroup) {
+            if (value === "EMPLOYEE") {
+                employeeGroup.style.display = "";
+                siteGroup.style.display = "none";
+            } else {
+                employeeGroup.style.display = "none";
+                siteGroup.style.display = "";
+            }
         }
     }
 
     assignmentType.forEach(function (radio) {
-
-        radio.addEventListener(
-            "change",
-            toggleFields,
-        );
-
+        radio.addEventListener("change", toggleFields);
     });
 
     toggleFields();

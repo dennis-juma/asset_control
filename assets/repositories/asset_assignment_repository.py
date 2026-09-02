@@ -46,6 +46,40 @@ class AssetAssignmentRepository:
             per_page,
         ).get_page(page)
 
+    def export_queryset(
+        self,
+        query="",
+        page=1,
+        country_context=None,
+    ):
+        queryset = (
+            AssetAssignment.objects
+            .select_related(
+                "country",
+                "asset",
+                "asset__asset_model",
+                "employee",
+                "site",
+            )
+            .order_by("-assigned_date")
+        )
+
+        if country_context and country_context.country:
+            queryset = queryset.filter(
+                country=country_context.country,
+            )
+
+        if query:
+            queryset = queryset.filter(
+                Q(asset__asset_tag__icontains=query)
+                | Q(asset__serial_number__icontains=query)
+                | Q(employee__first_name__icontains=query)
+                | Q(employee__last_name__icontains=query)
+                | Q(site__name__icontains=query)
+            )
+
+        return queryset
+
     def get(
         self,
         pk,

@@ -15,7 +15,13 @@
 
     </label>
 
-    {{ field.field }}
+    {% if field.field.widget.input_type == "radio" %}
+        <div class="assignment-type-radio-group">
+            {{ field.field }}
+        </div>
+    {% else %}
+        {{ field.field }}
+    {% endif %}
 
     {% if field.field.help_text %}
 

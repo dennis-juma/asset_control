@@ -1,16 +1,17 @@
 from django.urls import reverse
+
+from assets.choices.choices import AssignmentStatus, AssignmentType
 from assets.forms import (
     AssetAssignmentCreateForm,
     AssetReturnForm,
     AssetAssignmentUpdateForm,
-    
 )
 from assets.repositories import AssetAssignmentRepository
-from assets.choices.choices import AssignmentStatus,AssignmentType
 from core.dtos import (
     BreadcrumbDTO,
     PageDTO,
 )
+from core.permissions.constants import Permissions
 from core.dtos.toolbar import (
     Toolbar,
     ToolbarButton,
@@ -115,12 +116,31 @@ class AssetAssignmentPageService:
             toolbar=Toolbar(
                 buttons=[
                     ToolbarButton(
+                        label="Import",
+                        icon="bi-upload",
+                        url=reverse(
+                            "assets:asset-assignment-import",
+                        ),
+                        style="primary",
+                        permission=Permissions.ASSET_CREATE,
+                    ),
+                    ToolbarButton(
+                        label="Export",
+                        icon="bi-download",
+                        url=reverse(
+                            "assets:asset-assignment-export",
+                        ),
+                        style="secondary",
+                        permission=Permissions.ASSET_EXPORT,
+                    ),
+                    ToolbarButton(
                         label="Assign Asset",
                         icon="bi-plus-lg",
                         url=reverse(
                             "assets:asset-assignment-create",
                         ),
                         style="warning",
+                        permission=Permissions.ASSET_CREATE,
                     ),
                 ],
             ),

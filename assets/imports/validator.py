@@ -1,13 +1,15 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 
 from django.core.exceptions import ValidationError
 
-from assets.choices import AssetCondition
+from assets.choices import AssetCondition, AssignmentType
 from assets.dtos import AssetCreateDTO
-from assets.models import AssetModel
-from organizations.models import Country
-from assets.validators import AssetValidator
+from assets.dtos.asset_assignment import AssetAssignmentCreateDTO
+from assets.models import Asset, AssetModel
+from assets.validators import AssetAssignmentValidator, AssetValidator
+from employees.models import Employee
+from organizations.models import Country, Site
 
 
 class AssetImportValidator:
@@ -273,9 +275,7 @@ class AssetImportValidator:
             "%d-%m-%Y",
         ):
             try:
-                return date.fromisoformat(
-                    date.strptime(value, fmt).isoformat()
-                ), None
+                return datetime.strptime(value, fmt).date(), None
             except ValueError:
                 continue
 
@@ -336,3 +336,266 @@ class AssetImportValidator:
             )
 
         return messages
+
+
+class AssetAssignmentImportValidator:
+
+    REQUIRED_COLUMNS = (
+        "Country",
+        "Asset Tag",
+        "Assignment Type",
+        "Assigned Date",
+    )
+
+    OPTIONAL_COLUMNS = (
+        "Employee ID",
+        "Employee Name",
+        "Site Name",
+        "Expected Return Date",
+        "Remarks",
+    )
+
+    ALL_COLUMNS = REQUIRED_COLUMNS + OPTIONAL_COLUMNS
+
+    def __init__(self):
+        self.assignment_validator = AssetAssignmentValidator()
+
+    def validate_headers(self, headers):
+        headers = {
+            str(header).strip()
+            for header in headers
+            if header
+        }
+
+        missing = [
+            column
+            for column in self.REQUIRED_COLUMNS
+            if column not in headers
+        ]
+
+        if missing:
+            raise ValidationError(
+                {
+                    "headers": (
+                        "Missing required columns: "
+                        + ", ".join(missing)
+                    )
+                }
+            )
+
+    def validate_row(self, row):
+        errors = []
+
+        try:
+            country = self._resolve_country(
+                row.get("Country")
+            )
+        except ValidationError as exc:
+            errors.append(str(exc))
+            country = None
+
+        try:
+            asset = self._resolve_asset(
+                row.get("Asset Tag"),
+                country,
+            )
+        except ValidationError as exc:
+            errors.append(str(exc))
+            asset = None
+
+        assignment_type = self._parse_assignment_type(
+            row.get("Assignment Type")
+        )
+        if assignment_type is None:
+            errors.append(
+                "Assignment Type must be 'Employee' or 'Site'."
+            )
+
+        assigned_date, error = self._parse_date(
+            row.get("Assigned Date")
+        )
+        if error:
+            errors.append(
+                f"Assigned Date: {error}"
+            )
+
+        expected_return_date, error = self._parse_date(
+            row.get("Expected Return Date")
+        )
+        if error:
+            errors.append(
+                f"Expected Return Date: {error}"
+            )
+
+        employee = None
+        site = None
+
+        if assignment_type == AssignmentType.EMPLOYEE:
+            employee = self._resolve_employee(
+                row.get("Employee ID"),
+                row.get("Employee Name"),
+                country,
+            )
+            if employee is None:
+                errors.append(
+                    "Employee ID or Employee Name is required for employee assignment."
+                )
+        elif assignment_type == AssignmentType.SITE:
+            site = self._resolve_site(
+                row.get("Site Name"),
+                country,
+            )
+            if site is None:
+                errors.append(
+                    "Site Name is required for site assignment."
+                )
+
+        if country and asset and assignment_type and assigned_date:
+            dto = AssetAssignmentCreateDTO(
+                country=country,
+                asset=asset,
+                assignment_type=assignment_type,
+                employee=employee,
+                site=site,
+                assigned_date=assigned_date,
+                expected_return_date=expected_return_date,
+                remarks=self._text(row.get("Remarks")),
+            )
+
+            try:
+                self.assignment_validator.validate_create(dto)
+            except ValidationError as exc:
+                errors.extend(
+                    AssetImportValidator._validation_messages(exc)
+                )
+
+        return errors
+
+    def _resolve_country(self, value):
+        value = self._text(value)
+        if not value:
+            raise ValidationError("Country is required.")
+
+        country = Country.objects.filter(
+            name__iexact=value
+        ).first()
+        if country:
+            return country
+
+        country = Country.objects.filter(
+            iso2__iexact=value
+        ).first()
+        if country:
+            return country
+
+        country = Country.objects.filter(
+            iso3__iexact=value
+        ).first()
+        if country:
+            return country
+
+        country = Country.objects.filter(
+            code__iexact=value
+        ).first()
+        if country:
+            return country
+
+        raise ValidationError(
+            f"Country '{value}' was not found."
+        )
+
+    def _resolve_asset(self, value, country):
+        value = self._text(value)
+        if not value:
+            raise ValidationError("Asset Tag is required.")
+
+        queryset = Asset.objects.select_related(
+            "country",
+            "asset_model",
+        )
+
+        if country:
+            queryset = queryset.filter(country=country)
+
+        asset = queryset.filter(asset_tag__iexact=value).first()
+        if asset:
+            return asset
+
+        asset = queryset.filter(serial_number__iexact=value).first()
+        if asset:
+            return asset
+
+        raise ValidationError(
+            f"Asset '{value}' was not found."
+        )
+
+    def _resolve_employee(self, employee_id, employee_name, country):
+        value = self._text(employee_id or employee_name)
+        if not value:
+            return None
+
+        queryset = Employee.objects.filter(
+            country=country
+        ) if country else Employee.objects.all()
+
+        employee = queryset.filter(employee_id__iexact=value).first()
+        if employee:
+            return employee
+
+        full_name = self._text(employee_name)
+        if full_name:
+            employee = queryset.filter(
+                first_name__iexact=value
+            ).first()
+        return employee
+
+    def _resolve_site(self, value, country):
+        value = self._text(value)
+        if not value:
+            return None
+
+        queryset = Site.objects.all()
+        if country:
+            queryset = queryset.filter(country=country)
+
+        site = queryset.filter(name__iexact=value).first()
+        if site:
+            return site
+
+        return None
+
+    def _parse_assignment_type(self, value):
+        value = self._text(value)
+        if not value:
+            return None
+
+        normalized = value.casefold()
+        for choice_value, label in AssignmentType.choices:
+            if normalized == choice_value.casefold() or normalized == label.casefold():
+                return AssignmentType(choice_value)
+
+        return None
+
+    def _parse_date(self, value):
+        if value in (None, ""):
+            return None, None
+
+        if hasattr(value, 'year'):
+            return value, None
+
+        value = self._text(value)
+
+        for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"):
+            try:
+                from datetime import datetime
+                return datetime.strptime(value, fmt).date(), None
+            except ValueError:
+                continue
+
+        return None, "Invalid date. Use YYYY-MM-DD."
+
+    @staticmethod
+    def _text(value):
+        if value is None:
+            return ""
+        return str(value).strip()

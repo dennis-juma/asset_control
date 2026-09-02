@@ -27,6 +27,58 @@ body{
     background:var(--body-bg);
 }
 
+.assignment-type-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.assignment-type-radio-group > div {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.assignment-type-radio-group .form-check-input {
+    margin-top: 0;
+}
+
+.assignment-type-radio-group label {
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.assignment-date-input {
+    min-height: 3rem;
+    border: 1px solid #dfe7f1;
+    border-radius: 0.75rem;
+    background: #fff;
+    color: #1f2937;
+    padding: 0.7rem 0.9rem;
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.assignment-date-input:focus,
+.assignment-remarks-field:focus {
+    border-color: #ffd200;
+    box-shadow: 0 0 0 0.2rem rgba(255, 210, 0, 0.15);
+}
+
+.assignment-remarks-field {
+    min-height: 7.5rem;
+    border: 1px solid #dfe7f1;
+    border-radius: 0.75rem;
+    background: #fff;
+    color: #1f2937;
+    padding: 0.85rem 0.95rem;
+    resize: vertical;
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
 .app-wrapper{
     display:flex;
     min-height:100vh;

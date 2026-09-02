@@ -1,5 +1,6 @@
 from core.services.country_context import CountryContextService
 
+from dashboard.serializers.chart_serializer import ChartSerializer
 from dashboard.services.statistics_service import StatisticsService
 from dashboard.services.charts_service import ChartsService
 from dashboard.services.trend_service import TrendService
@@ -49,10 +50,13 @@ class DashboardService:
 
     def get_dashboard(self):
 
+        chart_data = self.charts.get_charts() + self.trends.get_trends()
+
         return {
             "statistics": self.statistics.get_cards(),
             "charts": self.charts.get_charts(),
             "trends": self.trends.get_trends(),
+            "chart_data": ChartSerializer.serialize(chart_data),
             "activities": self.activities.get_recent_activities(),
             "alerts": self.alerts.get_alerts(),
             "quick_actions": self.quick_actions.get_actions(),

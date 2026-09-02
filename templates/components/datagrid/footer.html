@@ -1,3 +1,5 @@
+{% load grid_tags %}
+
 {% if page.content.page %}
 
 <div class="card-footer bg-white border-top">
@@ -40,7 +42,7 @@
 
                         <a
                             class="page-link"
-                            href="?page={{ page.content.page.previous_page_number }}&q={{ page.content.search_query }}">
+                            href="?page={{ page.content.page.previous_page_number }}&q={{ page.content.search_query|urlencode }}">
 
                             Previous
 
@@ -62,19 +64,19 @@
 
                 {% endif %}
 
-                {% for number in page.content.page.paginator.page_range %}
+                {% for number in page.content.page.paginator|elided_page_range:page.content.page.number %}
 
-                    <li class="page-item {% if number == page.content.page.number %}active{% endif %}">
-
-                        <a
-                            class="page-link"
-                            href="?page={{ number }}&q={{ page.content.search_query }}">
-
-                            {{ number }}
-
-                        </a>
-
-                    </li>
+                    {% if number == '...' %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item {% if number == page.content.page.number %}active{% endif %}">
+                            <a class="page-link" href="?page={{ number }}&q={{ page.content.search_query|urlencode }}">
+                                {{ number }}
+                            </a>
+                        </li>
+                    {% endif %}
 
                 {% endfor %}
 
@@ -84,7 +86,7 @@
 
                         <a
                             class="page-link"
-                            href="?page={{ page.content.page.next_page_number }}&q={{ page.content.search_query }}">
+                            href="?page={{ page.content.page.next_page_number }}&q={{ page.content.search_query|urlencode }}">
 
                             Next
 

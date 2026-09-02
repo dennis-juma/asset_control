@@ -1,7 +1,9 @@
 from django.db import transaction
 
+from assets.dtos.asset_assignment import AssetAssignmentCreateDTO
 from assets.models import Asset
-from .validator import AssetImportValidator
+from assets.services import AssetAssignmentService
+from .validator import AssetImportValidator, AssetAssignmentImportValidator
 
 
 class AssetImportService:
@@ -94,6 +96,9 @@ class AssetImportService:
             ),
         }
 
+    def confirm(self, rows):
+        return self.import_rows(rows)
+
     @transaction.atomic
     def import_rows(self, rows):
 
@@ -165,5 +170,116 @@ class AssetImportService:
             )
 
             imported.append(asset)
+
+        return imported
+
+
+class AssetAssignmentImportService:
+
+    def __init__(self):
+        self.validator = AssetAssignmentImportValidator()
+
+    def preview(self, rows):
+        rows = list(rows)
+
+        results = []
+        valid_count = 0
+        error_count = 0
+
+        for index, row in enumerate(rows, start=2):
+            row = dict(row)
+            errors = list(dict.fromkeys(
+                self.validator.validate_row(row)
+            ))
+
+            is_valid = not errors
+            if is_valid:
+                valid_count += 1
+            else:
+                error_count += 1
+
+            results.append(
+                {
+                    "row_number": index,
+                    "data": row,
+                    "asset": str(row.get("Asset Tag") or "").strip(),
+                    "country": str(row.get("Country") or "").strip(),
+                    "assignment_type": str(row.get("Assignment Type") or "").strip(),
+                    "assigned_to": str(
+                        row.get("Employee ID") or row.get("Employee Name") or row.get("Site Name") or ""
+                    ).strip(),
+                    "assigned_date": str(row.get("Assigned Date") or "").strip(),
+                    "errors": errors,
+                    "valid": is_valid,
+                }
+            )
+
+        return {
+            "rows": results,
+            "total": len(rows),
+            "valid": valid_count,
+            "errors": error_count,
+            "can_import": (
+                len(rows) > 0 and error_count == 0
+            ),
+        }
+
+    @transaction.atomic
+    def import_rows(self, rows):
+        preview = self.preview(rows)
+
+        if not preview["can_import"]:
+            raise ValueError(
+                "The import file contains validation errors."
+            )
+
+        imported = []
+        service = AssetAssignmentService()
+
+        for row in rows:
+            country = self.validator._resolve_country(
+                row.get("Country")
+            )
+            asset = self.validator._resolve_asset(
+                row.get("Asset Tag"),
+                country,
+            )
+            assignment_type = self.validator._parse_assignment_type(
+                row.get("Assignment Type")
+            )
+            employee = None
+            site = None
+
+            if assignment_type.value == "EMPLOYEE":
+                employee = self.validator._resolve_employee(
+                    row.get("Employee ID"),
+                    row.get("Employee Name"),
+                    country,
+                )
+            elif assignment_type.value == "SITE":
+                site = self.validator._resolve_site(
+                    row.get("Site Name"),
+                    country,
+                )
+
+            assigned_date, _ = self.validator._parse_date(
+                row.get("Assigned Date")
+            )
+            expected_return_date, _ = self.validator._parse_date(
+                row.get("Expected Return Date")
+            )
+
+            dto = AssetAssignmentCreateDTO(
+                country=country,
+                asset=asset,
+                assignment_type=assignment_type,
+                employee=employee,
+                site=site,
+                assigned_date=assigned_date,
+                expected_return_date=expected_return_date,
+                remarks=self.validator._text(row.get("Remarks")),
+            )
+
+            imported.append(service.create(dto))
 
         return imported

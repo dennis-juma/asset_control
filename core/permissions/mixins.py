@@ -1,6 +1,8 @@
 from dataclasses import replace
+from urllib.parse import quote
 
-from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
+from django.urls import reverse
 
 from core.permissions.service import PermissionService
 from core.ui.actions.permissions import (
@@ -20,7 +22,9 @@ class PermissionRequiredMixin:
     ):
 
         if not request.user.is_authenticated:
-            raise PermissionDenied()
+            login_url = reverse("accounts:login")
+            next_url = quote(request.get_full_path())
+            return redirect(f"{login_url}?next={next_url}")
 
         if self.permission_required:
             PermissionService.require(

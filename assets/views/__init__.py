@@ -32,7 +32,15 @@ from .asset_attachment import (
     AssetAttachmentUpdateView,
     AssetAttachmentDeleteView,
 )
-from .asset_assignment import *
+from .asset_assignment import (
+    AssetAssignmentListView,
+    AssetAssignmentCreateView,
+    AssetAssignmentDetailView,
+    AssetAssignmentUpdateView,
+    AssetAssignmentImportView,
+    AssetAssignmentExportView,
+    AssetReturnView,
+)
 from .asset_history import AssetHistoryListView
 
 

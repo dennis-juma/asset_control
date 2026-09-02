@@ -2,8 +2,6 @@ from django.db import transaction
 from assets.choices.history_choices import AssetHistoryEvent
 from assets.services.asset_history_service import AssetHistoryService
 from assets.services.asset_service import AssetService
-from core.notifications.service import NotificationService
-from core.notifications.enums import NotificationEvent
 
 
 from assets.choices import (
@@ -23,6 +21,10 @@ from assets.repositories import (
 from assets.validators import (
     AssetAssignmentValidator,
 )
+from django.utils import timezone
+from core.notifications.service import NotificationService
+from core.notifications.enums import NotificationEvent
+from assets.services.asset_notification_service import AssetNotificationService
 
 
 class AssetAssignmentService:
@@ -84,45 +86,33 @@ class AssetAssignmentService:
     notes=dto.remarks or "Asset assigned.",
 )
 
-# -----------------------------------------------------
-# Send assignment email
-# -----------------------------------------------------
-
-        if (
-            assignment.assignment_type == AssignmentType.EMPLOYEE
-            and assignment.employee
-            and assignment.employee.email
-        ):
-            assigned_assets = (
-                AssetAssignment.objects
-                .filter(
-                    employee=assignment.employee,
-                    status=AssignmentStatus.ACTIVE,
+        # Send email notification when assignment is effective today
+        try:
+            if (
+                dto.assigned_date == timezone.localdate()
+                and assignment.employee
+                and getattr(assignment.employee, "user", None)
+                and getattr(assignment.employee.user, "email", "")
+            ):
+                assigned_assets = AssetNotificationService.employee_assets(
+                    assignment.employee
                 )
-                .select_related(
-                    "asset",
-                    "asset__asset_model",
-                    "asset__asset_model__brand",
+
+                NotificationService.send_email(
+                    event=NotificationEvent.ASSET_ASSIGNED,
+                    recipient=assignment.employee.user,
+                    subject="New Asset Assigned",
+                    template="emails/asset_assigned.html",
+                    context={
+                        "employee": assignment.employee,
+                        "assignment": assignment,
+                        "assigned_assets": assigned_assets,
+                        "asset_count": assigned_assets.count(),
+                    },
                 )
-                .order_by(
-                    "asset__asset_tag",
-                )
-            )
-
-            NotificationService.send_email(
-                event=NotificationEvent.ASSET_ASSIGNED,
-                recipient=assignment.employee.user,
-                subject="New Asset Assigned",
-                template="emails/asset_assigned.html",
-                context={
-                    "employee": assignment.employee,
-                    "assignment": assignment,
-                    "assigned_assets": assigned_assets,
-                    "subject": "New Asset Assigned",
-                },
-            )
-
-
+        except Exception:
+            # Email failures should not block assignment creation.
+            pass
 
         return assignment
 

@@ -6,7 +6,7 @@ from django.contrib import messages
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("employees:my-profile")
+        return redirect("dashboard:index")
 
     if request.method == "POST":
         username = request.POST.get("username", "").strip()
@@ -36,7 +36,7 @@ def login_view(request):
             if next_url:
                 return redirect(next_url)
 
-            return redirect("employees:my-profile")
+            return redirect("dashboard:index")
 
         messages.error(
             request,

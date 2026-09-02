@@ -37,6 +37,8 @@ from assets.views import (
     AssetAssignmentCreateView,
     AssetAssignmentDetailView,
     AssetAssignmentUpdateView,
+    AssetAssignmentImportView,
+    AssetAssignmentExportView,
     AssetReturnView,
 )
 from assets.views.asset_transfer import (
@@ -227,6 +229,16 @@ path(
     name="asset-assignment-list",
 ),
 
+path(
+    "assignments/import/",
+    AssetAssignmentImportView.as_view(),
+    name="asset-assignment-import",
+),
+path(
+    "assignments/export/",
+    AssetAssignmentExportView.as_view(),
+    name="asset-assignment-export",
+),
 path(
     "assignments/create/",
     AssetAssignmentCreateView.as_view(),
