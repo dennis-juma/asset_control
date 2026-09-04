@@ -117,6 +117,13 @@ class EmployeePageService:
 
         grid.paginate(employees)
 
+        # Ensure the datagrid search form posts to the employee list route
+        grid.search(
+            reverse("employees:employee-list"),
+            query=query,
+            placeholder="Search employees...",
+        )
+
         return PageDTO(
             title="Employees",
             subtitle="Manage employees",

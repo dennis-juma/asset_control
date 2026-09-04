@@ -130,7 +130,7 @@ class EmployeeService:
                     event=NotificationEvent.EMPLOYEE_OFFBOARDING,
                     recipient=employee.user,
                     subject="Employee Offboarding - Asset Return Required",
-                    template="emails/employees/employee_offboarding.html",
+                    template="emails/employee_offboarding.html",
                     context={
                         "employee": employee,
                         "assigned_assets": assigned_assets,

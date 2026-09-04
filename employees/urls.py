@@ -12,6 +12,7 @@ from employees.views import (
     EmployeeUpdateView,
     EmployeeBulkUpdateView,
 )
+from employees.views.employee_autocomplete import EmployeeAutocompleteView
 
 app_name = "employees"
 
@@ -36,6 +37,12 @@ path(
         "",
         EmployeeListView.as_view(),
         name="employee-list",
+    ),
+    path(
+        "autocomplete/",
+        # remote autocomplete for tom-select
+        EmployeeAutocompleteView.as_view(),
+        name="employee-autocomplete",
     ),
 
     path(

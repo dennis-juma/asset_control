@@ -35,21 +35,30 @@ class EmployeeRepository:
             )
 
         if query:
+            # Tokenized name search: allow searching "First Last" or partial terms
+            terms = [t.strip() for t in str(query).split() if t.strip()]
 
-            queryset = queryset.filter(
-
+            # start with broad OR across identifier fields
+            combined = (
                 Q(employee_id__icontains=query)
-                | Q(first_name__icontains=query)
-                | Q(middle_name__icontains=query)
-                | Q(last_name__icontains=query)
                 | Q(email__icontains=query)
                 | Q(phone__icontains=query)
                 | Q(country__name__icontains=query)
                 | Q(site__name__icontains=query)
                 | Q(department__name__icontains=query)
                 | Q(job_title__name__icontains=query)
-
             )
+
+            # For each token, require it to match either first/middle/last name
+            for term in terms:
+                name_q = (
+                    Q(first_name__icontains=term)
+                    | Q(middle_name__icontains=term)
+                    | Q(last_name__icontains=term)
+                )
+                combined = combined | name_q
+
+            queryset = queryset.filter(combined)
 
         paginator = Paginator(
             queryset,

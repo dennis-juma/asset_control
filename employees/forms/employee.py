@@ -147,6 +147,7 @@ class EmployeeUpdateForm(forms.ModelForm):
         self.fields["job_title"].widget.attrs.update({
     "class": "form-select tom-select",
     "data-placeholder": "Search job title...",
+    
 })
 
         if self.instance and self.instance.user_id:

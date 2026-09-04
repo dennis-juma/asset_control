@@ -82,6 +82,8 @@ class AssetAssignmentCreateForm(forms.ModelForm):
         self.fields["site"].required = False
         self.fields["expected_return_date"].required = False
 
+        from django.urls import reverse
+
         self.fields["asset"].widget.attrs.update({
             "class": "form-select tom-select",
             "data-placeholder": "Search asset...",
@@ -89,6 +91,7 @@ class AssetAssignmentCreateForm(forms.ModelForm):
         self.fields["employee"].widget.attrs.update({
             "class": "form-select tom-select",
             "data-placeholder": "Search employee...",
+            "data-ajax-url": reverse("employees:employee-autocomplete"),
         })
         self.fields["site"].widget.attrs.update({
             "class": "form-select tom-select",
@@ -164,9 +167,12 @@ class AssetAssignmentUpdateForm(forms.ModelForm):
         self.fields["site"].required = False
         self.fields["expected_return_date"].required = False
 
+        from django.urls import reverse
+
         self.fields["employee"].widget.attrs.update({
             "class": "form-select tom-select",
             "data-placeholder": "Search employee...",
+            "data-ajax-url": reverse("employees:employee-autocomplete"),
         })
         self.fields["site"].widget.attrs.update({
             "class": "form-select tom-select",

@@ -123,17 +123,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll(".tom-select").forEach(function (element) {
 
-        new TomSelect(element, {
-            create: false,
-            allowEmptyOption: true,
-            maxOptions: null,
-            placeholder: "Search manager...",
-            searchField: ["text"],
-            hideSelected: true,
-            closeAfterSelect: true,
-
-            dropdownParent: "body",
-        });
+        var ajaxUrl = element.dataset.ajaxUrl || null;
+        if (ajaxUrl) {
+            new TomSelect(element, {
+                create: false,
+                allowEmptyOption: true,
+                maxOptions: null,
+                valueField: 'id',
+                labelField: 'text',
+                searchField: ['text'],
+                hideSelected: true,
+                closeAfterSelect: true,
+                dropdownParent: "body",
+                load: function(query, callback) {
+                    var url = ajaxUrl + (ajaxUrl.indexOf('?') === -1 ? '?' : '&') + 'q=' + encodeURIComponent(query);
+                    fetch(url, {
+                        credentials: 'same-origin'
+                    })
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) { callback(data.results || []); })
+                    .catch(function() { callback(); });
+                },
+                render: {
+                    option: function(item, escape) {
+                        return '<div>' + escape(item.text) + '<div class="text-muted" style="font-size:12px">' + escape(item.email || '') + '</div></div>';
+                    }
+                }
+            });
+        } else {
+            new TomSelect(element, {
+                create: false,
+                allowEmptyOption: true,
+                maxOptions: null,
+                placeholder: element.dataset.placeholder || '',
+                searchField: ["text"],
+                hideSelected: true,
+                closeAfterSelect: true,
+                dropdownParent: "body",
+            });
+        }
 
     });
 
