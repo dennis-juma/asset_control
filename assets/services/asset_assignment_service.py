@@ -1,7 +1,9 @@
 from django.db import transaction
+import logging
 from assets.choices.history_choices import AssetHistoryEvent
 from assets.services.asset_history_service import AssetHistoryService
 from assets.services.asset_service import AssetService
+from assets.services.asset_policy_pdf_service import AssetPolicyPDFService
 
 
 from assets.choices import (
@@ -21,10 +23,12 @@ from assets.repositories import (
 from assets.validators import (
     AssetAssignmentValidator,
 )
-from django.utils import timezone
 from core.notifications.service import NotificationService
 from core.notifications.enums import NotificationEvent
 from assets.services.asset_notification_service import AssetNotificationService
+
+
+logger = logging.getLogger(__name__)
 
 
 class AssetAssignmentService:
@@ -86,22 +90,29 @@ class AssetAssignmentService:
     notes=dto.remarks or "Asset assigned.",
 )
 
-        # Send email notification when assignment is effective today
+        # Notify the employee whenever an assignment is created.
         try:
             if (
-                dto.assigned_date == timezone.localdate()
-                and assignment.employee
+                assignment.employee
                 and getattr(assignment.employee, "user", None)
                 and getattr(assignment.employee.user, "email", "")
             ):
                 assigned_assets = AssetNotificationService.employee_assets(
                     assignment.employee
                 )
+                policy_filename, policy_content = (
+                    AssetPolicyPDFService.generate_employee_policy(
+                        assignment.employee.full_name
+                    )
+                )
 
                 NotificationService.send_email(
                     event=NotificationEvent.ASSET_ASSIGNED,
                     recipient=assignment.employee.user,
-                    subject="New Asset Assigned",
+                    subject=(
+                        f"New Asset Assigned - "
+                        f"{assignment.employee.full_name}"
+                    ),
                     template="emails/asset_assigned.html",
                     context={
                         "employee": assignment.employee,
@@ -109,10 +120,16 @@ class AssetAssignmentService:
                         "assigned_assets": assigned_assets,
                         "asset_count": assigned_assets.count(),
                     },
+                    attachments=[
+                        (policy_filename, policy_content, "application/pdf")
+                    ],
                 )
         except Exception:
             # Email failures should not block assignment creation.
-            pass
+            logger.exception(
+                "Unable to send asset assignment notification for assignment %s",
+                assignment.pk,
+            )
 
         return assignment
 

@@ -103,6 +103,12 @@ class AssetAssignmentPageService:
             url_name="assets:asset-return",
         )
 
+        grid.search(
+            reverse("assets:asset-assignment-list"),
+            query=query,
+            placeholder="Search assignments...",
+        )
+
         grid.paginate(assignments)
 
         return PageDTO(

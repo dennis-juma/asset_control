@@ -147,7 +147,7 @@ class ActivityService:
     "employee",
     "site",
 ).filter(
-    status="ACTIVE",
+    created_at__date=timezone.localdate(),
 )
 
         if self.country:
@@ -174,7 +174,7 @@ class ActivityService:
                 color="success",
 
                 timestamp=self._as_datetime(
-                    assignment.assigned_date,
+                    assignment.created_at,
                 ),
 
                 url=None,

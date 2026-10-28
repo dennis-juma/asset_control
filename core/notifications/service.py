@@ -4,6 +4,7 @@ from core.dtos.notification import NotificationDTO
 from django.utils import timezone
 
 from .email import NotificationEmailService
+from .enums import NotificationEvent
 from .models import Notification
 
 class NotificationService:
@@ -40,6 +41,7 @@ class NotificationService:
         subject,
         template,
         context=None,
+        attachments=None,
     ):
 
         if not recipient:
@@ -63,11 +65,17 @@ class NotificationService:
 
         try:
 
+            cc = ["tz-it@sunking.com"]
+            if event == NotificationEvent.EMPLOYEE_OFFBOARDING:
+                cc.append("brenda.nkya@sunking.com")
+
             NotificationEmailService.send(
                 recipient_email=email,
                 subject=subject,
                 template=template,
                 context=context,
+                cc=cc,
+                attachments=attachments
             )
 
             notification.is_sent = True

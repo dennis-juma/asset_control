@@ -12,14 +12,12 @@ class NotificationEmailService:
         subject,
         template,
         context=None,
+        cc=None,
+        attachments=None,
     ):
-
         context = context or {}
 
-        html_content = render_to_string(
-            template,
-            context,
-        )
+        html_content = render_to_string(template, context)
 
         email = EmailMultiAlternatives(
             subject=subject,
@@ -29,14 +27,13 @@ class NotificationEmailService:
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[recipient_email],
-            cc=["tz-it@sunking.com"],
+            cc=cc if cc is not None else ["tz-it@sunking.com"],
         )
 
-        email.attach_alternative(
-            html_content,
-            "text/html",
-        )
+        email.attach_alternative(html_content, "text/html")
 
-        email.send(
-            fail_silently=False,
-        )
+        for attachment in attachments or []:
+            filename, content, mimetype = attachment
+            email.attach(filename, content, mimetype)
+
+        email.send(fail_silently=False)

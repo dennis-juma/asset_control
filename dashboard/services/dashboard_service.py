@@ -50,12 +50,14 @@ class DashboardService:
 
     def get_dashboard(self):
 
-        chart_data = self.charts.get_charts() + self.trends.get_trends()
+        charts = self.charts.get_charts()
+        trends = self.trends.get_trends()
+        chart_data = charts + trends
 
         return {
             "statistics": self.statistics.get_cards(),
-            "charts": self.charts.get_charts(),
-            "trends": self.trends.get_trends(),
+            "charts": charts,
+            "trends": trends,
             "chart_data": ChartSerializer.serialize(chart_data),
             "activities": self.activities.get_recent_activities(),
             "alerts": self.alerts.get_alerts(),
