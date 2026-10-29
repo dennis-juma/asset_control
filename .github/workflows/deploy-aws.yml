@@ -1,0 +1,103 @@
+name: Deploy Asset Control to AWS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: asset-control-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Django to AWS EC2
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Configure SSH
+        env:
+          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+          AWS_SSH_KNOWN_HOSTS: ${{ secrets.AWS_SSH_KNOWN_HOSTS }}
+        run: |
+          set -eu
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          test -n "$AWS_SSH_KEY"
+          test -n "$AWS_SSH_KNOWN_HOSTS"
+
+          printf '%s\n' "$AWS_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          printf '%s\n' "$AWS_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy to AWS
+        env:
+          AWS_HOST: ${{ secrets.AWS_HOST }}
+          AWS_USER: ${{ secrets.AWS_USER }}
+          DEPLOY_SHA: ${{ github.sha }}
+        run: |
+          ssh \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o IdentitiesOnly=yes \
+            -i ~/.ssh/id_ed25519 \
+            "$AWS_USER@$AWS_HOST" \
+            "DEPLOY_SHA='$DEPLOY_SHA' bash -se" <<'EOF'
+
+          set -euo pipefail
+
+          cd /opt/asset-control
+
+          echo "Checking working directory..."
+          test -z "$(git status --porcelain)" || {
+            echo "ERROR: AWS has uncommitted changes."
+            exit 1
+          }
+
+          echo "Fetching latest code..."
+          git fetch origin v4
+
+          echo "Validating deployment commit..."
+          git cat-file -e "$DEPLOY_SHA^{commit}"
+          git merge-base --is-ancestor "$DEPLOY_SHA" origin/v4
+
+          echo "Updating source code..."
+          git checkout v4
+          git merge --ff-only "$DEPLOY_SHA"
+
+          echo "Building Docker image..."
+          sudo -n docker compose -f compose.aws.yml build web
+
+          echo "Running migrations..."
+          sudo -n docker compose -f compose.aws.yml run \
+            --rm --no-deps web python manage.py migrate --noinput
+
+          echo "Restarting application..."
+          sudo -n docker compose -f compose.aws.yml up -d --no-deps web
+
+          echo "Checking Django configuration..."
+          sudo -n docker compose -f compose.aws.yml exec -T web \
+            python manage.py check --deploy
+
+          echo "AWS deployment successful."
+          EOF
+
+      - name: Verify production website
+        run: |
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --retry 5 \
+            --retry-delay 5 \
+            --retry-connrefused \
+            --output /dev/null \
+            https://it-ams.duckdns.org/accounts/login/
+
+          echo "Production website is responding successfully."
