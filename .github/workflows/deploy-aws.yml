@@ -1,6 +1,9 @@
 name: Deploy Asset Control to AWS
 
 on:
+  push:
+    branches:
+      - v4
   workflow_dispatch:
 
 permissions:
