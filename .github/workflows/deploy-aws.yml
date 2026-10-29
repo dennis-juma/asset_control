@@ -20,12 +20,15 @@ jobs:
     timeout-minutes: 30
 
     steps:
+      # ==========================================
+      # 1. CONFIGURE SSH
+      # ==========================================
       - name: Configure SSH
         env:
           AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
           AWS_SSH_KNOWN_HOSTS: ${{ secrets.AWS_SSH_KNOWN_HOSTS }}
         run: |
-          set -eu
+          set -euo pipefail
 
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
@@ -39,12 +42,17 @@ jobs:
           printf '%s\n' "$AWS_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
+      # ==========================================
+      # 2. DEPLOY TO AWS
+      # ==========================================
       - name: Deploy to AWS
         env:
           AWS_HOST: ${{ secrets.AWS_HOST }}
           AWS_USER: ${{ secrets.AWS_USER }}
           DEPLOY_SHA: ${{ github.sha }}
         run: |
+          set -euo pipefail
+
           ssh \
             -o BatchMode=yes \
             -o StrictHostKeyChecking=yes \
@@ -57,42 +65,129 @@ jobs:
 
           cd /opt/asset-control
 
+          # --------------------------------------
+          # CHECK GIT WORKING DIRECTORY
+          # --------------------------------------
           echo "Checking working directory..."
-          test -z "$(git status --porcelain)" || {
+
+          if [ -n "$(git status --porcelain)" ]; then
             echo "ERROR: AWS has uncommitted changes."
             exit 1
-          }
+          fi
 
+          # --------------------------------------
+          # FETCH LATEST CODE
+          # --------------------------------------
           echo "Fetching latest code..."
+
           git fetch origin v4
 
+          # --------------------------------------
+          # VALIDATE DEPLOYMENT COMMIT
+          # --------------------------------------
           echo "Validating deployment commit..."
-          git cat-file -e "$DEPLOY_SHA^{commit}"
-          git merge-base --is-ancestor "$DEPLOY_SHA" origin/v4
 
+          git cat-file -e "$DEPLOY_SHA^{commit}"
+
+          git merge-base --is-ancestor \
+            "$DEPLOY_SHA" origin/v4
+
+          # --------------------------------------
+          # UPDATE SOURCE CODE
+          # --------------------------------------
           echo "Updating source code..."
+
           git checkout v4
+
           git merge --ff-only "$DEPLOY_SHA"
 
+          echo "Current deployed commit:"
+          git log -1 --oneline
+
+          # --------------------------------------
+          # BUILD DOCKER IMAGE
+          # --------------------------------------
           echo "Building Docker image..."
+
           sudo -n docker compose -f compose.aws.yml build web
 
-          echo "Running migrations..."
+          # --------------------------------------
+          # RUN DATABASE MIGRATIONS
+          # --------------------------------------
+          echo "Running database migrations..."
+
           sudo -n docker compose -f compose.aws.yml run \
-            --rm --no-deps web python manage.py migrate --noinput
+            --rm --no-deps web \
+            python manage.py migrate --noinput
 
-          echo "Restarting application..."
-          sudo -n docker compose -f compose.aws.yml up -d --no-deps web
+          # --------------------------------------
+          # DEPLOY NEW DOCKER IMAGE
+          # --------------------------------------
+          echo "Deploying newly built Docker image..."
 
-          echo "Checking Django configuration..."
+          sudo -n docker compose -f compose.aws.yml up -d \
+            --no-deps --force-recreate web
+
+          # --------------------------------------
+          # VERIFY DOCKER IMAGE
+          # --------------------------------------
+          echo "Verifying the running Docker image..."
+
+          EXPECTED_IMAGE=$(sudo -n docker image inspect \
+            asset-control-web:latest \
+            --format '{{.Id}}')
+
+          RUNNING_IMAGE=$(sudo -n docker inspect \
+            asset_control_web \
+            --format '{{.Image}}')
+
+          echo "Expected image: $EXPECTED_IMAGE"
+          echo "Running image:  $RUNNING_IMAGE"
+
+          if [ "$EXPECTED_IMAGE" != "$RUNNING_IMAGE" ]; then
+            echo "ERROR: Container is not running the latest Docker image."
+            exit 1
+          fi
+
+          echo "Docker image verification successful."
+
+          # --------------------------------------
+          # VERIFY CONTAINER STATUS
+          # --------------------------------------
+          echo "Checking Docker container status..."
+
+          RUNNING_STATUS=$(sudo -n docker inspect \
+            asset_control_web \
+            --format '{{.State.Running}}')
+
+          if [ "$RUNNING_STATUS" != "true" ]; then
+            echo "ERROR: Django container is not running."
+            exit 1
+          fi
+
+          sudo -n docker compose -f compose.aws.yml ps
+
+          # --------------------------------------
+          # DJANGO PRODUCTION CHECK
+          # --------------------------------------
+          echo "Checking Django production configuration..."
+
           sudo -n docker compose -f compose.aws.yml exec -T web \
             python manage.py check --deploy
 
           echo "AWS deployment successful."
+
           EOF
 
+      # ==========================================
+      # 3. VERIFY PRODUCTION WEBSITE
+      # ==========================================
       - name: Verify production website
         run: |
+          set -euo pipefail
+
+          echo "Checking production website..."
+
           curl \
             --fail \
             --silent \
