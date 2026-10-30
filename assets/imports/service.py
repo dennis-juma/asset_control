@@ -225,7 +225,7 @@ class AssetAssignmentImportService:
         }
 
     @transaction.atomic
-    def import_rows(self, rows):
+    def import_rows(self, rows, *, user=None):
         preview = self.preview(rows)
 
         if not preview["can_import"]:
@@ -280,6 +280,6 @@ class AssetAssignmentImportService:
                 remarks=self.validator._text(row.get("Remarks")),
             )
 
-            imported.append(service.create(dto))
+            imported.append(service.create(dto, user=user))
 
         return imported

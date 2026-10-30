@@ -54,6 +54,11 @@ class AssetAssignmentPageService:
         )
 
         grid.column(
+            field="assigned_by",
+            label="Assigned By",
+        )
+
+        grid.column(
             field="assigned_date",
             label="Assigned Date",
         )
@@ -80,6 +85,7 @@ class AssetAssignmentPageService:
                 row_id=assignment.pk,
                 asset=assignment.asset.asset_tag,
                 assigned_to=assigned_to,
+                assigned_by=assignment.assigned_by_name,
                 assigned_date=assignment.assigned_date,
                 expected_return_date=assignment.expected_return_date or "-",
                 status=assignment.get_status_display(),

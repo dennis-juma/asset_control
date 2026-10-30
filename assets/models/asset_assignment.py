@@ -74,6 +74,12 @@ class AssetAssignment(TransactionModel):
     )
 
     @property
+    def assigned_by_name(self):
+        if self.created_by:
+            return self.created_by.get_full_name() or self.created_by.get_username()
+        return "-"
+
+    @property
     def assigned_to(self):
         if self.assignment_type == AssignmentType.EMPLOYEE:
             return self.employee

@@ -45,6 +45,8 @@ class AssetAssignmentService:
     def create(
         self,
         dto: AssetAssignmentCreateDTO,
+        *,
+        user=None,
     ) -> AssetAssignment:
 
         self.validator.validate_create(dto)
@@ -63,6 +65,8 @@ class AssetAssignmentService:
             expected_return_date=dto.expected_return_date,
             remarks=dto.remarks,
             status=AssignmentStatus.ACTIVE,
+            created_by=user,
+            updated_by=user,
         )
 
         assignment = self.repository.create(
@@ -82,6 +86,7 @@ class AssetAssignmentService:
         AssetHistoryService.log_event(
     asset=asset,
     event_type=AssetHistoryEvent.ASSIGNED,
+    performed_by=user,
     employee=assignment.employee,
     site=assignment.site,
     old_status=old_status,

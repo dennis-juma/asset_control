@@ -74,6 +74,7 @@ class AssetAssignmentExportView(PermissionRequiredMixin, TemplateView):
         grid.column(field="asset_tag", label="Asset Tag")
         grid.column(field="serial_number", label="Serial Number")
         grid.column(field="assigned_to", label="Assigned To")
+        grid.column(field="assigned_by", label="Assigned By")
         grid.column(field="assignment_type", label="Assignment Type")
         grid.column(field="assigned_date", label="Assigned Date")
         grid.column(field="expected_return_date", label="Expected Return")
@@ -86,6 +87,7 @@ class AssetAssignmentExportView(PermissionRequiredMixin, TemplateView):
                 asset_tag=assignment.asset.asset_tag if assignment.asset else "",
                 serial_number=assignment.asset.serial_number if assignment.asset else "",
                 assigned_to=assignment.assigned_to_name,
+                assigned_by=assignment.assigned_by_name,
                 assignment_type=assignment.get_assignment_type_display() if hasattr(assignment, "get_assignment_type_display") else assignment.assignment_type,
                 assigned_date=assignment.assigned_date or "",
                 expected_return_date=assignment.expected_return_date or "",
@@ -127,7 +129,7 @@ class AssetAssignmentImportView(View):
                 return redirect("assets:asset-assignment-import")
 
             try:
-                assignments = AssetAssignmentImportService().import_rows(rows)
+                assignments = AssetAssignmentImportService().import_rows(rows, user=request.user)
             except Exception as exc:
                 messages.error(
                     request,
@@ -232,7 +234,7 @@ class AssetAssignmentCreateView(
             remarks=form.cleaned_data["remarks"],
         )
 
-        AssetAssignmentService().create(dto)
+        AssetAssignmentService().create(dto, user=request.user)
 
         messages.success(
             request,

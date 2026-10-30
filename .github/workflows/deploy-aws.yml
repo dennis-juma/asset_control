@@ -59,11 +59,24 @@ jobs:
             -o IdentitiesOnly=yes \
             -i ~/.ssh/id_ed25519 \
             "$AWS_USER@$AWS_HOST" \
-            "DEPLOY_SHA='$DEPLOY_SHA' bash -se" <<'EOF'
-
+            "DEPLOY_SHA='$DEPLOY_SHA' bash -se" <<'EOF' | tee deploy.log
           set -euo pipefail
 
           cd /opt/asset-control
+
+          # --------------------------------------
+          # HELPER: docker compose that NEVER reads stdin.
+          # The script itself arrives via stdin (bash -se), so any command
+          # that reads stdin would swallow the rest of the script.
+          # --------------------------------------
+          DEPLOY_IMAGE="asset-control-web:$DEPLOY_SHA"
+
+          compose() {
+            sudo -n env \
+              ASSET_CONTROL_IMAGE="$DEPLOY_IMAGE" \
+              DEPLOY_SHA="$DEPLOY_SHA" \
+              docker compose -f compose.aws.yml "$@" </dev/null
+          }
 
           # --------------------------------------
           # CHECK GIT WORKING DIRECTORY
@@ -88,9 +101,7 @@ jobs:
           echo "Validating deployment commit..."
 
           git cat-file -e "$DEPLOY_SHA^{commit}"
-
-          git merge-base --is-ancestor \
-            "$DEPLOY_SHA" origin/v4
+          git merge-base --is-ancestor "$DEPLOY_SHA" origin/v4
 
           # --------------------------------------
           # UPDATE SOURCE CODE
@@ -98,7 +109,6 @@ jobs:
           echo "Updating source code..."
 
           git checkout v4
-
           git merge --ff-only "$DEPLOY_SHA"
 
           if [ "$(git rev-parse HEAD)" != "$DEPLOY_SHA" ]; then
@@ -106,33 +116,29 @@ jobs:
             exit 1
           fi
 
-          # Pass image selection through sudo explicitly; sudo may discard env vars.
-          DEPLOY_IMAGE="asset-control-web:$DEPLOY_SHA"
-          compose() {
-            sudo -n env ASSET_CONTROL_IMAGE="$DEPLOY_IMAGE" DEPLOY_SHA="$DEPLOY_SHA" \
-              docker compose -f compose.aws.yml "$@"
-          }
-
-          echo "Current deployed commit:"
+          echo "Deploying commit:"
           git log -1 --oneline
 
           # --------------------------------------
           # BUILD DOCKER IMAGE
           # --------------------------------------
-          echo "Building Docker image..."
+          echo "Building Docker image ($DEPLOY_IMAGE)..."
 
           compose build web
 
           # Capture the exact build before migrations or container replacement.
           EXPECTED_IMAGE=$(sudo -n docker image inspect \
-            "$DEPLOY_IMAGE" --format '{{.Id}}')
+            "$DEPLOY_IMAGE" --format '{{.Id}}' </dev/null)
+
+          echo "Built image ID: $EXPECTED_IMAGE"
 
           # --------------------------------------
           # RUN DATABASE MIGRATIONS
+          # -T = no TTY, and stdin is already /dev/null via compose()
           # --------------------------------------
           echo "Running database migrations..."
 
-          compose run \
+          compose run -T \
             --rm --no-deps --pull never web \
             python manage.py migrate --noinput
 
@@ -155,10 +161,14 @@ jobs:
 
           RUNNING_IMAGE=$(sudo -n docker inspect \
             "$CONTAINER_ID" \
-            --format '{{.Image}}')
+            --format '{{.Image}}' </dev/null)
 
-          echo "Expected image: $EXPECTED_IMAGE"
-          echo "Running image:  $RUNNING_IMAGE"
+          RUNNING_TAG=$(sudo -n docker inspect \
+            "$CONTAINER_ID" \
+            --format '{{.Config.Image}}' </dev/null)
+
+          echo "Expected image: $EXPECTED_IMAGE ($DEPLOY_IMAGE)"
+          echo "Running image:  $RUNNING_IMAGE ($RUNNING_TAG)"
 
           if [ "$EXPECTED_IMAGE" != "$RUNNING_IMAGE" ]; then
             echo "ERROR: Container is not running the latest Docker image."
@@ -174,7 +184,7 @@ jobs:
 
           RUNNING_STATUS=$(sudo -n docker inspect \
             "$CONTAINER_ID" \
-            --format '{{.State.Running}}')
+            --format '{{.State.Running}}' </dev/null)
 
           if [ "$RUNNING_STATUS" != "true" ]; then
             echo "ERROR: Django container is not running."
@@ -192,8 +202,11 @@ jobs:
             python manage.py check --deploy
 
           echo "AWS deployment successful."
-
           EOF
+
+          # Guard: fail if the remote script was cut short for any reason.
+          grep -q "^AWS deployment successful\.$" deploy.log \
+            || { echo "ERROR: remote script did not reach the end."; exit 1; }
 
       # ==========================================
       # 3. VERIFY PRODUCTION WEBSITE
