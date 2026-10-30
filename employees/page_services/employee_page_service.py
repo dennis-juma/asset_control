@@ -54,16 +54,6 @@ class EmployeePageService:
         )
 
         grid.column(
-            field="country",
-            label="Country",
-        )
-
-        grid.column(
-            field="site",
-            label="Site",
-        )
-
-        grid.column(
             field="department",
             label="Department",
         )
@@ -71,11 +61,6 @@ class EmployeePageService:
         grid.column(
             field="job_title",
             label="Job Title",
-        )
-
-        grid.column(
-            field="manager",
-            label="Manager",
         )
 
         grid.column(
@@ -89,11 +74,8 @@ class EmployeePageService:
                 row_id=employee.pk,
                 employee_id=employee.employee_id,
                 name=employee.full_name,
-                country=employee.country.name,
-                site=employee.site.name,
                 department=employee.department.name,
                 job_title=employee.job_title.name,
-                manager=employee.manager.full_name if employee.manager else "-",
                 is_active=employee.is_active,
             )
 
