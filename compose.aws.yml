@@ -1,8 +1,11 @@
 services:
   web:
+    image: ${ASSET_CONTROL_IMAGE:-asset-control-web:latest}
     build:
       context: .
       dockerfile: Dockerfile.aws
+      args:
+        DEPLOY_SHA: ${DEPLOY_SHA:-unknown}
     container_name: asset_control_web
     restart: unless-stopped
     env_file:

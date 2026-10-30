@@ -1,5 +1,8 @@
 FROM python:3.12-slim
 
+ARG DEPLOY_SHA=unknown
+LABEL org.opencontainers.image.revision=$DEPLOY_SHA
+
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
