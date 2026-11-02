@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from assets.models import Asset
 from core.models import TransactionModel
 from organizations.models import Country,Site
@@ -63,6 +64,14 @@ class AssetAssignment(TransactionModel):
         blank=True,
     )
 
+    returned_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="asset_returns_processed",
+    )
+
     status = models.CharField(
         max_length=20,
         choices=AssignmentStatus.choices,
@@ -72,6 +81,12 @@ class AssetAssignment(TransactionModel):
     remarks = models.TextField(
         blank=True,
     )
+
+    @property
+    def returned_by_name(self):
+        if self.returned_by:
+            return self.returned_by.get_full_name() or self.returned_by.get_username()
+        return "-"
 
     @property
     def assigned_by_name(self):

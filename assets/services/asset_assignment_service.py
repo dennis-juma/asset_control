@@ -173,9 +173,13 @@ class AssetAssignmentService:
         self,
         assignment: AssetAssignment,
         dto: AssetReturnDTO,
+        *,
+        user=None,
     ) -> AssetAssignment:
 
         assignment.returned_date = dto.returned_date
+        assignment.returned_by = user
+        assignment.updated_by = user
         assignment.status = AssignmentStatus.RETURNED
         assignment.remarks = dto.remarks
 
@@ -196,6 +200,7 @@ class AssetAssignmentService:
         AssetHistoryService.log_event(
             asset=asset,
             event_type=AssetHistoryEvent.RETURNED,
+            performed_by=user,
             employee=assignment.employee,
             site=assignment.site,
             old_status=old_status,

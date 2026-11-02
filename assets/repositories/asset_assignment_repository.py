@@ -20,6 +20,7 @@ class AssetAssignmentRepository:
             .select_related(
                 "country",
                 "created_by",
+                "returned_by",
                 "asset",
                 "asset__asset_model",
                 "employee",
@@ -58,6 +59,7 @@ class AssetAssignmentRepository:
             .select_related(
                 "country",
                 "created_by",
+                "returned_by",
                 "asset",
                 "asset__asset_model",
                 "employee",
@@ -91,6 +93,7 @@ class AssetAssignmentRepository:
             .select_related(
                 "country",
                 "created_by",
+                "returned_by",
                 "asset",
                 "asset__asset_model",
                 "employee",

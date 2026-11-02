@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django import forms
 
 from assets.choices.choices import AssignmentStatus, AssignmentType
 from assets.forms import (
@@ -59,6 +60,11 @@ class AssetAssignmentPageService:
         )
 
         grid.column(
+            field="returned_by",
+            label="Returned By",
+        )
+
+        grid.column(
             field="assigned_date",
             label="Assigned Date",
         )
@@ -86,6 +92,7 @@ class AssetAssignmentPageService:
                 asset=assignment.asset.asset_tag,
                 assigned_to=assigned_to,
                 assigned_by=assignment.assigned_by_name,
+                returned_by=assignment.returned_by_name,
                 assigned_date=assignment.assigned_date,
                 expected_return_date=assignment.expected_return_date or "-",
                 status=assignment.get_status_display(),
@@ -242,6 +249,13 @@ class AssetAssignmentPageService:
             instance=assignment,
         )
 
+        form.fields["assigned_by"] = forms.CharField(
+            label="Assigned By", initial=assignment.assigned_by_name, required=False,
+        )
+        form.fields["returned_by"] = forms.CharField(
+            label="Returned By", initial=assignment.returned_by_name, required=False,
+        )
+
         # Make every field read-only
         for field in form.fields.values():
             field.disabled = True
@@ -265,6 +279,11 @@ class AssetAssignmentPageService:
             .section("Remarks")
 
             .field("remarks", width=12)
+
+            .section("Recorded By")
+
+            .field("assigned_by", width=6)
+            .field("returned_by", width=6)
 
             .section("System")
 
