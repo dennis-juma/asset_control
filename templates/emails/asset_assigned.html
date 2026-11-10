@@ -2,123 +2,43 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{ subject }}</title>
-
+    <title>Asset Assignment Confirmation - {{ assignment.asset.asset_tag }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f6f8;
-            margin: 0;
-            padding: 30px;
-            color: #212529;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-        }
-
-        h2 {
-            margin-top: 0;
-        }
-
-        .asset-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .asset-table th,
-        .asset-table td {
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            text-align: left;
-        }
-
-        .asset-table th {
-            background: #f1f3f5;
-        }
-
-        .new-asset {
-            background: #e8f5e9;
-        }
-
-        .footer {
-            margin-top: 30px;
-            color: #6c757d;
-            font-size: 13px;
-        }
+        body { font-family: Arial, sans-serif; color: #212529; line-height: 1.5; }
+        .container { max-width: 720px; margin: 0 auto; padding: 24px; }
+        h2 { margin: 0 0 20px; }
+        h3 { margin: 24px 0 10px; font-size: 16px; }
+        .details { border-collapse: collapse; width: 100%; }
+        .details td { border: 1px solid #dee2e6; padding: 8px 10px; }
+        .details td:first-child { width: 47%; font-weight: bold; background: #f1f3f5; }
+        .assets { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        .assets th, .assets td { border: 1px solid #dee2e6; padding: 8px 10px; text-align: left; }
+        .assets th { background: #f1f3f5; }
+        .latest-asset td { background-color: #e8f5e9; }
     </style>
 </head>
-
 <body>
-
 <div class="container">
+    <h2>Asset Assignment Confirmation</h2>
 
-    <h2>Asset Assigned</h2>
+    <p>Dear {{ employee.first_name }},</p>
 
-    <p>
-        Dear {{ employee.first_name }},
-    </p>
-
-    <p>
-        A new asset has been assigned to you.
-        Your current asset portfolio is shown below.
-    </p>
+    <p>This email confirms that the following company asset has been assigned to you.</p>
 
     <h3>Newly Assigned Asset</h3>
-
-    <table class="asset-table">
-
-        <tr>
-            <th>Asset Tag</th>
-            <td>{{ assignment.asset.asset_tag }}</td>
-        </tr>
-
-        <tr>
-            <th>Serial Number</th>
-            <td>{{ assignment.asset.serial_number }}</td>
-        </tr>
-
-        <tr>
-            <th>Model</th>
-            <td>
-                {{ assignment.asset.asset_model.brand.name }}
-                {{ assignment.asset.asset_model.name }}
-            </td>
-        </tr>
-
-        <tr>
-            <th>Condition</th>
-            <td>
-                {{ assignment.asset.get_condition_display }}
-            </td>
-        </tr>
-
-        <tr>
-            <th>Assigned Date</th>
-            <td>{{ assignment.assigned_date }}</td>
-        </tr>
-
-        {% if assignment.expected_return_date %}
-        <tr>
-            <th>Expected Return Date</th>
-            <td>{{ assignment.expected_return_date }}</td>
-        </tr>
-        {% endif %}
-
+    <table class="details">
+        <tr><td><strong>Asset Tag</strong></td><td>{{ assignment.asset.asset_tag }}</td></tr>
+        <tr><td><strong>Serial Number</strong></td><td>{{ assignment.asset.serial_number }}</td></tr>
+        <tr><td><strong>Model</strong></td><td>{{ assignment.asset.asset_model.brand.name }} {{ assignment.asset.asset_model.name }}</td></tr>
+        <tr><td><strong>Condition</strong></td><td>{{ assignment.asset.get_condition_display }}</td></tr>
+        <tr><td><strong>Assigned Date</strong></td><td>{{ assignment.assigned_date|date:"N j, Y" }}</td></tr>
+        <tr><td><strong>Remarks</strong></td><td>{{ assignment.remarks|default:"-" }}</td></tr>
+        <tr><td><strong>Issued By</strong></td><td>{{ assignment.assigned_by_name }}</td></tr>
     </table>
 
-
     <h3>Current Assigned Assets</h3>
-
     {% if assigned_assets %}
-
-    <table class="asset-table">
-
+    <table class="assets">
         <thead>
             <tr>
                 <th>Asset Tag</th>
@@ -127,71 +47,27 @@
                 <th>Condition</th>
             </tr>
         </thead>
-
         <tbody>
-
         {% for asset_assignment in assigned_assets %}
-
-            <tr
-                {% if asset_assignment.pk == assignment.pk %}
-                    class="new-asset"
-                {% endif %}
-            >
-
-                <td>
-                    {{ asset_assignment.asset.asset_tag }}
-                </td>
-
-                <td>
-                    {{ asset_assignment.asset.asset_model.brand.name }}
-                    {{ asset_assignment.asset.asset_model.name }}
-                </td>
-
-                <td>
-                    {{ asset_assignment.asset.serial_number }}
-                </td>
-
-                <td>
-                    {{ asset_assignment.asset.get_condition_display }}
-                </td>
-
+            <tr {% if asset_assignment.pk == assignment.pk %}class="latest-asset" style="background-color: #e8f5e9;"{% endif %}>
+                <td>{{ asset_assignment.asset.asset_tag }}</td>
+                <td>{{ asset_assignment.asset.asset_model.brand.name }} {{ asset_assignment.asset.asset_model.name }}</td>
+                <td>{{ asset_assignment.asset.serial_number }}</td>
+                <td>{{ asset_assignment.asset.get_condition_display }}</td>
             </tr>
-
         {% endfor %}
-
         </tbody>
-
     </table>
-
     {% else %}
-
         <p>You currently have no assigned assets.</p>
-
     {% endif %}
 
+    <p>Please review the details above. If any information is incorrect, or if you have not received the asset, please contact IT Support so that the records can be verified and updated.</p>
 
-    {% if assignment.remarks %}
+    <p><strong>IMPORTANT – ASSET RESPONSIBILITY</strong></p>
+    <p><strong>This asset remains the property of the company and is issued strictly for official business use. You are responsible for its proper care, security and maintenance. The asset must be returned in good condition whenever requested by the company or at the end of your employment.</strong></p>
 
-        <h3>Remarks</h3>
-
-        <p>{{ assignment.remarks }}</p>
-
-    {% endif %}
-
-
-    <div class="footer">
-
-        <p>
-            This is an automated message from the Asset Management System.
-        </p>
-
-        <p>
-            Please contact IT Support if any information above is incorrect.
-        </p>
-
-    </div>
-
+    <p>Kind regards,<br><br>IT Team TZ</p>
 </div>
-
 </body>
 </html>

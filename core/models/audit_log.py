@@ -1,4 +1,11 @@
+from django.conf import settings
+from django.db import models
+
+from .base import BaseModel
+
+
 class AuditLog(BaseModel):
+    slug_source = "entity_name"
 
     action = models.CharField(max_length=30)
 

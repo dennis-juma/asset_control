@@ -6,6 +6,8 @@ class AuditService:
         dto: AuditDTO,
     ):
 
+        from core.models.audit_log import AuditLog
+
         AuditLog.objects.create(
             action=dto.action,
             entity_type=dto.entity_type,

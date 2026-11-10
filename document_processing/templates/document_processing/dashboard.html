@@ -1,0 +1,13 @@
+{% extends "document_processing/base.html" %}
+{% block module_content %}
+<div class="row g-3 mb-4">
+  {% for label,value in metrics %}<div class="col-md-4 col-xl-2"><div class="card h-100"><div class="card-body"><div class="text-muted small">{{ label }}</div><div class="fs-3 fw-semibold">{{ value }}</div></div></div></div>{% endfor %}
+  <div class="col-md-4 col-xl-2"><div class="card h-100"><div class="card-body"><div class="text-muted small">Batches</div><div class="fs-3 fw-semibold">{{ batch_count }}</div></div></div></div>
+  <div class="col-md-4 col-xl-2"><div class="card h-100"><div class="card-body"><div class="text-muted small">Uploaded PDFs</div><div class="fs-3 fw-semibold">{{ document_count }}</div></div></div></div>
+  <div class="col-md-4 col-xl-2"><div class="card h-100"><div class="card-body"><div class="text-muted small">Extracted records</div><div class="fs-3 fw-semibold">{{ record_count }}</div></div></div></div>
+  <div class="col-md-4 col-xl-2"><div class="card h-100"><div class="card-body"><div class="text-muted small">Pending review</div><div class="fs-3 fw-semibold">{{ pending_count }}</div></div></div></div>
+  <div class="col-md-4 col-xl-2"><div class="card h-100"><div class="card-body"><div class="text-muted small">Reviewed</div><div class="fs-3 fw-semibold">{{ reviewed_count }}</div></div></div></div>
+  <div class="col-md-4 col-xl-2"><div class="card h-100"><div class="card-body"><div class="text-muted small">Failed PDFs</div><div class="fs-3 fw-semibold">{{ failed_count }}</div></div></div></div>
+</div>
+<div class="card"><div class="card-header bg-white"><h2 class="h5 mb-0">Recent batches</h2></div><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Batch</th><th>Uploaded</th><th>Uploaded by</th><th>PDFs</th><th>Records</th><th>Status</th><th></th></tr></thead><tbody>{% for batch in batches %}<tr><td><a href="{% url 'document_processing:batch-detail' batch.id %}">{{ batch.batch_number }}</a><div class="small text-muted">{{ batch.name }}</div></td><td>{{ batch.uploaded_at|date:"d/m/Y H:i" }}</td><td>{{ batch.uploaded_by }}</td><td>{{ batch.total_files }}</td><td>{{ batch.total_records }}</td><td>{{ batch.get_status_display }}</td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'document_processing:batch-detail' batch.id %}">View</a></td></tr>{% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No extraction batches yet.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

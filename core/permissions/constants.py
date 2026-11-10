@@ -1,5 +1,11 @@
 class Permissions:
 
+    # Staged checklist document processing
+    DOCUMENT_VIEW = "document_processing.view_extractionbatch"
+    DOCUMENT_PROCESS = "document_processing.process_documents"
+    DOCUMENT_REVIEW = "document_processing.review_extracted_records"
+    DOCUMENT_EXPORT = "document_processing.export_extracted_records"
+
     # Assets
     ASSET_VIEW = "assets.view_asset"
 

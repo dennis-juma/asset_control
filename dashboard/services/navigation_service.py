@@ -79,6 +79,13 @@ class NavigationService:
                     ),
 
                     NavigationItem(
+                        title="Document Processing",
+                        icon="bi-file-earmark-pdf",
+                        url=reverse("document_processing:dashboard"),
+                        permission="document_processing.view_extractionbatch",
+                    ),
+
+                    NavigationItem(
                         title="Transfers",
                         icon="bi-arrow-left-right",
                         url=reverse(

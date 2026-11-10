@@ -115,8 +115,8 @@ class AssetAssignmentService:
                     event=NotificationEvent.ASSET_ASSIGNED,
                     recipient=assignment.employee.user,
                     subject=(
-                        f"New Asset Assigned - "
-                        f"{assignment.employee.full_name}"
+                        f"Asset Assignment Confirmation – "
+                        f"{assignment.asset.asset_tag}"
                     ),
                     template="emails/asset_assigned.html",
                     context={

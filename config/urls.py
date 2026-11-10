@@ -77,6 +77,10 @@ path(
         namespace="assets",),
     
 ),
+    path(
+        "asset-management/document-processing/",
+        include("document_processing.urls", namespace="document_processing"),
+    ),
 ]
 
 if settings.DEBUG:

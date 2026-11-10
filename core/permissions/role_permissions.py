@@ -5,6 +5,11 @@ ROLE_PERMISSIONS = {
     UserType.SUPER_ADMIN: "__ALL__",
 
     UserType.ADMIN: [
+        # Asset document processing
+        "document_processing.view_extractionbatch",
+        "document_processing.process_documents",
+        "document_processing.review_extracted_records",
+        "document_processing.export_extracted_records",
         # Assets
         "assets.view_asset",
         "assets.add_asset",
@@ -48,6 +53,11 @@ ROLE_PERMISSIONS = {
     ],
 
     UserType.COUNTRY_ADMIN: [
+        # Asset document processing
+        "document_processing.view_extractionbatch",
+        "document_processing.process_documents",
+        "document_processing.review_extracted_records",
+        "document_processing.export_extracted_records",
         # Assets
         "assets.view_asset",
         "assets.add_asset",

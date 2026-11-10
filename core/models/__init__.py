@@ -5,6 +5,7 @@ from .soft_delete import SoftDeleteModel
 from .timestamp import TimeStampedModel
 from .uuid import UUIDModel
 from .slug import SlugModel
+from .audit_log import AuditLog
 
 
 __all__ = [
@@ -17,5 +18,6 @@ __all__ = [
     "SlugModel",
     "BaseModel",
     "TransactionModel"
+    ,"AuditLog"
     
 ]

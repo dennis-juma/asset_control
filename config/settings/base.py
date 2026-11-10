@@ -68,6 +68,7 @@ LOCAL_APPS = [
     "reports",
     "notifications",
     "dashboard",
+    "document_processing",
 
 ]
 
@@ -236,6 +237,13 @@ STORAGES = {
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# Checklist PDFs are stored separately from publicly served MEDIA_URL files.
+PRIVATE_MEDIA_ROOT = BASE_DIR / "private_media"
+EXTRACTION_MAX_FILE_SIZE = 20 * 1024 * 1024
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = config("GEMINI_MODEL", default="gemini-2.5-flash")
+GEMINI_FALLBACK_MODEL = config("GEMINI_FALLBACK_MODEL", default="")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
