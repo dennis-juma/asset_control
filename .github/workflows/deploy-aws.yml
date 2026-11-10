@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - v4
+      - v5
   workflow_dispatch:
 
 permissions:
@@ -50,6 +51,7 @@ jobs:
           AWS_HOST: ${{ secrets.AWS_HOST }}
           AWS_USER: ${{ secrets.AWS_USER }}
           DEPLOY_SHA: ${{ github.sha }}
+          DEPLOY_BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
 
@@ -59,10 +61,16 @@ jobs:
             -o IdentitiesOnly=yes \
             -i ~/.ssh/id_ed25519 \
             "$AWS_USER@$AWS_HOST" \
-            "DEPLOY_SHA='$DEPLOY_SHA' bash -se" <<'EOF' | tee deploy.log
+            "DEPLOY_SHA='$DEPLOY_SHA' DEPLOY_BRANCH='$DEPLOY_BRANCH' bash -se" <<'EOF' | tee deploy.log
           set -euo pipefail
 
           cd /opt/asset-control
+
+          # Only the approved production branches may deploy.
+          case "$DEPLOY_BRANCH" in
+            v4|v5) ;;
+            *) echo "ERROR: Unsupported deployment branch: $DEPLOY_BRANCH"; exit 1 ;;
+          esac
 
           # --------------------------------------
           # HELPER: docker compose that NEVER reads stdin.
@@ -93,7 +101,7 @@ jobs:
           # --------------------------------------
           echo "Fetching latest code..."
 
-          git fetch origin v4
+          git fetch origin "+refs/heads/$DEPLOY_BRANCH:refs/remotes/origin/$DEPLOY_BRANCH"
 
           # --------------------------------------
           # VALIDATE DEPLOYMENT COMMIT
@@ -101,15 +109,20 @@ jobs:
           echo "Validating deployment commit..."
 
           git cat-file -e "$DEPLOY_SHA^{commit}"
-          git merge-base --is-ancestor "$DEPLOY_SHA" origin/v4
+          git merge-base --is-ancestor "$DEPLOY_SHA" "origin/$DEPLOY_BRANCH"
+
+          REMOTE_BRANCH_SHA=$(git rev-parse "origin/$DEPLOY_BRANCH")
+          if [ "$REMOTE_BRANCH_SHA" != "$DEPLOY_SHA" ]; then
+            echo "ERROR: Deployment commit is stale; the remote $DEPLOY_BRANCH branch has moved."
+            exit 1
+          fi
 
           # --------------------------------------
           # UPDATE SOURCE CODE
           # --------------------------------------
           echo "Updating source code..."
 
-          git checkout v4
-          git merge --ff-only "$DEPLOY_SHA"
+          git checkout -B "$DEPLOY_BRANCH" "$DEPLOY_SHA"
 
           if [ "$(git rev-parse HEAD)" != "$DEPLOY_SHA" ]; then
             echo "ERROR: AWS checkout does not match the requested deployment commit."
