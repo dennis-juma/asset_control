@@ -1,3 +1,6 @@
+from core.dtos.audit import AuditDTO
+
+
 class AuditService:
 
     @classmethod
