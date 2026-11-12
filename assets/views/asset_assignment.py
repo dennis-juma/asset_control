@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import TemplateView
@@ -22,6 +23,7 @@ from assets.forms import (
     AssetReturnForm,
 )
 from assets.imports import AssetAssignmentImportService
+from assets.models import AssetAssignment
 from assets.page_services import AssetAssignmentPageService
 from assets.repositories import AssetAssignmentRepository
 from assets.services import AssetAssignmentService
@@ -273,23 +275,32 @@ class AssetAssignmentUpdateView(
     TemplateView):
     permission_required = Permissions.ASSET_UPDATE
 
-    template_name = "crud/form.html"
+    template_name = "assets/assignment_edit.html"
 
     def get(self, request, pk):
 
-        assignment = AssetAssignmentRepository().get(pk)
+        assignment = self._get_assignment(pk)
+        form = AssetAssignmentUpdateForm(instance=assignment)
 
         return self.render_to_response(
-            {
-                "page": AssetAssignmentPageService().update_page(
-                    assignment,
-                ),
-            }
+            self._context(assignment, form)
         )
+
+    def _context(self, assignment, form):
+        return {
+            "assignment": assignment,
+            "form": form,
+        }
+
+    def _get_assignment(self, pk):
+        try:
+            return AssetAssignmentRepository().get(pk)
+        except AssetAssignment.DoesNotExist:
+            raise Http404("Assignment not found.")
 
     def post(self, request, pk):
 
-        assignment = AssetAssignmentRepository().get(pk)
+        assignment = self._get_assignment(pk)
 
         form = AssetAssignmentUpdateForm(
             request.POST,
@@ -299,12 +310,7 @@ class AssetAssignmentUpdateView(
         if not form.is_valid():
 
             return self.render_to_response(
-                {
-                    "page": AssetAssignmentPageService().update_page(
-                        assignment,
-                        form,
-                    ),
-                }
+                self._context(assignment, form)
             )
 
         dto = AssetAssignmentUpdateDTO(

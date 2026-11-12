@@ -1,0 +1,120 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Edit Asset Assignment | Sun King Asset Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'assets:asset-assignment-list' %}">Assignments</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'assets:asset-assignment-detail' assignment.pk %}">{{ assignment.asset.asset_tag }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Edit Asset Assignment</h2>
+            <p class="text-muted mb-0">Update the assignment for {{ assignment.asset.asset_tag }}.</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <section class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom px-4 py-3">
+                <h5 class="fw-semibold mb-0">Assignment Information</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Country</label>
+                        <input class="form-control" value="{{ assignment.country|default:'—' }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Asset</label>
+                        <input class="form-control" value="{{ assignment.asset.asset_tag }}{% if assignment.asset.asset_model %} — {{ assignment.asset.asset_model }}{% endif %}" readonly>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="{{ form.assignment_type.id_for_label }}" class="form-label fw-semibold">{{ form.assignment_type.label }}</label>
+                    <div>{{ form.assignment_type }}</div>
+                    {% for error in form.assignment_type.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label for="{{ form.employee.id_for_label }}" class="form-label fw-semibold">{{ form.employee.label }}</label>
+                        {{ form.employee }}
+                        {% for error in form.employee.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.site.id_for_label }}" class="form-label fw-semibold">{{ form.site.label }}</label>
+                        {{ form.site }}
+                        {% for error in form.site.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom px-4 py-3">
+                <h5 class="fw-semibold mb-0">Assignment Dates</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label for="{{ form.assigned_date.id_for_label }}" class="form-label fw-semibold">{{ form.assigned_date.label }}</label>
+                        {{ form.assigned_date }}
+                        {% for error in form.assigned_date.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.expected_return_date.id_for_label }}" class="form-label fw-semibold">{{ form.expected_return_date.label }}</label>
+                        {{ form.expected_return_date }}
+                        {% for error in form.expected_return_date.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom px-4 py-3">
+                <h5 class="fw-semibold mb-0">Remarks</h5>
+            </div>
+            <div class="card-body p-4">
+                {{ form.remarks }}
+                {% for error in form.remarks.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+        </section>
+
+        <section class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom px-4 py-3">
+                <h5 class="fw-semibold mb-0">System</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="form-check">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" class="form-check-label">{{ form.is_active.label }}</label>
+                </div>
+                {% for error in form.is_active.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+        </section>
+
+        <div class="d-flex justify-content-end gap-2 mb-4">
+            <a class="btn btn-outline-secondary" href="{% url 'assets:asset-assignment-detail' assignment.pk %}">Cancel</a>
+            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-1"></i>Update Assignment</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

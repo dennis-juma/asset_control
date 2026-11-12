@@ -191,6 +191,23 @@ class AssetAssignmentUpdateForm(forms.ModelForm):
             "placeholder": "Add notes or remarks for the assignment...",
         })
 
+    def clean(self):
+        cleaned_data = super().clean()
+        assigned_date = cleaned_data.get("assigned_date")
+        expected_return_date = cleaned_data.get("expected_return_date")
+
+        if (
+            assigned_date
+            and expected_return_date
+            and expected_return_date < assigned_date
+        ):
+            self.add_error(
+                "expected_return_date",
+                "Expected Return Date cannot be earlier than Assigned Date.",
+            )
+
+        return cleaned_data
+
 
 class AssetReturnForm(forms.Form):
 
