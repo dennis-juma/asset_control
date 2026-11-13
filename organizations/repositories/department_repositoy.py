@@ -16,7 +16,6 @@ class DepartmentRepository:
             Department.objects
             .select_related(
                 "country",
-                "site",
                 "parent",
             )
             .filter(
@@ -30,7 +29,6 @@ class DepartmentRepository:
                 | Q(code__icontains=query)
                 | Q(cost_center__icontains=query)
                 | Q(country__name__icontains=query)
-                | Q(site__name__icontains=query)
             )
 
         paginator = Paginator(
@@ -48,7 +46,6 @@ class DepartmentRepository:
             Department.objects
             .select_related(
                 "country",
-                "site",
                 "parent",
             )
             .get(pk=pk)

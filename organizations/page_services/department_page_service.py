@@ -60,11 +60,6 @@ class DepartmentPageService:
         )
 
         grid.column(
-            field="site",
-            label="Site",
-        )
-
-        grid.column(
             field="parent",
             label="Parent",
         )
@@ -85,7 +80,7 @@ class DepartmentPageService:
                 row_id=department.id,
                 code=department.code,
                 name=department.name,
-                country=department.country.name,
+                country=department.country.name if department.country else "-",
                 parent=department.parent.name if department.parent else "-",
                 cost_center=department.cost_center,
                 is_active=department.is_active,
