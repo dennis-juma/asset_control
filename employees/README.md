@@ -17,7 +17,7 @@ Install the project dependencies and make sure Redis is running at `127.0.0.1:63
 ```
 
 ```powershell
-.\venv\Scripts\python.exe -m celery -A config beat --loglevel=INFO --schedule=.\var\celerybeat-schedule
+.\venv\Scripts\python.exe -m celery -A config beat --loglevel=INFO --schedule=celerybeat-schedule
 ```
 
 On Linux, run the worker without `--pool=solo`. Keep exactly one Beat scheduler running for this schedule.
