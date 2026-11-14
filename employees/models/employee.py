@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 from common.choices import (
     Gender,
@@ -171,8 +172,11 @@ class Employee(BaseModel):
         Returns True if the employee is currently employed.
         """
         return (
-            self.is_active and
-            self.last_working_date is None
+            self.is_active
+            and (
+                self.last_working_date is None
+                or self.last_working_date >= timezone.localdate()
+            )
         )
 
     def __str__(self):

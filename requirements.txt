@@ -1,6 +1,7 @@
 asgiref==3.11.1
 charset-normalizer==3.5.2
 colorama==0.4.6
+celery[redis]==5.7.0
 crispy-bootstrap5==2026.3
 Django==5.2.16
 google-genai>=1.0.0,<2.0.0

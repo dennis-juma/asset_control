@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 from decouple import config
 
@@ -217,6 +218,23 @@ TIME_ZONE = config(
 USE_I18N = True
 
 USE_TZ = True
+
+# Celery uses the same EAT timezone as Django for the daily offboarding run.
+CELERY_BROKER_URL = config(
+    "CELERY_BROKER_URL",
+    default="redis://127.0.0.1:6379/0",
+)
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ENABLE_UTC = True
+CELERY_TASK_IGNORE_RESULT = True
+CELERY_TASK_ACKS_LATE = True
+CELERY_TASK_REJECT_ON_WORKER_LOST = True
+CELERY_BEAT_SCHEDULE = {
+    "enqueue-due-employee-offboardings-daily": {
+        "task": "employees.tasks.enqueue_due_employee_offboardings",
+        "schedule": crontab(hour=8, minute=0),
+    },
+}
 
 
 # Static files (CSS, JavaScript, Images)

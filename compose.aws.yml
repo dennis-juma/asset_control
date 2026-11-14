@@ -16,3 +16,52 @@ services:
       - "127.0.0.1:8000:8000"
     command: "gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 1 --threads 2 --timeout 120"
     mem_limit: 600m
+
+  redis:
+    image: redis:7-alpine
+    container_name: asset_control_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - celery_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  celery_worker:
+    image: ${ASSET_CONTROL_IMAGE:-asset-control-web:latest}
+    container_name: asset_control_celery_worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      CELERY_BROKER_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["celery", "-A", "config", "worker", "--loglevel=INFO", "--concurrency=1"]
+    mem_limit: 300m
+
+  celery_beat:
+    image: ${ASSET_CONTROL_IMAGE:-asset-control-web:latest}
+    container_name: asset_control_celery_beat
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      CELERY_BROKER_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["celery", "-A", "config", "beat", "--loglevel=INFO", "--schedule=/var/run/celery/celerybeat-schedule"]
+    volumes:
+      - celery_beat_data:/var/run/celery
+    mem_limit: 128m
+
+volumes:
+  celery_redis_data:
+  celery_beat_data:
