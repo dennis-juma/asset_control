@@ -50,6 +50,21 @@ class AssetAssignmentPageService:
         )
 
         grid.column(
+            field="model",
+            label="Model",
+        )
+
+        grid.column(
+            field="category",
+            label="Category",
+        )
+
+        grid.column(
+            field="serial_number",
+            label="Serial Number",
+        )
+
+        grid.column(
             field="assigned_to",
             label="Assigned To",
         )
@@ -60,18 +75,8 @@ class AssetAssignmentPageService:
         )
 
         grid.column(
-            field="returned_by",
-            label="Returned By",
-        )
-
-        grid.column(
             field="assigned_date",
             label="Assigned Date",
-        )
-
-        grid.column(
-            field="expected_return_date",
-            label="Expected Return",
         )
 
         grid.column(
@@ -90,11 +95,16 @@ class AssetAssignmentPageService:
             grid.row(
                 row_id=assignment.pk,
                 asset=assignment.asset.asset_tag,
+                model=assignment.asset.asset_model.name if assignment.asset.asset_model else "-",
+                category=(
+                    assignment.asset.asset_model.category.name
+                    if assignment.asset.asset_model and assignment.asset.asset_model.category
+                    else "-"
+                ),
+                serial_number=assignment.asset.serial_number or "-",
                 assigned_to=assigned_to,
                 assigned_by=assignment.assigned_by_name,
-                returned_by=assignment.returned_by_name,
                 assigned_date=assignment.assigned_date,
-                expected_return_date=assignment.expected_return_date or "-",
                 status=assignment.get_status_display(),
             )
 

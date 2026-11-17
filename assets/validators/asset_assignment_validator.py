@@ -31,6 +31,7 @@ class AssetAssignmentValidator:
         self._validate_assignment_target(dto)
         self._validate_expected_return_date(dto)
         self._validate_active_assignment(dto)
+        self._validate_employee_category_assignment(dto)
 
     def validate_update(
         self,
@@ -126,3 +127,21 @@ class AssetAssignmentValidator:
                     "This asset already has an active assignment."
                 }
             )
+
+    def _validate_employee_category_assignment(self, dto):
+        # Category limits apply to employee assignments; site assignments are shared inventory.
+        if not dto.employee or not dto.asset.asset_model or not dto.asset.asset_model.category:
+            return
+
+        existing = self.repository.active_assignment_in_category(
+            dto.employee,
+            dto.asset.asset_model.category,
+        )
+        if existing:
+            category_name = dto.asset.asset_model.category.name
+            raise ValidationError({
+                "employee": (
+                    f"{dto.employee.full_name} already has an active {category_name} asset "
+                    f"({existing.asset.asset_tag}). Return it before assigning another."
+                )
+            })

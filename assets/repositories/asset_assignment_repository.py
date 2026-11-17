@@ -143,6 +143,16 @@ class AssetAssignmentRepository:
             .exists()
         )
 
+    def active_assignment_in_category(self, employee, category, *, exclude_assignment_id=None):
+        queryset = AssetAssignment.objects.filter(
+            employee=employee,
+            status=AssignmentStatus.ACTIVE,
+            asset__asset_model__category=category,
+        ).select_related("asset", "asset__asset_model", "asset__asset_model__category")
+        if exclude_assignment_id is not None:
+            queryset = queryset.exclude(pk=exclude_assignment_id)
+        return queryset.first()
+
     def assignment_history(
         self,
         asset,
